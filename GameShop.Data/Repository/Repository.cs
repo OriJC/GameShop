@@ -1,5 +1,7 @@
 ﻿using GameShop.Data.Data;
 using GameShop.Data.Repository.IRepository;
+using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -22,12 +24,23 @@ namespace GameShop.Data.Repository
 
         public virtual void Add(T obj)
         {
-            _mongoContext.AddCommand(() => _collection.InsertOneAsync(obj));    
+            try
+            {
+                _mongoContext.AddCommand(() => _collection.InsertOneAsync(obj));
+            }
+            catch(Exception ex)
+            {
+               
+            }
         }
 
-        public virtual async Task<T> GetById(Guid id)
+        public virtual async Task<T> GetById(string id)
         {
-            var data = await _collection.FindAsync(Builders<T>.Filter.Eq("_id", id));
+            if (!ObjectId.TryParse(id, out var objectId))
+            {
+                return null;
+            }
+            var data = await _collection.FindAsync(Builders<T>.Filter.Eq("_id", objectId));
             return data.SingleOrDefault();
         }
 
@@ -37,7 +50,7 @@ namespace GameShop.Data.Repository
             return data.ToList();
         }
 
-        public virtual void Update(T obj)
+        public virtual void Update(T obj, string id)
         {
             var idProperty = typeof(T).GetProperty("Id");
             if (idProperty != null)
@@ -45,7 +58,7 @@ namespace GameShop.Data.Repository
                 throw new InvalidOperationException($"The type {typeof(T).Name} does not contain an 'Id' property.");
 
             }
-            var id = idProperty.GetValue(obj);
+            //var id = idProperty.GetValue(obj);
             _mongoContext.AddCommand(() => _collection.ReplaceOneAsync(Builders<T>.Filter.Eq("_id", id), obj));
         }
 

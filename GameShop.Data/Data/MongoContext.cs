@@ -1,11 +1,11 @@
-﻿using Amazon.Runtime.Internal;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Collections.Specialized.BitVector32;
 
 namespace GameShop.Data.Data
 {
@@ -40,11 +40,21 @@ namespace GameShop.Data.Data
 
             using (Session = await _client.StartSessionAsync())
             {
-                Session.StartTransaction();
+                try 
+                {
+                    Session.StartTransaction();
 
-                var commandTasks = _commands.Select(c => c()); ;
-                await Task.WhenAll(commandTasks);
-                await Session.CommitTransactionAsync();
+                    var commandTasks = _commands.Select(c => c()); ;
+                    await Task.WhenAll(commandTasks);
+                    await Session.CommitTransactionAsync();
+                }
+                catch(Exception ex)
+                {
+                    Session.AbortTransaction();
+                    Console.WriteLine(ex);
+
+                }
+                
             }
 
             return _commands.Count;

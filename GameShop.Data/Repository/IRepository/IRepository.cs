@@ -9,9 +9,9 @@ namespace GameShop.Data.Repository.IRepository
     public interface IRepository<T> : IDisposable where T : class
     {
         void Add(T obj);
-        Task<T> GetById(Guid id);
+        Task<T> GetById(string id);
         Task<IEnumerable<T>> GetAll();
-        void Update(T obj);
+        void Update(T obj, string id);
         void Remove(Guid id);
     }
 }

@@ -4,8 +4,10 @@ namespace Gameshop.model
 {
     public class GameCategory
     {
+
         [BsonId]
-        public int Id { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
         [BsonElement("Name")]
         public string Name { get; set; }
         [BsonElement("CreatedDate")]

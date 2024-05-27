@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameShop.Data.Repository.IRepository
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
         IGameCategoryRepository GameCategory { get; }
         Task<bool> Commit();
