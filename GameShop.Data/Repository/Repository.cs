@@ -24,14 +24,7 @@ namespace GameShop.Data.Repository
 
         public virtual void Add(T obj)
         {
-            try
-            {
-                _mongoContext.AddCommand(() => _collection.InsertOneAsync(obj));
-            }
-            catch(Exception ex)
-            {
-               
-            }
+            _mongoContext.AddCommand(() => _collection.InsertOneAsync(obj));
         }
 
         public virtual async Task<T> GetById(string id)
@@ -50,21 +43,29 @@ namespace GameShop.Data.Repository
             return data.ToList();
         }
 
-        public virtual void Update(T obj, string id)
+        public virtual void Update(T obj)
         {
             var idProperty = typeof(T).GetProperty("Id");
-            if (idProperty != null)
+            if (idProperty == null)
             {
                 throw new InvalidOperationException($"The type {typeof(T).Name} does not contain an 'Id' property.");
 
             }
-            //var id = idProperty.GetValue(obj);
-            _mongoContext.AddCommand(() => _collection.ReplaceOneAsync(Builders<T>.Filter.Eq("_id", id), obj));
+            var id = idProperty.GetValue(obj).ToString();
+            if (!ObjectId.TryParse(id, out var objectId))
+            {
+                throw new InvalidOperationException($"Cannot convert input Id to Object id");
+            }
+            _mongoContext.AddCommand(() => _collection.ReplaceOneAsync(Builders<T>.Filter.Eq("_id", objectId), obj));
         }
 
-        public virtual void Remove(Guid id)
+        public virtual void Remove(string id)
         {
-            _mongoContext.AddCommand(() => _collection.DeleteOneAsync(Builders<T>.Filter.Eq("_id", id)));
+            if (!ObjectId.TryParse(id, out var objectId))
+            {
+                throw new InvalidOperationException($"Cannot convert input Id to Object id");
+            }
+            _mongoContext.AddCommand(() => _collection.DeleteOneAsync(Builders<T>.Filter.Eq("_id", objectId)));
         }
 
         public void Dispose()

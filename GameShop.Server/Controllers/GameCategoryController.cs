@@ -6,7 +6,7 @@ using MongoDB.Driver;
 namespace GameShop.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]/[action]")]
     public class GameCategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -17,14 +17,14 @@ namespace GameShop.Server.Controllers
         }
 
         [HttpGet(Name = "GetAllGameCategory")]
-        public async Task<ActionResult> GetAllGameCategory()
+        public async Task<ActionResult> GetAll()
         {
             var objCategoryList = await _unitOfWork.GameCategory.GetAll();
             return Ok(objCategoryList);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult> GetGameCategoryById(string id)
+        [HttpGet("{id}", Name = "GetById")]
+        public async Task<ActionResult> GetById(string id)
         {
             var gameCategory = await _unitOfWork.GameCategory.GetById(id);
             if (gameCategory != null)
@@ -40,7 +40,7 @@ namespace GameShop.Server.Controllers
         }
 
         [HttpPost(Name = "InsertGameCategory")]
-        public async Task<ActionResult> InsertGameCategory(string Name)
+        public async Task<ActionResult> Insert(string Name)
         {
             try
             {
@@ -61,15 +61,38 @@ namespace GameShop.Server.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateGameCategory(Guid id, string name)
+        public async Task<ActionResult> Update(string id, string name)
         {
             try
             {
+                GameCategory oldCategory = await _unitOfWork.GameCategory.GetById(id);
+                GameCategory newCategory = new GameCategory
+                {
+                    Id = id,
+                    Name = name,
+                    CreatedDate = oldCategory.CreatedDate
+                };
                 //GameCategory obj = new GameCategory(id, name);
-                //_unitOfWork.GameCategory.Add(obj);
-                //await _unitOfWork.Commit();
+                _unitOfWork.GameCategory.Update(newCategory);
+                await _unitOfWork.Commit();
 
-                return Json(new { success = true, message = "Add Sucessfully!" });
+                return Json(new { success = true, message = "Update Sucessfully!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Failed to add Category" });
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(string id)
+        {
+            try
+            {
+                _unitOfWork.GameCategory.Remove(id);
+                await _unitOfWork.Commit();
+
+                return Json(new { success = true, message = "Update Sucessfully!" });
             }
             catch (Exception ex)
             {
