@@ -34,7 +34,7 @@ namespace GameShop.Server.Controllers
             }
             else
             {
-                return BadRequest(); 
+                return BadRequest(new { message = "Get Game Category Failed"}); 
             }
             
         }
@@ -56,7 +56,7 @@ namespace GameShop.Server.Controllers
         }
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = "Insert Game Category failed", detail = ex.Message});
             }
         }
 
@@ -76,11 +76,11 @@ namespace GameShop.Server.Controllers
                 _unitOfWork.GameCategory.Update(newCategory);
                 await _unitOfWork.Commit();
 
-                return Json(new { success = true, message = "Update Sucessfully!" });
+                return Ok(new { message = "Update Sucessfully!" });
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Failed to add Category" });
+                return BadRequest(new { message = "Update failed"});
             }
         }
 
@@ -92,11 +92,11 @@ namespace GameShop.Server.Controllers
                 _unitOfWork.GameCategory.Remove(id);
                 await _unitOfWork.Commit();
 
-                return Json(new { success = true, message = "Update Sucessfully!" });
+                return Ok(new { message = "Delete Sucessfully!" });
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Failed to add Category" });
+                return BadRequest(new { message = "Delete failed" });
             }
         }
     }
