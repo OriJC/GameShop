@@ -17,8 +17,9 @@ class HttpRequest
     }
 
     interceptors(instance: AxiosInstance, url: string) {
-        instance.interceptors.request.use(config  => {
-           this.queue[url] = true
+        instance.interceptors.request.use(async(config)  => {
+            this.queue[url] = true
+            //console.log(config)
            return config
         }, error => {
             return Promise.reject(error)
@@ -26,6 +27,7 @@ class HttpRequest
 
         instance.interceptors.response.use((res: AxiosResponse<any>) => {
             this.destroy(url)
+
             return { data: res.data, status: res.status} as AxiosResponse<any> 
         }, error => {
             if (error && error.response) {
@@ -40,14 +42,15 @@ class HttpRequest
 
     getInsideConfig() {
         const config: Object = {
-            baseUrl: this.baseUrl
+            baseURL: this.baseUrl
         }
         return config
     }
+
     request(options : any) {
         const instance = axios.create()
         options = Object.assign(this.getInsideConfig(), options)
-        //this.interceptors(instance, options.url)
+        this.interceptors(instance, options.url)
         return instance(options)
     }
 }

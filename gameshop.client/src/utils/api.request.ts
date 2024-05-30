@@ -1,6 +1,6 @@
 import HttpRequest from './axios'
+import { config } from '../app.config' 
 
-const baseUrl = ''
 
-const axios = new HttpRequest(baseUrl)
+const axios = new HttpRequest(config.host.baseUrl)
 export default axios 
