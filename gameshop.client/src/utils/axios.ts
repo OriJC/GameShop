@@ -16,7 +16,7 @@ class HttpRequest
         delete this.queue[url]
     }
 
-    interceptors(instance: AxiosInstance, url: string) {
+    interceptors(instance: AxiosInstance, url: string ) {
         instance.interceptors.request.use(async(config)  => {
             this.queue[url] = true
             //console.log(config)
@@ -47,7 +47,7 @@ class HttpRequest
         return config
     }
 
-    request(options : any) {
+    request(options: any) {
         const instance = axios.create()
         options = Object.assign(this.getInsideConfig(), options)
         this.interceptors(instance, options.url)

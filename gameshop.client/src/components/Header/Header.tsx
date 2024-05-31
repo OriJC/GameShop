@@ -5,23 +5,26 @@ import { Layout, Menu } from 'antd';
 
 const { Header } = Layout;
 
+const menuItems = [
+    {
+        label: <Link to="/">Home</Link>, 
+        key: '1',
+    },
+    {
+        label: <Link to="/GameCategory">GameCategory</Link>,
+        key: '2',
+    },
+];
 
 const AppHeader = () => {
     return (
         <Header>
-            
-
-            <Menu theme="dark" mode="horizontal">
+            <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
                 <div id="icon">
                     <i className="bi bi-controller"></i>
                 </div>
-                <Menu.Item key = "1">
-                    <Link to="/">Home</Link>
-                </Menu.Item>
-                <Menu.Item key = "2">
-                    <Link to="/GameCategory">GameCategory</Link>
-                </Menu.Item>
-            </Menu>
+                <Menu items={menuItems} theme="light" mode="horizontal" />
+            </div>
         </Header>
     )
 }
