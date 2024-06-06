@@ -1,70 +1,106 @@
-﻿import  { useState, useEffect } from 'react';
-import { getAllGameCategory } from '@/api/GameCategory/GameCategory'
-import { Table, Button, Space } from 'antd'
-import { ColumnsType } from 'antd/es/table'
+﻿import { useState, useEffect } from 'react';
+import { getAllGameCategory, getGameCategoryById, updateGameCategory, createGameCategory, deleteGameCategory } from '@/api/GameCategory/GameCategory'
+import Create from '@/pages/GameCategory/Create'
+import Edit from '@/pages/GameCategory/Edit'
+import Delete from '@/pages/GameCategory/Delete'
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from '@mui/material';
 import moment from 'moment';
+
 interface GameCategory {
     key: string
     name: string;
     createdDate: string;
 }
 
-const columns: ColumnsType<GameCategory> =
-[
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
-  },
-  {
-    title: 'Create Date',
-    dataIndex: 'createdDate',
-    key: 'name',
-     render: (text: string) => moment(text).format('YYYY-MM-DD HH:mm:ss')
-  },
-  {
-    title: 'Action',
-    key: 'action',
-    render: (_, record) => (
-      <Space size="middle">
-            <Button onClick={() => handleEdit(record.key)}>Edit</Button>
-            <Button onClick={() => handleDelete(record.key)}>Delete</Button>
-      </Space>
-    ),
-  },
-    ]
-
-const handleEdit = (key: string) => {
-    console.log('Edit item with key:', key);
-};
-
-const handleDelete = (key: string) => {
-    console.log('Delete item with key:', key);
-};
 
 const List: React.FC = () => {
-    const [data, setData] = useState(null);
-    //const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [data, setData] = useState([])
+    const [openCreate, setOpenCreate] = useState(false);
+    const [openEdit, setOpenEdit] = useState(false);
+    const [openDelete, setOpenDelete] = useState(false);
+    const [currentItem, setCurrentItem] = useState({});
+    const [loading, setLoading] = useState(true);
 
+    // Get Data 
     useEffect(() => {
-        getAllGameCategory().then(res => {
-            const formattedData = res.data.map(item =>
-            ({
-                ...item,
-                key: item.id,
-            }))
-            setData(formattedData)
-            console.log(formattedData)
-        }).catch(err => {
-            setError(err)
-            console.log(err)
-        })
-    }, [])
-    
+        const fetchData = () => {
+            setLoading(true)
+            getAllGameCategory().then(res => {
+                const formattedData = res.data.map(item =>
+                ({
+                    ...item,
+                    key: item.id,
+                }))
+                setData(formattedData)
+                setLoading(false)
+                
+            }).catch(err => {
+                setLoading(false)
+                console.log(err)
+            })
+        }
+        fetchData()
+    }, []);
+
+    // Create Method
+    const handleOpenCreate = () => setOpenCreate(true)
+    const handleCloseCreate = () => setOpenCreate(false)
+    const handleSaveCreate = () => {
+        handleCloseCreate()
+    }
+
+    // Edit Edit
+    const handleOpenEdit = () => setOpenEdit(true)
+    const handleCloseEdit = () => setOpenEdit(false)
+    const handleSaveEdit = () => {
+        handleCloseEdit()
+    }
+
+    // Delete Method
+    const handleOpenDelete = () => setOpenDelete(true)
+    const handleCloseDelete = () => setOpenDelete(false)
+    const handleSaveDelete = () => {
+        handleCloseDelete()
+    }
+
+    if (loading) {
+        return (
+            <div>
+                Loading
+            </div>
+        )
+    } else {
+        console.log(data)
+    }
     return (
-        <Table columns={columns} dataSource={data} />
-    );       
+        <Paper>
+            <Button onClick={handleOpenCreate}>Create</Button>
+            <TableContainer>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Name</TableCell>
+                            <TableCell>Created Time</TableCell>
+                            <TableCell>Actions</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {data.map((item) => {
+                            <TableRow key={item.id}>
+                                <TableCell>{item.name}</TableCell>
+                                <TableCell>{moment(item.createdDate).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
+                                <TableCell>
+                                    <Button color="primary" onClick={() => handleOpenEdit(item.id)}>Edit</Button>
+                                    <Button color="primary" onClick={() => handleOpenEdit(item.id)}>Delete</Button>
+                                </TableCell>
+                            </TableRow>
+                        })}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <Create open={openCreate} onClose={handleCloseCreate} onCreate={handleSaveCreate} />
+        </Paper>
+    )
 }
 
 export default List;
