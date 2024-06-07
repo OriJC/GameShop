@@ -1,13 +1,28 @@
-//import { useState } from 'react'
+import { useState } from 'react'
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, TextField } from '@mui/material';
+
 interface ModalFormProps {
-    open: bool,
+    open: boolean,
     onClose: () => void;
     onCreate: (values: any) => void;
 }
 
 
 const Create: React.FC<ModalFormProps> = ({ open, onClose, onCreate }) => {
+    const [data, setData] = useState({})
+
+    const handleInputChange = (event) => {
+        setData(event.target.value);
+    };
+
+    const handleCancel = () => {
+        setData('');
+    }
+
+    const handleClose = () => {
+        onCreate(data);
+        setData('');
+    };
 
     return (
         <Dialog open={open} onClose={onClose}>
@@ -24,11 +39,12 @@ const Create: React.FC<ModalFormProps> = ({ open, onClose, onCreate }) => {
                     type="text"
                     fullWidth
                     variant="standard"
+                    onChange={handleInputChange}
                 />
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
-                <Button onClick={onCreate}>Create</Button>
+                <Button onClick={handleClose}>Create</Button>
             </DialogActions>
         </Dialog>
   );

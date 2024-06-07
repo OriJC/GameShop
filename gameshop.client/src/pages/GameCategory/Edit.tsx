@@ -1,56 +1,73 @@
-import { useState } from 'react'
-import { Modal, Form, Input, Button } from 'antd'
+﻿import { useState, useEffect } from 'react'
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, TextField } from '@mui/material';
 interface ModalFormProps {
-    record: Object;
+    open: boolean
+    record: Object,
     onClose: () => void;
     onUpdate: (values: any) => void;
 }
 
 
-const Edit: React.FC<ModalFormProps> = ({ record, onClose, onUpdate }) => {
-    const [form] = Form.useForm();
+const Edit: React.FC<ModalFormProps> = ({ open, record, onClose, onUpdate }) => {
+    const [data, setData] = useState<{ id: string; name: string }>({ id: '', name: '' });
 
-    const handleSubmit = () => {
-        form.validateFields().then(values => {
-            form.resetFields();
-            console.log(values)
-            onUpdate(values)
-            //createGameCategory()
-        }).catch(error => {
-            console.log(error);
-        })
-    }
+    useEffect(() => {
+        // 确保当record更新时，状态也更新，而不会是undefined
+        setData(record || { id: '', name: '' });
+    }, [record]);
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        // 针对具体的输入字段id更新data状态
+        const { id, value } = event.target;
+        setData(prev => ({
+            ...prev,
+            [id]: value
+        }));
+    };
 
     const handleCancel = () => {
-        form.resetFields();
-        onClose();
+        setData({});
     }
 
-
+    const handleUpdate = () => {
+        onUpdate(data);
+        setData({});
+    };
     return (
-        <Modal
-            title="Update GameCategory"
-            open={!!record}
-            onOk={handleSubmit}
-            onCancel={handleCancel}
-            footer={[
-                <Button key="back" onClick={handleCancel}>
-                    Cancel
-                </Button>,
-                <Button key="submit" onClick={handleSubmit} type="primary">
-                    Update
-                </Button>,
-            ]}
-        >
-            <Form form={form} layout="vertical" name="GameCategoryForm" initialValues={record}>
-                <Form.Item name="id" label="Id">
-                    <Input disabled/>
-                </Form.Item>
-                <Form.Item name="name" label="Name" rules={[{ required: true, message: "Please input the name" }]}>
-                    <Input />
-                </Form.Item>
-            </Form>
-        </Modal>
+        <Dialog open={open} onClose={onClose}>
+            <DialogTitle>Update Game Category</DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    Please fill out the form below to update the Game Category
+                </DialogContentText>
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="id"
+                    label="id"
+                    type="text"
+                    fullWidth
+                    variant="standard"
+                    value={data.id || ''}
+                    disabled
+                />
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="name"
+                    type="text"
+                    fullWidth
+                    variant="standard"
+                    value={data.name || ''}
+                    onChange={handleInputChange}
+                />
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={onClose}>Cancel</Button>
+                <Button onClick={handleUpdate}>Update</Button>
+            </DialogActions>
+        </Dialog>
     );
 }
 

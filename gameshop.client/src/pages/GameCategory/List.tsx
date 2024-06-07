@@ -33,7 +33,6 @@ const List: React.FC = () => {
                 }))
                 setData(formattedData)
                 setLoading(false)
-                
             }).catch(err => {
                 setLoading(false)
                 console.log(err)
@@ -43,24 +42,66 @@ const List: React.FC = () => {
     }, []);
 
     // Create Method
-    const handleOpenCreate = () => setOpenCreate(true)
+    const handleOpenCreate = () => {
+        setCurrentItem({})
+        setOpenCreate(true)
+    }
     const handleCloseCreate = () => setOpenCreate(false)
-    const handleSaveCreate = () => {
-        handleCloseCreate()
+    const handleSaveCreate = (newdData: Object) => {
+        createGameCategory(newData).then(() => {
+            console.log("Create Game Category Successfully")
+
+        }).catch(err => {
+            console.log(err)
+        })
+        handleCloseCreate();
+        window.location.reload(); 
     }
 
-    // Edit Edit
-    const handleOpenEdit = () => setOpenEdit(true)
+    // Edit Method
+    const handleOpenEdit = (key: string) => {
+        getGameCategoryById(key).then(res => {
+            console.log(res.data)
+            setCurrentItem(res.data)
+            setOpenEdit(true)
+        }).catch(err => {
+            console.log(err)
+        })
+    }
     const handleCloseEdit = () => setOpenEdit(false)
-    const handleSaveEdit = () => {
+    const handleSaveEdit = (newData) => {
+        updateGameCategory(newData.id, newData.name).then(() => {
+            console.log("Update Successfully")
+        }).catch(err => {
+            console.log(err)
+        })
+        
         handleCloseEdit()
+        window.location.reload(); 
     }
 
     // Delete Method
-    const handleOpenDelete = () => setOpenDelete(true)
+    const handleOpenDelete = (key: string) => {
+        getGameCategoryById(key).then(res => {
+            console.log(res.data)
+            setCurrentItem(res.data)
+            setOpenDelete(true)
+        }).catch(err => {
+            console.log(err)
+            handleCloseDelete()
+        })
+    }
     const handleCloseDelete = () => setOpenDelete(false)
-    const handleSaveDelete = () => {
+    const handleSaveDelete = (key: string) => {
+        console.log(key)
+        deleteGameCategory(key).then(() => {
+            console.log("Delete Successfully")
+        }).catch (err => {
+            console.log(err)
+        })
+        
         handleCloseDelete()
+        window.location.reload(); 
     }
 
     if (loading) {
@@ -69,9 +110,7 @@ const List: React.FC = () => {
                 Loading
             </div>
         )
-    } else {
-        console.log(data)
-    }
+    } 
     return (
         <Paper>
             <Button onClick={handleOpenCreate}>Create</Button>
@@ -85,20 +124,22 @@ const List: React.FC = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data.map((item) => {
-                            <TableRow key={item.id}>
+                        {data.map((item) => (
+                            <TableRow key={item.key}>
                                 <TableCell>{item.name}</TableCell>
                                 <TableCell>{moment(item.createdDate).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
                                 <TableCell>
-                                    <Button color="primary" onClick={() => handleOpenEdit(item.id)}>Edit</Button>
-                                    <Button color="primary" onClick={() => handleOpenEdit(item.id)}>Delete</Button>
+                                    <Button color="primary" onClick={() => handleOpenEdit(item.key)}>Edit</Button>
+                                    <Button color="primary" onClick={() => handleOpenDelete(item.key)}>Delete</Button>
                                 </TableCell>
                             </TableRow>
-                        })}
+                        ))}
                     </TableBody>
                 </Table>
             </TableContainer>
             <Create open={openCreate} onClose={handleCloseCreate} onCreate={handleSaveCreate} />
+            <Edit open={openEdit} record={currentItem} onClose={handleCloseEdit} onUpdate={handleSaveEdit} />
+            <Delete open={openDelete} record={currentItem} onClose={handleCloseDelete} onDelete={handleSaveDelete} />
         </Paper>
     )
 }
