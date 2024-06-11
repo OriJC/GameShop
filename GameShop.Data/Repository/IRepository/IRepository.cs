@@ -11,7 +11,7 @@ namespace GameShop.Data.Repository.IRepository
         void Add(T obj);
         Task<T> GetById(string id);
         Task<IEnumerable<T>> GetAll();
-        void Update(T obj, string id);
-        void Remove(Guid id);
+        void Update(T obj);
+        void Remove(string id);
     }
 }
