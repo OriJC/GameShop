@@ -1,7 +1,7 @@
 //import { useState } from 'react'
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, TextField } from '@mui/material';
 interface ModalFormProps {
-    open: bool
+    open: boolean
     record: Object,
     onClose: () => void;
     onDelete: (values: any) => void;
@@ -9,9 +9,6 @@ interface ModalFormProps {
 
 
 const Delete: React.FC<ModalFormProps> = ({ open, record, onClose, onDelete }) => {
-    const testing = () => {
-        console.log(record)
-    }
 
     const handleDelete = () => {
         onDelete(record.id)

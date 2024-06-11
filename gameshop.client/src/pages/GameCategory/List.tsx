@@ -47,7 +47,7 @@ const List: React.FC = () => {
         setOpenCreate(true)
     }
     const handleCloseCreate = () => setOpenCreate(false)
-    const handleSaveCreate = (newdData: Object) => {
+    const handleSaveCreate = (newData: Object) => {
         createGameCategory(newData).then(() => {
             console.log("Create Game Category Successfully")
 
@@ -69,7 +69,7 @@ const List: React.FC = () => {
         })
     }
     const handleCloseEdit = () => setOpenEdit(false)
-    const handleSaveEdit = (newData) => {
+    const handleSaveEdit = (newData: Object) => {
         updateGameCategory(newData.id, newData.name).then(() => {
             console.log("Update Successfully")
         }).catch(err => {

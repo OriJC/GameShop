@@ -15,9 +15,11 @@ namespace GameShop.Data.Repository
         {
             _mongoContext = mongoContext;
             GameCategory = new GameCategoryRepository(_mongoContext);
+            Company = new CompanyRepository(_mongoContext);
         }
 
         public IGameCategoryRepository GameCategory { get; private set; }
+        public ICompanyRepository Company { get; private set; }
 
         public async Task<bool> Commit()
         {
