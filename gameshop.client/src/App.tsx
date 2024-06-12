@@ -6,6 +6,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import AppHeader from './components/Header/Header.tsx';
 import Home from './pages/Home'
 import GameCategoryRoute from './pages/GameCategory/GameCategoryRoute.tsx'
+import CompanyRoute from './pages/Company/CompanyRoute.tsx'
 import { Container, Box } from '@mui/material';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/GameCategory/*" element={<GameCategoryRoute />} />
+                        <Route path="/Company/*" element={<CompanyRoute />} />
                     </Routes>
                 </Box>
             </Container>

@@ -18,6 +18,9 @@ const AppHeader = () => {
                     <Button color="inherit" component={Link} to="/GameCategory">
                         GameCategory
                     </Button>
+                    <Button color="inherit" component={Link} to="/Company">
+                        Company
+                    </Button>
                 </Box>        
             </Toolbar>
         </AppBar>

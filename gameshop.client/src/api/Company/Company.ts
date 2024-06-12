@@ -1,21 +1,7 @@
 import axios from '@/utils/api.request'
+import Company from '@/models/Company'
 
-interface Address {
-    state?: string;
-    city?: string;
-    street?: string;
-    zipCode?: string;
-}
-
-interface Company {
-    id: string;
-    name: string;
-    createdDate?: Date;
-    address?: Address;
-    phoneNumber?: string;
-}
-
-export const getAllGameCategory = () => {
+export const getAllCompany = () => {
     return axios.request({
         url: 'api/Company/GetAll',
         method: 'get'

@@ -22,6 +22,7 @@ namespace Gameshop.model
         public Address? Address { get; set; }
         [BsonElement("PhoneNumber")]
         public string? PhoneNumber { get; set; }
+        public string? Email { get; set; }
     }
 }
 

@@ -3,36 +3,36 @@
     validator: {
         $jsonSchema: {
             bsonType: "object",
-            required: ["name"],
+            required: ["Name"],
             properties: {
                 name: {
                     bsonType: "string",
                     description: "Name must be string and required"
                 },
-                CreateDate: {
+                createDate: {
                     bsonType: "date",
                     description: "Date must be date"
                 },
-                PhoneNumber: {
+                phoneNumber: {
                     bsonType: "string",
                     description: "PhoneNumber must be string"
                 },
-                Address: {
+                address: {
                     bsonType: "object",
                     properties: {
-                        State: {
+                        state: {
                             bsonType: "string",
                             description: "State must be a string"
                         },
-                        City: {
+                        city: {
                             bsonType: "string",
                             description: "City must be a string"
                         },
-                        Street: {
+                        street: {
                             bsonType: "string",
                             description: "Street Street must be a string"
                         },
-                        ZipCode: {
+                        zipCode: {
                             bsonType: "string",
                             description: "ZipCode must be a string"
                         }

@@ -3,14 +3,8 @@ import { getAllGameCategory, getGameCategoryById, updateGameCategory, createGame
 import Create from '@/pages/GameCategory/Create'
 import Edit from '@/pages/GameCategory/Edit'
 import Delete from '@/pages/GameCategory/Delete'
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography, Grid } from '@mui/material';
 import moment from 'moment';
-
-interface GameCategory {
-    key: string
-    name: string;
-    createdDate: string;
-}
 
 
 const List: React.FC = () => {
@@ -113,7 +107,18 @@ const List: React.FC = () => {
     } 
     return (
         <Paper>
-            <Button onClick={handleOpenCreate}>Create</Button>
+            <Grid container alignItems="center" justifyContent="space-between">
+                <Grid item className="ms-3 mt-2">
+                    <Typography component="h1" variant="h5">
+                        Game Category
+                    </Typography>
+                </Grid>
+                <Grid item className="me-2 mt-2">
+                    <Button onClick={handleOpenCreate} variant="contained">
+                        Create
+                    </Button>
+                </Grid>
+            </Grid>
             <TableContainer>
                 <Table>
                     <TableHead>
