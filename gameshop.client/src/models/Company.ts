@@ -11,7 +11,7 @@ interface Company {
     createdDate?: Date;
     address?: Address;
     phoneNumber?: string;
-    emailAddress: string;
+    email: string;
 }
 
 export default Company;

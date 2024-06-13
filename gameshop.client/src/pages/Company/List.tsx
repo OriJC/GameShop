@@ -1,4 +1,16 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography, Grid } from '@mui/material';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Button,
+    Typography,
+    Grid,
+    TablePagination
+} from '@mui/material';
 import { getAllCompany, getCompanyById, updateCompany, createCompany, deleteCompany } from '@/api/Company/Company'
 import { useState, useEffect } from 'react';
 import Company from '@/models/Company'
@@ -13,7 +25,8 @@ import { Link } from 'react-router-dom'
 const List: React.FC = () => {
     const [data, setData] = useState<Company[]>([])
     const [loading, setLoading] = useState(true);
-
+    const [page, setPage] = useState(0)
+    const [rowsPerPage, setRowsPerPage] = useState(10)
     // Get Data 
     useEffect(() => {
         const fetchData = () => {
@@ -33,6 +46,15 @@ const List: React.FC = () => {
         }
         fetchData()
     }, []);
+
+    const handleChangePage = (event: unknown, newPage: number) => {
+        setPage(newPage)
+    }
+
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0)
+    }
 
     if (loading) {
         return (
@@ -66,9 +88,12 @@ const List: React.FC = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data.map((item) => (
+                        {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => (
                             <TableRow key={item.key}>
-                                <TableCell>{item.name}</TableCell>
+                                <TableCell>
+                                    <Link to={`/company/detail/${item.id}`}>
+                                        {item.name}
+                                    </Link></TableCell>
                                 <TableCell>{moment(item.createdDate).isValid()
                                     ? moment(item.createdDate).format('YYYY-MM-DD HH:mm:ss')
                                     : ''}</TableCell>
@@ -82,6 +107,15 @@ const List: React.FC = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[5, 10]}
+                component="div"
+                count={data.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
         </Paper>
     )
 }
