@@ -12,12 +12,10 @@ const Edit: React.FC<ModalFormProps> = ({ open, record, onClose, onUpdate }) => 
     const [data, setData] = useState<{ id: string; name: string }>({ id: '', name: '' });
 
     useEffect(() => {
-        // 确保当record更新时，状态也更新，而不会是undefined
         setData(record || { id: '', name: '' });
     }, [record]);
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        // 针对具体的输入字段id更新data状态
         const { id, value } = event.target;
         setData(prev => ({
             ...prev,
@@ -27,6 +25,7 @@ const Edit: React.FC<ModalFormProps> = ({ open, record, onClose, onUpdate }) => 
 
     const handleCancel = () => {
         setData({});
+        onClose(); 
     }
 
     const handleUpdate = () => {
@@ -34,7 +33,7 @@ const Edit: React.FC<ModalFormProps> = ({ open, record, onClose, onUpdate }) => 
         setData({});
     };
     return (
-        <Dialog open={open} onClose={onClose}>
+        <Dialog open={open} onClose={handleCancel}>
             <DialogTitle>Update Game Category</DialogTitle>
             <DialogContent>
                 <DialogContentText>
@@ -64,7 +63,7 @@ const Edit: React.FC<ModalFormProps> = ({ open, record, onClose, onUpdate }) => 
                 />
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose}>Cancel</Button>
+                <Button onClick={handleCancel}>Cancel</Button>
                 <Button onClick={handleUpdate}>Update</Button>
             </DialogActions>
         </Dialog>

@@ -1,7 +1,7 @@
 const Home = () => {
     return (
         <div>
-            testing 2\3
+            This is a game shop website
         </div>
     )
 }

@@ -1,31 +1,29 @@
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { Link } from 'react-router-dom'
+import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import './Header.less'
-import { Layout, Menu } from 'antd';
 
-const { Header } = Layout;
-
-const menuItems = [
-    {
-        label: <Link to="/">Home</Link>, 
-        key: '1',
-    },
-    {
-        label: <Link to="/GameCategory">GameCategory</Link>,
-        key: '2',
-    },
-];
 
 const AppHeader = () => {
     return (
-        <Header>
-            <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
-                <div id="icon">
-                    <i className="bi bi-controller"></i>
-                </div>
-                <Menu items={menuItems} theme="light" mode="horizontal" />
-            </div>
-        </Header>
+        <AppBar position="static">
+            <Toolbar>
+                <Box display="flex" flexGrow={1}>
+                    <div id="icon" className="me-2">
+                        <i className="bi bi-controller" ></i>
+                    </div>
+                    <Button color="inherit" component={Link} to="/">
+                        Home
+                    </Button>
+                    <Button color="inherit" component={Link} to="/GameCategory">
+                        GameCategory
+                    </Button>
+                    <Button color="inherit" component={Link} to="/Company">
+                        Company
+                    </Button>
+                </Box>        
+            </Toolbar>
+        </AppBar>
     )
 }
 
