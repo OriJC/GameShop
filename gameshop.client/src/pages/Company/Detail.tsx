@@ -62,51 +62,37 @@ const Detail: React.FC = () => {
             <Grid item md={12}>
                 <Card>
                     <CardHeader
-                        title={data.name}
+                        title={'Company Detail'}
                         titleTypographyProps={{ align: 'center', variant: 'h4' }}
                     />
                         
                     <CardContent>
-                        <Grid item container spacing={1} justify="center" mb={1}>
-                            <Grid item md={6}>
-                                <Typography variant="body2" color="text.secondary">
-                                    Email: {data.email}
-                                </Typography>
-                            </Grid>
-                            <Grid item md={6}>
-                                <Typography variant="body2" color="text.secondary">
-                                    Phone Number: {data.phoneNumber}
-                                </Typography>
-                            </Grid>
-                        </Grid> 
-                        
-                        
-                        <Grid item container spacing={1} justify="center" mb={1}>
-                            <Grid item md={6}>
-                                <Typography variant="body2" color="text.secondary">
-                                    State: {data.address.state}
-                                </Typography>
-                            </Grid>
-                            <Grid item md={6}>
-                                <Typography variant="body2" color="text.secondary">
-                                    City: {data.address.city}
-                                </Typography>
-                            </Grid>
-                        </Grid> 
 
                         <Grid item container spacing={1} justify="center" mb={1}>
                             <Grid item md={6}>
+                                <Typography variant="h3" color="text.secondary">
+                                    {data.name}
+                                </Typography>
+                                <Typography variant="h5" color="text.secondary">
+                                    {data.address.city}, {data.address.state}
+                                </Typography>
+                            </Grid>
+                            <Grid item md={6} style={{ textAlign: 'left', paddingLeft: '50px' }}>
+                                <Typography variant="body2" color="text.secondary">
+                                    Email: {data.email}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                    Phone Number: {data.phoneNumber}
+                                </Typography>
                                 <Typography variant="body2" color="text.secondary">
                                     Street: {data.address.street}
                                 </Typography>
-                            </Grid>
-                            <Grid item md={6}>
                                 <Typography variant="body2" color="text.secondary">
                                     Zip Code: {data.address.zipCode}
                                 </Typography>
                             </Grid>
                         </Grid> 
-                        
+  
                     </CardContent>
                 </Card>
             </Grid>

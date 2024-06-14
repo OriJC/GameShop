@@ -11,12 +11,9 @@ import {
     Grid,
     TablePagination
 } from '@mui/material';
-import { getAllCompany, getCompanyById, updateCompany, createCompany, deleteCompany } from '@/api/Company/Company'
+import { getAllCompany, getCompanyById } from '@/api/Company/Company'
 import { useState, useEffect } from 'react';
 import Company from '@/models/Company'
-import Create from '@/pages/Company/Create'
-//import Edit from '@/pages/GameCategory/Edit'
-//import Delete from '@/pages/GameCategory/Delete'
 import moment from 'moment';
 import { Link } from 'react-router-dom'
 
@@ -56,6 +53,7 @@ const List: React.FC = () => {
         setPage(0)
     }
 
+
     if (loading) {
         return (
             <div>
@@ -83,8 +81,8 @@ const List: React.FC = () => {
                         <TableRow>
                             <TableCell>Name</TableCell>
                             <TableCell>Created Time</TableCell>
-                            <TableCell>State</TableCell>
-                            <TableCell>Actions</TableCell>
+                            <TableCell>City, State</TableCell>
+                            <TableCell align={'right'} sx={{ paddingRight: '150px' }} >Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -97,10 +95,10 @@ const List: React.FC = () => {
                                 <TableCell>{moment(item.createdDate).isValid()
                                     ? moment(item.createdDate).format('YYYY-MM-DD HH:mm:ss')
                                     : ''}</TableCell>
-                                <TableCell>{item.address.state}</TableCell>
-                                <TableCell>
-                                    <Button color="primary" onClick={() => console.log(item.key)}>Edit</Button>
-                                    <Button color="primary" onClick={() => console.log(item.key)}>Delete</Button>
+                                <TableCell>{item.address?.city}, {item.address.state}</TableCell>
+                                <TableCell align={'right'} sx={{ paddingRight: '50px' }}>
+                                    <Button color="primary" variant="contained" component={Link} sx={{ marginRight:'5px' }} to={`/company/edit/${item.id}`}>Edit</Button>
+                                    <Button color="warning" variant="contained" component={Link} to={`/company/delete/${item.id}`}>Delete</Button>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -115,6 +113,7 @@ const List: React.FC = () => {
                 page={page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
+                sx={{ '& .css-pdct74-MuiTablePagination-selectLabel': { margin: 0 }, '& .css-levciy-MuiTablePagination-displayedRows': { margin: 0 } }}
             />
         </Paper>
     )

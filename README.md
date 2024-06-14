@@ -3,7 +3,7 @@
 ## 使用的語言,套件,工具等
 ### Frontend
 語言: Typescript, HTML, less.css等
-* ReactJS
+* ReactJS, including React-router-dom
 * Axios
 * Less.css
 * Material-ui
@@ -13,5 +13,6 @@
 語言: C#
 * .Net 8.0 with MVC
 * Mongodb with C# drive
+* MongoContext
 * Repository
 * Unit of work
