@@ -16,12 +16,12 @@ namespace GameShop.Data.Repository
         public UnitOfWork(IMongoContext mongoContext)
         {
             _mongoContext = mongoContext;
-            GameCategory = new GameCategoryRepository(_mongoContext);
+            Category = new CategoryRepository(_mongoContext);
             Company = new CompanyRepository(_mongoContext);
             ProductTag = new ProductTagRepository(_mongoContext);
         }
 
-        public IGameCategoryRepository GameCategory { get; private set; }
+        public ICategoryRepository Category { get; private set; }
         public ICompanyRepository Company { get; private set; }
         public IProductTagRepository ProductTag { get; private set; }
 

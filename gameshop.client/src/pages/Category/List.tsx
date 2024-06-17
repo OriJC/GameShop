@@ -1,9 +1,10 @@
-﻿import { useState, useEffect } from 'react';
-import { getAllGameCategory, getGameCategoryById, updateGameCategory, createGameCategory, deleteGameCategory } from '@/api/GameCategory/GameCategory'
-import Create from '@/pages/GameCategory/Create'
-import Edit from '@/pages/GameCategory/Edit'
-import Delete from '@/pages/GameCategory/Delete'
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography, Grid } from '@mui/material';
+﻿/// <reference path="../company/list.tsx" />
+import { useState, useEffect } from 'react';
+import { getAllCategory, getCategoryById, updateCategory, createCategory, deleteCategory } from '@/api/Category/Category'
+import Create from '@/pages/Category/Create'
+import Edit from '@/pages/Category/Edit'
+import Delete from '@/pages/Category/Delete'
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography, Grid, TablePagination } from '@mui/material';
 import moment from 'moment';
 
 
@@ -14,12 +15,14 @@ const List: React.FC = () => {
     const [openDelete, setOpenDelete] = useState(false);
     const [currentItem, setCurrentItem] = useState({});
     const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(0)
+    const [rowsPerPage, setRowsPerPage] = useState(10)
 
     // Get Data 
     useEffect(() => {
         const fetchData = () => {
             setLoading(true)
-            getAllGameCategory().then(res => {
+            getAllCategory().then(res => {
                 const formattedData = res.data.map(item =>
                 ({
                     ...item,
@@ -35,6 +38,15 @@ const List: React.FC = () => {
         fetchData()
     }, []);
 
+    const handleChangePage = (event: unknown, newPage: number) => {
+        setPage(newPage)
+    }
+
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0)
+    }
+
     // Create Method
     const handleOpenCreate = () => {
         setCurrentItem({})
@@ -42,8 +54,8 @@ const List: React.FC = () => {
     }
     const handleCloseCreate = () => setOpenCreate(false)
     const handleSaveCreate = (newData: Object) => {
-        createGameCategory(newData).then(() => {
-            console.log("Create Game Category Successfully")
+        createCategory(newData).then(() => {
+            console.log("Create Category Successfully")
 
         }).catch(err => {
             console.log(err)
@@ -54,7 +66,7 @@ const List: React.FC = () => {
 
     // Edit Method
     const handleOpenEdit = (key: string) => {
-        getGameCategoryById(key).then(res => {
+        getCategoryById(key).then(res => {
             console.log(res.data)
             setCurrentItem(res.data)
             setOpenEdit(true)
@@ -64,7 +76,7 @@ const List: React.FC = () => {
     }
     const handleCloseEdit = () => setOpenEdit(false)
     const handleSaveEdit = (newData: Object) => {
-        updateGameCategory(newData.id, newData.name).then(() => {
+        updateCategory(newData.id, newData.name).then(() => {
             console.log("Update Successfully")
         }).catch(err => {
             console.log(err)
@@ -76,7 +88,7 @@ const List: React.FC = () => {
 
     // Delete Method
     const handleOpenDelete = (key: string) => {
-        getGameCategoryById(key).then(res => {
+        getCategoryById(key).then(res => {
             console.log(res.data)
             setCurrentItem(res.data)
             setOpenDelete(true)
@@ -88,7 +100,7 @@ const List: React.FC = () => {
     const handleCloseDelete = () => setOpenDelete(false)
     const handleSaveDelete = (key: string) => {
         console.log(key)
-        deleteGameCategory(key).then(() => {
+        deleteCategory(key).then(() => {
             console.log("Delete Successfully")
         }).catch (err => {
             console.log(err)
@@ -110,7 +122,7 @@ const List: React.FC = () => {
             <Grid container alignItems="center" justifyContent="space-between">
                 <Grid item className="ms-3 mt-2">
                     <Typography component="h1" variant="h5">
-                        Game Category
+                        Category
                     </Typography>
                 </Grid>
                 <Grid item className="me-2 mt-2">
@@ -129,7 +141,7 @@ const List: React.FC = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data.map((item) => (
+                        {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => (
                             <TableRow key={item.key}>
                                 <TableCell>{item.name}</TableCell>
                                 <TableCell>{moment(item.createdDate).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
@@ -142,6 +154,16 @@ const List: React.FC = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[5, 10]}
+                component="div"
+                count={data.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                sx={{ '& .css-pdct74-MuiTablePagination-selectLabel': { margin: 0 }, '& .css-levciy-MuiTablePagination-displayedRows': { margin: 0 } }}
+            />
             <Create open={openCreate} onClose={handleCloseCreate} onCreate={handleSaveCreate} />
             <Edit open={openEdit} record={currentItem} onClose={handleCloseEdit} onUpdate={handleSaveEdit} />
             <Delete open={openDelete} record={currentItem} onClose={handleCloseDelete} onDelete={handleSaveDelete} />

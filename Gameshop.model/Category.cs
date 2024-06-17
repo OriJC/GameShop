@@ -2,7 +2,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 namespace Gameshop.model
 {
-    public class GameCategory
+    public class Category
     {
 
         [BsonId]

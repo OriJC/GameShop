@@ -26,10 +26,10 @@ const Create: React.FC<ModalFormProps> = ({ open, onClose, onCreate }) => {
 
     return (
         <Dialog open={open} onClose={onClose}>
-            <DialogTitle>Create New Game Category</DialogTitle>
+            <DialogTitle>Create New Category</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Please fill out the form below to create a new Game Category
+                    Please fill out the form below to create a new Category
                 </DialogContentText>
                 <TextField
                     autoFocus

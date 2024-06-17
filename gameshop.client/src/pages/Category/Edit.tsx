@@ -34,10 +34,10 @@ const Edit: React.FC<ModalFormProps> = ({ open, record, onClose, onUpdate }) => 
     };
     return (
         <Dialog open={open} onClose={handleCancel}>
-            <DialogTitle>Update Game Category</DialogTitle>
+            <DialogTitle>Update Category</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Please fill out the form below to update the Game Category
+                    Please fill out the form below to update the Category
                 </DialogContentText>
                 <TextField
                     autoFocus

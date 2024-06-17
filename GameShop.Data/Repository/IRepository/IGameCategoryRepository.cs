@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GameShop.Data.Repository.IRepository
 {
-    public interface IGameCategoryRepository : IRepository<GameCategory>
+    public interface ICategoryRepository : IRepository<Category>
     {
     }
 }
