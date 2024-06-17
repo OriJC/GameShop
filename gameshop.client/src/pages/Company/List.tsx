@@ -11,7 +11,7 @@ import {
     Grid,
     TablePagination
 } from '@mui/material';
-import { getAllCompany, getCompanyById } from '@/api/Company/Company'
+import { getAllCompany } from '@/api/Company/Company'
 import { useState, useEffect } from 'react';
 import Company from '@/models/Company'
 import moment from 'moment';

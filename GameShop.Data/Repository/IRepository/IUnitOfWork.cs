@@ -10,6 +10,7 @@ namespace GameShop.Data.Repository.IRepository
     {
         IGameCategoryRepository GameCategory { get; }
         ICompanyRepository Company { get; }
+        IProductTagRepository ProductTag { get; }
 
         Task<bool> Commit();
     }

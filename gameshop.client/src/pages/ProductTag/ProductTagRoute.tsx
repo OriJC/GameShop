@@ -2,11 +2,8 @@
 import { Routes, Route } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import List from './List';
-import Create from './Create';
-import Edit from './Edit';
-import Delete from './Delete';
 
-const GameCategoryRoute = () => {
+const ProductTagRoute = () => {
     return (
         <Routes>
             <Route path="/" element={<List />} />
@@ -14,4 +11,4 @@ const GameCategoryRoute = () => {
     );
 }
 
-export default GameCategoryRoute;
+export default ProductTagRoute;

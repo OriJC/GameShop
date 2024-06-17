@@ -16,10 +16,13 @@ const AppHeader = () => {
                         Home
                     </Button>
                     <Button color="inherit" component={Link} to="/GameCategory">
-                        GameCategory
+                        Game Category
                     </Button>
                     <Button color="inherit" component={Link} to="/Company">
                         Company
+                    </Button>
+                    <Button color="inherit" component={Link} to="/ProductTag">
+                        Product Tag
                     </Button>
                 </Box>        
             </Toolbar>

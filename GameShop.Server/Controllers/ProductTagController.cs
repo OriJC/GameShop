@@ -7,29 +7,29 @@ namespace GameShop.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    public class GameCategoryController : Controller
+    public class ProductTagController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public GameCategoryController(IUnitOfWork unitOfWork)
+        public ProductTagController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        [HttpGet(Name = "GetAllGameCategory")]
+        [HttpGet(Name = "GetAllProductTag")]
         public async Task<ActionResult> GetAll()
         {
-            var objCategoryList = await _unitOfWork.GameCategory.GetAll();
+            var objCategoryList = await _unitOfWork.ProductTag.GetAll();
             return Ok(objCategoryList);
         }
 
-        [HttpGet("{id}", Name = "GetGameCategoryById")]
+        [HttpGet("{id}", Name = "GetProductTagById")]
         public async Task<ActionResult> GetById(string id)
         {
-            var gameCategory = await _unitOfWork.GameCategory.GetById(id);
-            if (gameCategory != null)
+            var ProductTag = await _unitOfWork.ProductTag.GetById(id);
+            if (ProductTag != null)
             {
-                return Ok(gameCategory);
+                return Ok(ProductTag);
 
             }
             else
@@ -39,20 +39,20 @@ namespace GameShop.Server.Controllers
             
         }
 
-        [HttpPost(Name = "InsertGameCategory")]
+        [HttpPost(Name = "InsertProductTag")]
         public async Task<ActionResult> Insert(string Name)
         {
             try
             {
-                GameCategory newGameCategory = new GameCategory
+                ProductTag newProductTag = new ProductTag
                 {
                     Name = Name,
                     CreatedDate = DateTime.Now
                 };
-                _unitOfWork.GameCategory.Add(newGameCategory);
+                _unitOfWork.ProductTag.Add(newProductTag);
                 await _unitOfWork.Commit();
 
-                return Ok(newGameCategory);
+                return Ok(newProductTag);
         }
             catch(Exception ex)
             {
@@ -65,15 +65,15 @@ namespace GameShop.Server.Controllers
         {
             try
             {
-                GameCategory oldCategory = await _unitOfWork.GameCategory.GetById(id);
-                GameCategory newCategory = new GameCategory
+                ProductTag oldCategory = await _unitOfWork.ProductTag.GetById(id);
+                ProductTag newCategory = new ProductTag
                 {
                     Id = id,
                     Name = name,
                     CreatedDate = oldCategory.CreatedDate
                 };
-                //GameCategory obj = new GameCategory(id, name);
-                _unitOfWork.GameCategory.Update(newCategory);
+                //ProductTag obj = new ProductTag(id, name);
+                _unitOfWork.ProductTag.Update(newCategory);
                 await _unitOfWork.Commit();
 
                 return Ok(new { message = "Update Sucessfully!" });
@@ -89,7 +89,7 @@ namespace GameShop.Server.Controllers
         {
             try
             {
-                _unitOfWork.GameCategory.Remove(id);
+                _unitOfWork.ProductTag.Remove(id);
                 await _unitOfWork.Commit();
 
                 return Ok(new { message = "Delete Sucessfully!" });
