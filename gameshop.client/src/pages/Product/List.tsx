@@ -95,7 +95,6 @@ const List: React.FC = () => {
                                 <TableCell>{moment(item.createdDate).isValid()
                                     ? moment(item.createdDate).format('YYYY-MM-DD HH:mm:ss')
                                     : ''}</TableCell>
-                                <TableCell>{item.address?.city}, {item.address.state}</TableCell>
                                 <TableCell align={'right'} sx={{ paddingRight: '50px' }}>
                                     <Button color="primary" variant="contained" component={Link} sx={{ marginRight:'5px' }} to={`/Product/edit/${item.id}`}>Edit</Button>
                                     <Button color="warning" variant="contained" component={Link} to={`/Product/delete/${item.id}`}>Delete</Button>

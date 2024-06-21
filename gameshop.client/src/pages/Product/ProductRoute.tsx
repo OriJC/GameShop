@@ -7,16 +7,13 @@ import Delete from '@/pages/Company/Delete'
 import Detail from '@/pages/Company/Detail'
 import List from './List';
 
-const CompanyRoute = () => {
+const ProductRoute = () => {
     return (
         <Routes>
             <Route path="/" element={<List />} />
-            <Route path="create" element={<Create />} />
-            <Route path="detail/:companyId" element={<Detail /> } />
-            <Route path="edit/:companyId" element={<Edit />} />
-            <Route path="delete/:companyId" element={<Delete />} />
+
         </Routes>
     );
 }
 
-export default CompanyRoute;
+export default ProductRoute;

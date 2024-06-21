@@ -24,6 +24,9 @@ const AppHeader = () => {
                     <Button color="inherit" component={Link} to="/ProductTag">
                         Product Tag
                     </Button>
+                    <Button color="inherit" component={Link} to="/Product">
+                        Product
+                    </Button>
                 </Box>        
             </Toolbar>
         </AppBar>

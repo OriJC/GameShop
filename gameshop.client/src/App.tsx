@@ -8,6 +8,7 @@ import Home from './pages/Home/Home'
 import CategoryRoute from './pages/Category/CategoryRoute.tsx'
 import CompanyRoute from './pages/Company/CompanyRoute.tsx'
 import ProductTagRoute from "./pages/ProductTag/ProductTagRoute.tsx";
+import ProductRoute from "./pages/Product/ProductRoute.tsx";
 import { Container, Box } from '@mui/material';
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
                         <Route path="/Category/*" element={<CategoryRoute />} />
                         <Route path="/Company/*" element={<CompanyRoute />} />
                         <Route path="/ProductTag/*" element={<ProductTagRoute />} />
+                        <Route path="/Product/*" element={<ProductRoute />} />
                     </Routes>
                 </Box>
             </Container>

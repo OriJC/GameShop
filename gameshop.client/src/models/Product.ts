@@ -1,17 +1,15 @@
-interface Address {
-    state?: string;
-    city?: string;
-    street?: string;
-    zipCode?: string;
-}
-
 interface Product {
     id: string;
     name: string;
-    createdDate?: Date;
-    address?: Address;
-    phoneNumber?: string;
-    email: string;
+    drescription: string;
+    createdDate: Date;
+    listPrice: number;
+    price: number;
+    price50: number;
+    price100: number;
+    companyId: string;
+    categoryId: string;
+    ProductTag: string[];
 }
 
 export default Product;
