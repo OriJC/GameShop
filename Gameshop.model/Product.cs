@@ -40,22 +40,29 @@ namespace Gameshop.model
 
         // Company
         [BsonElement("CompanyId")]
-        [BsonRequired]
         [BsonRepresentation(BsonType.ObjectId)]
         [Display(Name = "Company")]
         public string CompanyId { get; set; }
 
-        [BsonIgnore]
-        public Company Company { get; set; }
+        //[BsonIgnore]
+        //public Company Company { get; set; }
+
+        [BsonElement("CategoryId")]
+        [BsonRequired]
+        [BsonRepresentation(BsonType.ObjectId)]
+        [Display(Name = "Category")]
+        public string CategoryId { get; set; }
+
+        //[BsonIgnore]
+        //public Category Category { get; set; }
 
         [BsonElement("ProductTagsId")]
-        [BsonRequired]
         [BsonRepresentation(BsonType.ObjectId)]
         [Display(Name = "ProductTags")]
         public List<string> ProductTagsIds { get; set; } = new List<string>();
 
-        [BsonIgnore]
-        public List<ProductTag> ProductTags { get; set; } = new List<ProductTag>();
+        //[BsonIgnore]
+        //public List<ProductTag> ProductTags { get; set; } = new List<ProductTag>();
     }
 }
 

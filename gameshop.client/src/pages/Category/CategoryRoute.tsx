@@ -1,7 +1,7 @@
 //import { useEffect } from 'react';
 import { Routes, Route } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import List from './List';
+import List from '@/pages/Category/List';
 
 const CategoryRoute = () => {
     return (

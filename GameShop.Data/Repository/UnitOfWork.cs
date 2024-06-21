@@ -19,11 +19,13 @@ namespace GameShop.Data.Repository
             Category = new CategoryRepository(_mongoContext);
             Company = new CompanyRepository(_mongoContext);
             ProductTag = new ProductTagRepository(_mongoContext);
+            Product = new ProductRepository(_mongoContext);
         }
 
         public ICategoryRepository Category { get; private set; }
         public ICompanyRepository Company { get; private set; }
         public IProductTagRepository ProductTag { get; private set; }
+        public IProductRepository Product {  get; private set; }
 
         public async Task<bool> Commit()
         {

@@ -5,7 +5,7 @@ import Create from '@/pages/Company/Create'
 import Edit from '@/pages/Company/Edit'
 import Delete from '@/pages/Company/Delete'
 import Detail from '@/pages/Company/Detail'
-import List from '@/pages/Company/List';
+import List from './List';
 
 const CompanyRoute = () => {
     return (

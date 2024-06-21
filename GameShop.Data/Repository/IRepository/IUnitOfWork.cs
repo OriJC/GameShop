@@ -11,6 +11,7 @@ namespace GameShop.Data.Repository.IRepository
         ICategoryRepository Category { get; }
         ICompanyRepository Company { get; }
         IProductTagRepository ProductTag { get; }
+        IProductRepository Product { get; }
 
         Task<bool> Commit();
     }
