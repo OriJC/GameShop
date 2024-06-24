@@ -2,11 +2,13 @@
 using GameShop.Data.Repository.IRepository;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace GameShop.Data.Repository
@@ -41,6 +43,26 @@ namespace GameShop.Data.Repository
         {
             var data = await _collection.FindAsync(Builders<T>.Filter.Empty);
             return data.ToList();
+        }
+
+        public virtual async Task<IEnumerable<object>> GetAllByProjectAndFilter(FilterDefinition<T> filter, ProjectionDefinition<BsonDocument> projection)
+        {
+            var bsonCollection = _collection.Database.GetCollection<BsonDocument>(_collection.CollectionNamespace.CollectionName);
+
+            var findOptions = new FindOptions<BsonDocument, BsonDocument> { Projection = projection };
+            var cursor = await bsonCollection.FindAsync(filter.Render(BsonSerializer.SerializerRegistry.GetSerializer<T>(), BsonSerializer.SerializerRegistry), findOptions);
+            var results = await cursor.ToListAsync();
+            var jsonResults = new List<object>();
+            foreach (var document in results)
+            {
+                var dict = document.ToDictionary();
+                if (dict.ContainsKey("_id") && dict["_id"] is ObjectId objectId)
+                {
+                    dict["_id"] = objectId.ToString();
+                }
+                jsonResults.Add(dict);
+            }
+            return jsonResults;
         }
 
         public virtual void Update(T obj)

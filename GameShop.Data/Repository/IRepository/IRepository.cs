@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +13,7 @@ namespace GameShop.Data.Repository.IRepository
         void Add(T obj);
         Task<T> GetById(string id);
         Task<IEnumerable<T>> GetAll();
+        Task<IEnumerable<object>> GetAllByProjectAndFilter(FilterDefinition<T> filter, ProjectionDefinition<BsonDocument> projection);
         void Update(T obj);
         void Remove(string id);
     }
