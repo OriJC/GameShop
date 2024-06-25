@@ -45,6 +45,28 @@ namespace GameShop.Data.Repository
             return data.ToList();
         }
 
+        public virtual async Task<object> GetOneByProjectAndFilter(FilterDefinition<T> filter, ProjectionDefinition<BsonDocument> projection)
+        {
+            var bsonCollection = _collection.Database.GetCollection<BsonDocument>(_collection.CollectionNamespace.CollectionName);
+
+            var findOptions = new FindOptions<BsonDocument> { Projection = projection };
+            var cursor = await bsonCollection.FindAsync(filter.Render(BsonSerializer.SerializerRegistry.GetSerializer<T>(), BsonSerializer.SerializerRegistry), findOptions);
+            var result = await cursor.FirstOrDefaultAsync();
+            if (result == null)
+            {
+                return null;
+            }
+            else
+            {
+                var dict = result.ToDictionary();
+                if (dict.ContainsKey("_id") && dict["_id"] is ObjectId objectId)
+                {
+                    dict["_id"] = objectId.ToString();
+                }
+                return dict;
+            }
+        }
+
         public virtual async Task<IEnumerable<object>> GetAllByProjectAndFilter(FilterDefinition<T> filter, ProjectionDefinition<BsonDocument> projection)
         {
             var bsonCollection = _collection.Database.GetCollection<BsonDocument>(_collection.CollectionNamespace.CollectionName);

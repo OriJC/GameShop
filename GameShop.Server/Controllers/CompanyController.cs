@@ -25,6 +25,18 @@ namespace GameShop.Server.Controllers
             return Ok(objCompanyList);
         }
 
+        [HttpGet(Name = "GetOneCompanyName")]
+        public async Task<ActionResult> GetOneCompanyNameById(string objectId)
+        {
+            var filter = Builders<Company>.Filter.Eq("_id", new ObjectId(objectId));
+            var projection = Builders<BsonDocument>.Projection.Include("Name").Include("_id");
+
+            var objCompanyList = await _unitOfWork.Company.GetOneByProjectAndFilter(filter, projection);
+
+
+            return Ok(objCompanyList);
+        }
+
         [HttpGet(Name = "GetAllCompanyName")]
         public async Task<ActionResult> GetAllCompanyName()
         {

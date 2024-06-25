@@ -13,6 +13,7 @@ namespace GameShop.Data.Repository.IRepository
         void Add(T obj);
         Task<T> GetById(string id);
         Task<IEnumerable<T>> GetAll();
+        Task<object> GetOneByProjectAndFilter(FilterDefinition<T> filter, ProjectionDefinition<BsonDocument> projection);
         Task<IEnumerable<object>> GetAllByProjectAndFilter(FilterDefinition<T> filter, ProjectionDefinition<BsonDocument> projection);
         void Update(T obj);
         void Remove(string id);
