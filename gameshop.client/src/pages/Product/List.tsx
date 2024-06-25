@@ -38,7 +38,6 @@ const List: React.FC = () => {
                     key: item.id,
                 }))
                 setData(formattedData)
-                console.log(formattedData)
             }).catch(err => {
                 setLoading(false)
                 console.log(err)
@@ -49,7 +48,6 @@ const List: React.FC = () => {
                     ...item,
                     key: item._id,
                 }))
-                console.log(formattedData)
                 setCompanyData(formattedData)
             })
             setLoading(false)
@@ -64,6 +62,18 @@ const List: React.FC = () => {
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0)
+    }
+
+    const handleCompanyTableCell = (item) => {
+        const company = companyData.find(company => company._id === item.companyId)
+        if (!company) {
+            return <TableCell></TableCell>
+        }
+        return (
+            <a href={`/company/detail/${company._id}`} target="_blank" rel="noopener noreferrer">
+                {company.Name}
+            </a>     
+        )
     }
 
 
@@ -111,7 +121,7 @@ const List: React.FC = () => {
                                     : ''}
                                 </TableCell>
                                 <TableCell>
-                                    {companyData.find(company => company._id == item.companyId).Name}
+                                    {handleCompanyTableCell(item)}
                                 </TableCell>
                                 <TableCell align={'right'} sx={{ paddingRight: '50px' }}>
                                     <Button color="primary" variant="contained" component={Link} sx={{ marginRight:'5px' }} to={`/Product/edit/${item.id}`}>Edit</Button>
