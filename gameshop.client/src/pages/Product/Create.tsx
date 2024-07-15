@@ -5,6 +5,11 @@ import {
     CardHeader,
     CardContent,
     CardActions,
+    Select,
+    MenuItem,
+    InputLabel,
+    FormControl,
+
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import Product from '@/models/Product';
@@ -13,6 +18,8 @@ import * as Yup from 'yup';
 import { Formik, Form, Field } from 'formik';
 import { TextField as FormikTextField, TextField } from 'formik-material-ui';
 import { createProduct } from '@/api/Product/Product';
+import { getAllCompanyName } from '@/api/Company/Company'
+import { getAllCategory } from '@/api/Category/Category'
 import { useNavigate } from 'react-router-dom';
 
 const Create: React.FC = () => {
@@ -23,6 +30,7 @@ const Create: React.FC = () => {
         id: '',
         name: '',
         description: '',
+        createdDate: '',
         listPrice: 0,
         price: 0,
         price50: 0,
@@ -34,6 +42,7 @@ const Create: React.FC = () => {
 
     const [error, setError] = useState(false);
     const [companyData, setCompanyData] = useState<Company[]>();
+    const [categoryData, setCategoryData] = useState([])
 
     // Validation schema
     let validationSchema = Yup.object().shape({
@@ -43,23 +52,31 @@ const Create: React.FC = () => {
 
     // Submit handler
     const onSubmit = (values: Product) => {
-        createProduct(values).then((res) => {
-            console.log(res.data);
-            setTimeout(() => {
-                navigate('/Product');
-            }, 500);
-        }).catch((error) => {
-            console.log(error);
-        });
+        console.log(values)
+        //createProduct(values).then((res) => {
+        //    console.log(res.data);
+        //    setTimeout(() => {
+        //        navigate('/Product');
+        //    }, 500);
+        //}).catch((error) => {
+        //    console.log(error);
+        //});
     }
 
     useEffect(() => {
         fetchData()
     }, []);
 
-    const fetchData = () => {
-        console.log('checking')
+    const fetchData = async() => {
+        await getAllCompanyName().then(res => {
+            setCompanyData(res.data)
+        })
+        await getAllCategory().then(res => {
+            setCategoryData(res.data)
+            console.log(res.data)
+        })
     }
+
 
     return (
         <Grid container justifyContent="center" spacing={1}>
@@ -71,7 +88,7 @@ const Create: React.FC = () => {
                         validationSchema={validationSchema}
                         onSubmit={onSubmit}
                     >
-                        {({ dirty, isValid, values, handleChange, handleBlur }) => {
+                        {({ dirty, isValid, values, handleChange, handleBlur, setFieldValue }) => {
                             return (
                                 <Form>
                                     <CardContent>
@@ -143,6 +160,33 @@ const Create: React.FC = () => {
                                                     value={values.price100}
                                                     component={TextField}
                                                 />
+                                            </Grid>
+                                        </Grid> 
+                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                            <Grid item md={12}>
+                                                <FormControl fullWidth variant="outlined">
+                                                    <InputLabel id="category-label">Category</InputLabel>
+                                                    <Field
+                                                        label="Category"
+                                                        name="categoryId"
+                                                        value={values.categoryId}
+                                                        component={Select}
+                                                        
+                                                        onChange={(e) => {  
+                                                            let selectedValue = e.target.value
+                                                            setFieldValue('categoryId', selectedValue); // Update Formik state
+                                                            setFormData({ ...formData, categoryId: selectedValue });
+                                                            console.log(formData.categoryId)
+                                                        }}
+                                                    >
+                                                        {categoryData.map((item) => (
+                                                            <MenuItem key={item.id} value={item.id} style={{ textAlign: 'left' }} >
+                                                                {item.name}
+                                                            </MenuItem>
+                                                        ))}
+                                                    
+                                                    </Field>
+                                                </FormControl>
                                             </Grid>
                                         </Grid> 
                                     </CardContent>

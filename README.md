@@ -8,7 +8,7 @@
 * Axios
 * Less.css
 * Material-ui
-* Formil
+* Formik 用於表單的影證
 
 ### Backend
 語言: C#

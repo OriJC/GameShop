@@ -12,7 +12,7 @@ import {
     TablePagination
 } from '@mui/material';
 import { getAllProduct } from '@/api/Product/Product'
-import { GetAllCompanyName } from '@/api/Company/Company'
+import { getAllCompanyName } from '@/api/Company/Company'
 import { useState, useEffect } from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom'
@@ -42,7 +42,7 @@ const List: React.FC = () => {
                 setLoading(false)
                 console.log(err)
             })
-            await GetAllCompanyName().then(res => {
+            await getAllCompanyName().then(res => {
                 const formattedData: Company = res.data.map(item =>
                 ({
                     ...item,

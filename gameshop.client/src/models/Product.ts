@@ -1,7 +1,7 @@
 interface Product {
     id: string;
     name: string;
-    drescription: string;
+    description: string;
     createdDate: Date;
     listPrice: number;
     price: number;
