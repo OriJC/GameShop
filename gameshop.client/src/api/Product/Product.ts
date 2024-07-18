@@ -17,7 +17,7 @@ export const getProductById = (id: string) => {
 
 export const createProduct = (product: Product) => {
     return axios.request({
-        url: 'api/Product/Insert?Name=',
+        url: 'api/Product/Insert',
         data: product,
         method: 'post'
     })

@@ -125,7 +125,7 @@ const List: React.FC = () => {
                         <TableRow>
                             <TableCell>Name</TableCell>
                             <TableCell>Created Time</TableCell>
-                            <TableCell>Actions</TableCell>
+                            <TableCell align={'right'} sx={{ paddingRight: '145px' }}>Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -133,9 +133,9 @@ const List: React.FC = () => {
                             <TableRow key={item.key}>
                                 <TableCell>{item.name}</TableCell>
                                 <TableCell>{moment(item.createdDate).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
-                                <TableCell>
-                                    <Button color="primary" onClick={() => handleOpenEdit(item.key)}>Edit</Button>
-                                    <Button color="primary" onClick={() => handleOpenDelete(item.key)}>Delete</Button>
+                                <TableCell align={'right'} sx={{ paddingRight: '50px' }}>
+                                    <Button color="primary" variant="contained" onClick={() => handleOpenEdit(item.key)}>Edit</Button>
+                                    <Button color="warning" variant="contained" onClick={() => handleOpenDelete(item.key)}>Delete</Button>
                                 </TableCell>
                             </TableRow>
                         ))}

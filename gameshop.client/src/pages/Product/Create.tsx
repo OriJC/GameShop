@@ -9,7 +9,9 @@ import {
     MenuItem,
     InputLabel,
     FormControl,
-
+    OutlinedInput,
+    Box,
+    Chip
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import Product from '@/models/Product';
@@ -20,6 +22,7 @@ import { TextField as FormikTextField, TextField } from 'formik-material-ui';
 import { createProduct } from '@/api/Product/Product';
 import { getAllCompanyName } from '@/api/Company/Company'
 import { getAllCategory } from '@/api/Category/Category'
+import { getAllProductTag } from '@/api/ProductTag/ProductTag'
 import { useNavigate } from 'react-router-dom';
 
 const Create: React.FC = () => {
@@ -30,37 +33,56 @@ const Create: React.FC = () => {
         id: '',
         name: '',
         description: '',
-        createdDate: '',
-        listPrice: 0,
-        price: 0,
-        price50: 0,
-        price100: 0,
+        createdDate: null,
+        listPrice: 1,
+        price: 1,
+        price50: 1,
+        price100: 1,
         companyId: '',
         categoryId: '',
-        ProductTag: []
+        productTagsIds: []
     });
 
     const [error, setError] = useState(false);
-    const [companyData, setCompanyData] = useState<Company[]>();
+    const [companyData, setCompanyData] = useState([]);
     const [categoryData, setCategoryData] = useState([])
+    const [productTagsIdsData, setproductTagsIdsData] = useState([])
 
+    // Style
+    const ITEM_HEIGHT = 48;
+    const ITEM_PADDING_TOP = 8;
+    const MenuProps = {
+        PaperProps: {
+            style: {
+                maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+                width: 250,
+            },
+        },
+    };
     // Validation schema
     let validationSchema = Yup.object().shape({
         name: Yup.string().required("Required"),
-        description: Yup.string().required("Required"),  // Assuming description is required
+        description: Yup.string().required("Required"),// Assuming description is required
+        price: Yup.number().min(1, 'Price must be at least 1').max(100000, 'Price must be at most 100000').required("Required"),
+        listPrice: Yup.number().min(1, 'Price must be at least 1').max(100000, 'Price must be at most 100000').required("Required"),
+        price50: Yup.number().min(1, 'Price must be at least 1').max(100000, 'Price must be at most 100000').required("Required"),
+        price100: Yup.number().min(1, 'Price must be at least 1').max(100000, 'Price must be at most 100000').required("Required"),
+        companyId: Yup.string().required("Required"),
+        categoryId: Yup.string().required("Required"),
+        productTagsIds: Yup.array().min(1, 'At least one tag is required').required('Required'),
     })
 
     // Submit handler
     const onSubmit = (values: Product) => {
         console.log(values)
-        //createProduct(values).then((res) => {
-        //    console.log(res.data);
-        //    setTimeout(() => {
-        //        navigate('/Product');
-        //    }, 500);
-        //}).catch((error) => {
-        //    console.log(error);
-        //});
+        createProduct(values).then((res) => {
+            console.log(res.data);
+            setTimeout(() => {
+                navigate('/Product');
+            }, 500);
+        }).catch((error) => {
+            console.log(error);
+        });
     }
 
     useEffect(() => {
@@ -72,8 +94,10 @@ const Create: React.FC = () => {
             setCompanyData(res.data)
         })
         await getAllCategory().then(res => {
-            setCategoryData(res.data)
-            console.log(res.data)
+            setCategoryData(res.data) 
+        })
+        await getAllProductTag().then(res => {
+            setproductTagsIdsData(res.data)
         })
     }
 
@@ -165,7 +189,7 @@ const Create: React.FC = () => {
                                         <Grid item container spacing={1} justify="center" mb={1}>
                                             <Grid item md={12}>
                                                 <FormControl fullWidth variant="outlined">
-                                                    <InputLabel id="category-label">Category</InputLabel>
+                                                    <InputLabel>Category</InputLabel>
                                                     <Field
                                                         label="Category"
                                                         name="categoryId"
@@ -186,6 +210,76 @@ const Create: React.FC = () => {
                                                         ))}
                                                     
                                                     </Field>
+                                                </FormControl>
+
+                                            </Grid>
+                                        </Grid>
+                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                            <Grid item md={12}>
+                                                <FormControl fullWidth variant="outlined">
+                                                    <InputLabel id="company-label">Company</InputLabel>
+                                                    <Field
+                                                        label="Company"
+                                                        name="companyId"
+                                                        value={values.companyId}
+                                                        component={Select}
+
+                                                        onChange={(e) => {
+                                                            let selectedValue = e.target.value
+                                                            setFieldValue('companyId', selectedValue); // Update Formik state
+                                                            setFormData({ ...formData, companyId: selectedValue });
+                                                            console.log(formData.companyId)
+                                                        }}
+                                                    >
+                                                        {companyData.map((item) => (
+                                                            <MenuItem key={item._id} value={item._id} style={{ textAlign: 'left' }} >
+                                                                {item.Name}
+                                                            </MenuItem>
+                                                        ))}
+
+                                                    </Field>
+                                                </FormControl>
+
+                                            </Grid>
+                                        </Grid> 
+                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                            <Grid item md={12}>
+                                                <FormControl fullWidth variant="outlined">
+                                                    <InputLabel id="productTagLabelId">Tag</InputLabel>
+                                                    <Select
+                                                        labelId="productTagLabelId"
+                                                        id="productTag"
+                                                        multiple
+                                                        name="productTagsIds"
+                                                        value={values.productTagsIds}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value;
+                                                            const updatedValue = typeof value === 'string' ? value.split(',') : value;
+
+                                                            // Update Formik state with IDs
+                                                            setFieldValue(e.target.name, updatedValue);
+                                                            
+                                                        }}
+                                                        input={<OutlinedInput label="Chip" />}
+                                                        renderValue={(selected) => (
+                                                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                                                {selected.map((id) => {
+                                                                    const item = productTagsIdsData.find(tag => tag.id === id);
+                                                                    return <Chip key={id} label={item ? item.name : id} />;
+                                                                })}
+                                                            </Box>
+                                                        )}
+                                                        MenuProps={MenuProps}
+                                                    >
+                                                        {productTagsIdsData.map((item) => (
+                                                            <MenuItem
+                                                                key={item.id}
+                                                                value={item.id}
+                                                            >
+                                                                {item.name}
+                                                            </MenuItem>
+                                                        ))}
+                                                    </Select>
                                                 </FormControl>
                                             </Grid>
                                         </Grid> 
