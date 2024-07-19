@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Create from '@/pages/Product/Create'
 import Edit from '@/pages/Product/Edit'
 //import Delete from '@/pages/Product/Delete'
-//import Detail from '@/pages/Product/Detail'
+import Detail from '@/pages/Product/Detail'
 import List from './List';
 
 const ProductRoute = () => {
@@ -12,6 +12,7 @@ const ProductRoute = () => {
         <Routes>
             <Route path="/" element={<List />} />
             <Route path="create" element={<Create />} />
+            <Route path="detail/:productId" element={<Detail />} />
             <Route path="edit/:productId" element={<Edit />} />
         </Routes>
     );

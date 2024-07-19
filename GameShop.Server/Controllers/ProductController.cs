@@ -39,19 +39,33 @@ namespace GameShop.Server.Controllers
         }
 
         [HttpPost(Name = "InsertProduct")]
-        public async Task<ActionResult> Insert([FromBody]Product Product)
+        public async Task<ActionResult> Insert([FromForm]Product product, IFormFile file)
         {
             try
             {
-                var objProduct = Product;
+                var objProduct = product;
                 if (objProduct.CreatedDate == null)
                 {
-                    Product.CreatedDate = DateTime.Now;
+                    product.CreatedDate = DateTime.Now;
                 }
-                _unitOfWork.Product.Add(Product);
-                await _unitOfWork.Commit();
+                if(file == null || file.Length == 0)
+                {
+                    return BadRequest("No file uploaded");
+                }
 
-                return Ok(Product);
+                using (var stream = new MemoryStream())
+                {
+                    await file.CopyToAsync(stream);
+                    stream.Position = 0;
+
+                    var imageId = await _unitOfWork.Product.UploadImageAsync(stream, file.FileName, file.ContentType);
+                    product.ImageFileId = imageId;
+                    _unitOfWork.Product.Add(product);
+                    await _unitOfWork.Commit();
+
+                    return Ok(product);
+                }
+                
             }
             catch (Exception ex)
             {
@@ -60,12 +74,12 @@ namespace GameShop.Server.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> Update(Product Product)
+        public async Task<ActionResult> Update(Product product)
         {
             try
             {
                 //GameCategory obj = new GameCategory(id, name);
-                _unitOfWork.Product.Update(Product);
+                _unitOfWork.Product.Update(product);
                 await _unitOfWork.Commit();
 
                 return Ok(new { message = "Update Sucessfully!" });

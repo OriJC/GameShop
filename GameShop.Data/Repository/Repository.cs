@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
+using MongoDB.Driver.GridFS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -115,6 +116,28 @@ namespace GameShop.Data.Repository
         public void Dispose()
         {
             _mongoContext?.Dispose();
+        }
+
+        public async Task<ObjectId> UploadImageAsync(Stream imageStream, string fileName, string contentType)
+        {
+            var options = new GridFSUploadOptions
+            {
+                Metadata = new BsonDocument
+                {
+                    { "contentType", contentType }
+                }
+            };
+            var objectId = await _mongoContext._gridFS.UploadFromStreamAsync(fileName, imageStream, options);
+            return objectId;
+        }
+
+        public async Task<byte[]> GetImageAsync(ObjectId imageId)
+        {
+            using(var stream = new MemoryStream())
+            {
+                await _mongoContext._gridFS.DownloadToStreamAsync(imageId, stream);
+                return stream.ToArray();
+            }
         }
     }
 }

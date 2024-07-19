@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
+using MongoDB.Driver.GridFS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace GameShop.Data.Data
         public IMongoDatabase _database { get; set; }
         private readonly IConfiguration _configuration;
         private readonly List<Func<Task>> _commands;
+        public IGridFSBucket _gridFS { get; private set; }
 
 
         public MongoContext(IConfiguration configuration)
@@ -32,6 +34,7 @@ namespace GameShop.Data.Data
             }
             _client = new MongoClient(_configuration["MongoDb:ConnectionString"]);
             _database = _client.GetDatabase(_configuration["MongoDb:DatabaseName"]);
+            _gridFS = new GridFSBucket(_database);
         }
 
         public async Task<int> SaveChanges()

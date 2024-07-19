@@ -17,5 +17,7 @@ namespace GameShop.Data.Repository.IRepository
         Task<IEnumerable<object>> GetAllByProjectAndFilter(FilterDefinition<T> filter, ProjectionDefinition<BsonDocument> projection);
         void Update(T obj);
         void Remove(string id);
+        Task<ObjectId> UploadImageAsync(Stream imageStream, string fileName, string contentType);
+        Task<byte[]> GetImageAsync(ObjectId imageId);
     }
 }
