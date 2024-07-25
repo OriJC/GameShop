@@ -11,7 +11,8 @@ import {
     FormControl,
     OutlinedInput,
     Box,
-    Chip
+    Chip,
+    CircularProgress
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import Product from '@/models/Product';
@@ -24,10 +25,11 @@ import { getAllCompanyName } from '@/api/Company/Company'
 import { getAllCategory } from '@/api/Category/Category'
 import { getAllProductTag } from '@/api/ProductTag/ProductTag'
 import { useNavigate } from 'react-router-dom';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 const Create: React.FC = () => {
     const navigate = useNavigate();
-
     // Initial form data
     const [formData, setFormData] = useState<Product>({
         id: '',
@@ -47,6 +49,9 @@ const Create: React.FC = () => {
     const [companyData, setCompanyData] = useState([]);
     const [categoryData, setCategoryData] = useState([])
     const [productTagsIdsData, setproductTagsIdsData] = useState([])
+    const [coverImage, setCoverImage] = useState(null)
+    const [preview, setPreview] = useState(null)
+    const [loading, setLoading] = useState(true) 
 
     // Style
     const ITEM_HEIGHT = 48;
@@ -67,29 +72,16 @@ const Create: React.FC = () => {
         listPrice: Yup.number().min(1, 'Price must be at least 1').max(100000, 'Price must be at most 100000').required("Required"),
         price50: Yup.number().min(1, 'Price must be at least 1').max(100000, 'Price must be at most 100000').required("Required"),
         price100: Yup.number().min(1, 'Price must be at least 1').max(100000, 'Price must be at most 100000').required("Required"),
-        companyId: Yup.string().required("Required"),
-        categoryId: Yup.string().required("Required"),
-        productTagsIds: Yup.array().min(1, 'At least one tag is required').required('Required'),
+
     })
 
-    // Submit handler
-    const onSubmit = (values: Product) => {
-        console.log(values)
-        createProduct(values).then((res) => {
-            console.log(res.data);
-            setTimeout(() => {
-                navigate('/Product');
-            }, 500);
-        }).catch((error) => {
-            console.log(error);
-        });
-    }
 
     useEffect(() => {
         fetchData()
     }, []);
 
-    const fetchData = async() => {
+    const fetchData = async () => {
+        setLoading(true)
         await getAllCompanyName().then(res => {
             setCompanyData(res.data)
         })
@@ -99,8 +91,68 @@ const Create: React.FC = () => {
         await getAllProductTag().then(res => {
             setproductTagsIdsData(res.data)
         })
+        setLoading(false)
     }
 
+    const handleFileChange = (e) => {
+        const file = event.target.files[0];
+        if (file) {
+            setCoverImage(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // Submit handler
+    const onSubmit = (values: Product) => {
+        if (!coverImage || !values) return
+
+        let productData = new FormData()
+        for (const key in values) {
+            if(values[key] !== '')
+                productData.append(key, values[key])
+        }
+        productData.append('file', coverImage)
+        //productData.append('id', '')
+        //productData.append('createdDate', null)
+        productData.append('ImageFileId', 'string')
+        if (!values.id) {
+            productData.delete('id')
+        }
+        if (!values.createdDate) {
+            productData.delete('createdDate')
+        }
+        if (!values.ProductTagIds) {
+            productData.delete('productTagsIds')
+            values.productTagsIds.forEach((tagId, index) => {
+                productData.append(`productTagsIds[${index}]`, tagId);
+            });
+        }
+        
+
+        //for (const pair of productData.entries()) {
+        //    console.log(pair[0], pair[1]);
+        //}
+        createProduct(productData).then((res) => {
+            console.log(res.data);
+            setTimeout(() => {
+                navigate('/Product');
+            }, 500);
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
+
+    const handleClickBack = () => {
+        navigate(-1)
+    }
+
+    if (loading) {
+        return <CircularProgress />;
+    }
 
     return (
         <Grid container justifyContent="center" spacing={1}>
@@ -228,7 +280,6 @@ const Create: React.FC = () => {
                                                             let selectedValue = e.target.value
                                                             setFieldValue('companyId', selectedValue); // Update Formik state
                                                             setFormData({ ...formData, companyId: selectedValue });
-                                                            console.log(formData.companyId)
                                                         }}
                                                     >
                                                         {companyData.map((item) => (
@@ -283,10 +334,48 @@ const Create: React.FC = () => {
                                                 </FormControl>
                                             </Grid>
                                         </Grid> 
+                                        <Grid container spacing={1} justifyContent="center" mb={1}>
+                                            <Grid item xs={12}>
+                                                <label htmlFor="container-file-input">
+                                                    <input
+                                                        accept="image/*"
+                                                        id="container-file-input"
+                                                        type="file"
+                                                        onChange={handleFileChange}
+                                                        style={{ display: 'none' }}
+                                                        
+                                                    />
+                                                    <Button
+                                                        variant="contained"
+                                                        component="span"
+                                                        startIcon={<CloudUploadIcon />}
+                                                        sx={{ mt: 2 }}
+                                                    >
+                                                        Choose Image
+                                                    </Button>
+                                                </label>
+                                                {preview && (
+                                                    <Box
+                                                        component="img"
+                                                        src={preview}
+                                                        alt="Preview"
+                                                        sx={{ mt: 2, width: '100%', maxWidth: 100, height: 'auto', display: 'flex', justifyContent: 'flex-end', }}
+                                                    />
+                                                )}
+                                            </Grid>
+                                        </Grid>
                                     </CardContent>
                                     <CardActions>
                                         <Button
-                                            disabled={!dirty || !isValid}
+                                            variant="outlined"
+                                            sx={{ ml: 'auto', mb: 1 }}
+                                            onClick={handleClickBack}
+                                            startIcon={<ArrowBackIosNewIcon />}
+                                        >
+                                            Back
+                                        </Button>
+                                        <Button
+                                            sx={{ ml: 1, mr: 1, mb: 1 }}
                                             variant="contained"
                                             color="primary"
                                             type="submit"

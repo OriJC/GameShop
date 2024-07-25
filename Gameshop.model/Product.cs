@@ -63,10 +63,12 @@ namespace Gameshop.model
 
         //[BsonIgnore]
         //public List<ProductTag> ProductTags { get; set; } = new List<ProductTag>();
-    
+
 
         // Id of Cover Image
-        public ObjectId ImageFileId { get; set; }
+        [BsonElement("ImageFileId")]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string ImageFileId { get; set; } = ObjectId.GenerateNewId().ToString();
     }
 }
 

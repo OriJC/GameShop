@@ -11,7 +11,8 @@ import {
     FormControl,
     OutlinedInput,
     Box,
-    Chip
+    Chip,
+    CircularProgress
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import Product from '@/models/Product';
@@ -19,13 +20,16 @@ import Company from '@/models/Company';
 import * as Yup from 'yup';
 import { Formik, Form, Field } from 'formik';
 import { TextField as FormikTextField, TextField } from 'formik-material-ui';
-import { getProductById } from '@/api/Product/Product';
+import { updateProduct, getProductById } from '@/api/Product/Product';
 import { getAllCompanyName } from '@/api/Company/Company'
 import { getAllCategory } from '@/api/Category/Category'
 import { getAllProductTag } from '@/api/ProductTag/ProductTag'
 import { useNavigate, useParams } from 'react-router-dom';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { base64ToFile } from '@/services/base64Service'
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
-const Create: React.FC = () => {
+const Delete: React.FC = () => {
     const navigate = useNavigate();
 
     // Initial form data
@@ -48,6 +52,9 @@ const Create: React.FC = () => {
     const [categoryData, setCategoryData] = useState([])
     const [productTagsIdsData, setproductTagsIdsData] = useState([])
     const routeParams = useParams<{ productId: string }>();
+    const [coverImage, setCoverImage] = useState(null)
+    const [preview, setPreview] = useState(null)
+    const [loading, setLoading] = useState(true)
 
     // Style
     const ITEM_HEIGHT = 48;
@@ -63,12 +70,12 @@ const Create: React.FC = () => {
 
 
 
-
     useEffect(() => {
         fetchData()
     }, []);
 
     const fetchData = async () => {
+        setLoading(true)
         await getAllCompanyName().then(res => {
             setCompanyData(res.data)
         })
@@ -81,17 +88,28 @@ const Create: React.FC = () => {
 
         let id = routeParams.productId
         await getProductById(id).then(res => {
-            console.log('data', res.data)
-            setFormData(res.data)
+            const imageSrc = 'data:' + res.data.contentType + ';base64,' + res.data.image
+            setFormData(res.data.product)
+            setPreview(imageSrc)
+
         })
+        setLoading(false)
     }
 
+
+    const handleClickBack = () => {
+        navigate(-1)
+    }
+
+    if (loading) {
+        return <CircularProgress />;
+    }
 
     return (
         <Grid container justifyContent="center" spacing={1}>
             <Grid item md={12}>
                 <Card>
-                    <CardHeader title="Product's Detail" />
+                    <CardHeader title="Update Product Form" />
                     <Formik
                         enableReinitialize
                         initialValues={formData}
@@ -101,7 +119,7 @@ const Create: React.FC = () => {
                                 <Form>
                                     <CardContent>
                                         <Grid container spacing={1} justifyContent="center" mb={1}>
-                                            <Grid item xs={12}>
+                                            <Grid item xs={6}>
                                                 <Field
                                                     label="Name"
                                                     variant="outlined"
@@ -109,7 +127,42 @@ const Create: React.FC = () => {
                                                     name="name"
                                                     value={values.name}
                                                     component={FormikTextField}
+                                                    disabled
                                                 />
+                                                <Field
+                                                    label="Category"
+                                                    value={categoryData.filter(item => item.id == values.categoryId).map(item=>item.name)}
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    id="categoryData"
+                                                    name="categoryData"
+                                                    component={FormikTextField}
+                                                    disabled
+                                                    sx={{ mt: 2}}
+                                                />
+                                                <Field
+                                                    label="Company"
+                                                    value={companyData.filter(item => item._id == values.companyId).map(item => item.Name)}
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    id="companyData"
+                                                    name="companyData"
+                                                    component={FormikTextField}
+                                                    disabled
+                                                    sx={{ mt: 2 }}
+                                                />
+                                                    
+
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                {preview && (
+                                                    <Box
+                                                        component="img"
+                                                        src={preview}
+                                                        alt="Preview"
+                                                        sx={{ mt: 2, ml: 'auto', mr: 15, mb: 2, width: '100%', maxWidth: 100, maxWidth: 150, height: 'auto', display: 'block'}}
+                                                    />
+                                                )}
                                             </Grid>
                                         </Grid>
                                         <Grid container spacing={1} justifyContent="center" mb={1}>
@@ -136,6 +189,7 @@ const Create: React.FC = () => {
                                                     name="listPrice"
                                                     value={values.listPrice}
                                                     component={TextField}
+                                                    disabled
                                                 />
                                             </Grid>
                                             <Grid item md={6}>
@@ -146,6 +200,7 @@ const Create: React.FC = () => {
                                                     name="price"
                                                     value={values.price}
                                                     component={TextField}
+                                                    disabled
                                                 />
                                             </Grid>
                                         </Grid>
@@ -158,6 +213,7 @@ const Create: React.FC = () => {
                                                     name="price50"
                                                     value={values.price50}
                                                     component={TextField}
+                                                    disabled
                                                 />
                                             </Grid>
                                             <Grid item md={6}>
@@ -168,34 +224,13 @@ const Create: React.FC = () => {
                                                     name="price100"
                                                     value={values.price100}
                                                     component={TextField}
+                                                    disabled
                                                 />
                                             </Grid>
                                         </Grid>
                                         <Grid item container spacing={1} justify="center" mb={1}>
                                             <Grid item md={12}>
-                                                <FormControl fullWidth variant="outlined">
-                                                    <InputLabel>Category</InputLabel>
-                                                    <Field
-                                                        label="Category"
-                                                        name="categoryId"
-                                                        value={values.categoryId}
-                                                        component={Select}
-
-                                                        onChange={(e) => {
-                                                            let selectedValue = e.target.value
-                                                            setFieldValue('categoryId', selectedValue); // Update Formik state
-                                                            setFormData({ ...formData, categoryId: selectedValue });
-                                                            console.log(formData.categoryId)
-                                                        }}
-                                                    >
-                                                        {categoryData.map((item) => (
-                                                            <MenuItem key={item.id} value={item.id} style={{ textAlign: 'left' }} >
-                                                                {item.name}
-                                                            </MenuItem>
-                                                        ))}
-
-                                                    </Field>
-                                                </FormControl>
+                                                
 
                                             </Grid>
                                         </Grid>
@@ -208,13 +243,7 @@ const Create: React.FC = () => {
                                                         name="companyId"
                                                         value={values.companyId}
                                                         component={Select}
-
-                                                        onChange={(e) => {
-                                                            let selectedValue = e.target.value
-                                                            setFieldValue('companyId', selectedValue); // Update Formik state
-                                                            setFormData({ ...formData, companyId: selectedValue });
-                                                            console.log(formData.companyId)
-                                                        }}
+                                                        disabled
                                                     >
                                                         {companyData.map((item) => (
                                                             <MenuItem key={item._id} value={item._id} style={{ textAlign: 'left' }} >
@@ -237,14 +266,9 @@ const Create: React.FC = () => {
                                                         multiple
                                                         name="productTagsIds"
                                                         value={values.productTagsIds}
-                                                        onChange={(e) => {
-                                                            const value = e.target.value;
-                                                            const updatedValue = typeof value === 'string' ? value.split(',') : value;
-
-                                                            // Update Formik state with IDs
-                                                            setFieldValue(e.target.name, updatedValue);
-                                                        }}
+                                                        disabled
                                                         input={<OutlinedInput label="Tag" />}
+
                                                         renderValue={(selected) => (
                                                             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                                                                 {selected.map((id) => {
@@ -266,12 +290,14 @@ const Create: React.FC = () => {
                                     </CardContent>
                                     <CardActions>
                                         <Button
-                                            disabled={!dirty || !isValid}
-                                            variant="contained"
-                                            color="primary"
+                                            variant="outlined"
+
+                                            onClick={handleClickBack}
+                                            startIcon={<ArrowBackIosNewIcon />}
                                         >
                                             Back
                                         </Button>
+
                                     </CardActions>
                                 </Form>
                             );
@@ -283,4 +309,4 @@ const Create: React.FC = () => {
     );
 };
 
-export default Create;
+export default Delete;

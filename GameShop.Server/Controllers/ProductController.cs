@@ -1,6 +1,7 @@
 ﻿using GameShop.Data.Repository.IRepository;
 using Gameshop.model;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace GameShop.Server.Controllers
 {
@@ -25,16 +26,19 @@ namespace GameShop.Server.Controllers
         [HttpGet("{id}", Name = "GetProductById")]
         public async Task<ActionResult> GetById(string id)
         {
-            var Product = await _unitOfWork.Product.GetById(id);
-            if (Product != null)
+            var product = await _unitOfWork.Product.GetById(id);
+            if (product == null)
             {
-                return Ok(Product);
+                return NotFound();
 
             }
-            else
+            var (imageContent, contentType) = await _unitOfWork.Product.GetImageAsync(product.ImageFileId);
+            if(imageContent == null) 
             {
-                return BadRequest(new { message = "Get Game Category Failed" });
+
+                return NotFound("Image not found");
             }
+            return Ok(new {product = product, image = Convert.ToBase64String(imageContent), contentType});
 
         }
 
@@ -74,15 +78,30 @@ namespace GameShop.Server.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> Update(Product product)
+        public async Task<ActionResult> Update([FromForm] Product product, IFormFile file)
         {
             try
             {
-                //GameCategory obj = new GameCategory(id, name);
-                _unitOfWork.Product.Update(product);
-                await _unitOfWork.Commit();
+                var objProduct = product;
+                if (file == null || file.Length == 0)
+                {
+                    return BadRequest("No file uploaded");
+                }
 
-                return Ok(new { message = "Update Sucessfully!" });
+                //GameCategory obj = new GameCategory(id, name);
+                using (var stream = new MemoryStream())
+                {
+                    await file.CopyToAsync(stream);
+                    stream.Position = 0;
+
+                    var imageId = await _unitOfWork.Product.UploadImageAsync(stream, file.FileName, file.ContentType);
+                    product.ImageFileId = imageId;
+                    _unitOfWork.Product.Update(product);
+                    await _unitOfWork.Commit();
+
+                    return Ok(new { message = "Update Sucessfully!" });
+                }
+                
             }
             catch (Exception ex)
             {

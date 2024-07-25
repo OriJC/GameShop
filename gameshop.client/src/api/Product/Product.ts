@@ -15,19 +15,25 @@ export const getProductById = (id: string) => {
     })
 }
 
-export const createProduct = (product: Product) => {
+export const createProduct = (product) => {
     return axios.request({
         url: 'api/Product/Insert',
         data: product,
-        method: 'post'
+        method: 'post',
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
     })
 }
 
-export const updateProduct = (product: Product) => {
+export const updateProduct = (product) => {
     return axios.request({
         url: 'api/Product/Update',
         data: product,
-        method: 'put'
+        method: 'put',
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
     })
 }
 

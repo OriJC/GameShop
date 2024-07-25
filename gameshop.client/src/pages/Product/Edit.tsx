@@ -11,7 +11,8 @@ import {
     FormControl,
     OutlinedInput,
     Box,
-    Chip
+    Chip,
+    CircularProgress
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import Product from '@/models/Product';
@@ -24,8 +25,11 @@ import { getAllCompanyName } from '@/api/Company/Company'
 import { getAllCategory } from '@/api/Category/Category'
 import { getAllProductTag } from '@/api/ProductTag/ProductTag'
 import { useNavigate, useParams } from 'react-router-dom';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { base64ToFile } from '@/services/base64Service'
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
-const Create: React.FC = () => {
+const Edit: React.FC = () => {
     const navigate = useNavigate();
 
     // Initial form data
@@ -48,6 +52,9 @@ const Create: React.FC = () => {
     const [categoryData, setCategoryData] = useState([])
     const [productTagsIdsData, setproductTagsIdsData] = useState([])
     const routeParams = useParams<{ productId: string }>();
+    const [coverImage, setCoverImage] = useState(null)
+    const [preview, setPreview] = useState(null)
+    const [loading, setLoading] = useState(true) 
 
     // Style
     const ITEM_HEIGHT = 48;
@@ -68,15 +75,28 @@ const Create: React.FC = () => {
         listPrice: Yup.number().min(1, 'Price must be at least 1').max(100000, 'Price must be at most 100000').required("Required"),
         price50: Yup.number().min(1, 'Price must be at least 1').max(100000, 'Price must be at most 100000').required("Required"),
         price100: Yup.number().min(1, 'Price must be at least 1').max(100000, 'Price must be at most 100000').required("Required"),
-        companyId: Yup.string().required("Required"),
-        categoryId: Yup.string().required("Required"),
-        productTagsIds: Yup.array().min(1, 'At least one tag is required').required('Required'),
     })
 
     // Submit handler
     const onSubmit = (values: Product) => {
-        console.log(values)
-        updateProduct(values).then((res) => {
+
+        if (!coverImage || !values) return
+
+        let productData = new FormData()
+        for (const key in values) {
+            if (values[key] !== '')
+                productData.append(key, values[key])
+        }
+        productData.append('file', coverImage)
+        //productData.append('id', '')
+        //productData.append('createdDate', null)
+        if (!values.ProductTagIds) {
+            productData.delete('productTagsIds')
+            values.productTagsIds.forEach((tagId, index) => {
+                productData.append(`productTagsIds[${index}]`, tagId);
+            });
+        }
+        updateProduct(productData).then((res) => {
             console.log(res.data);
             setTimeout(() => {
                 navigate('/Product');
@@ -91,6 +111,7 @@ const Create: React.FC = () => {
     }, []);
 
     const fetchData = async () => {
+        setLoading(true)
         await getAllCompanyName().then(res => {
             setCompanyData(res.data)
         })
@@ -103,11 +124,40 @@ const Create: React.FC = () => {
 
         let id = routeParams.productId
         await getProductById(id).then(res => {
-            console.log('data',res.data)
-            setFormData(res.data)
+            const imageSrc = 'data:' + res.data.contentType + ';base64,' + res.data.image
+            setFormData(res.data.product)
+            setPreview(imageSrc)
+            const coverFile = base64ToFile(imageSrc, 'CoverFile')
+            //const dataTransfer = new DataTransfer()
+            //dataTransfer.items.add(coverFile)
+            //const fileInput = document.getElementById('container-file-input');
+            //fileInput.files = dataTransfer.files;
+            setCoverImage(coverFile)
         })
+        setLoading(false)
     }
 
+
+
+    const handleFileChange = (e) => {
+        const file = event.target.files[0];
+        if (file) {
+            setCoverImage(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    const handleClickBack = () => {
+        navigate(-1)
+    }
+
+    if (loading) {
+        return <CircularProgress />;
+    }
 
     return (
         <Grid container justifyContent="center" spacing={1}>
@@ -119,6 +169,8 @@ const Create: React.FC = () => {
                         initialValues={formData}
                         validationSchema={validationSchema}
                         onSubmit={onSubmit}
+                        validateOnChange={true}
+                        validateOnBlur={true}
                     >
                         {({ dirty, isValid, values, handleChange, handleBlur, setFieldValue }) => {
                             return (
@@ -200,16 +252,20 @@ const Create: React.FC = () => {
                                                     <InputLabel>Category</InputLabel>
                                                     <Field
                                                         label="Category"
+                                                        id="categoryId"
                                                         name="categoryId"
                                                         value={values.categoryId}
                                                         component={Select}
-
+                                                        inputProps={{
+                                                            displayEmpty: true
+                                                        }}
                                                         onChange={(e) => {
                                                             let selectedValue = e.target.value
-                                                            setFieldValue('categoryId', selectedValue); // Update Formik state
+                                                            setFieldValue('categoryId', selectedValue);
+                                                            // Update Formik state
                                                             setFormData({ ...formData, categoryId: selectedValue });
-                                                            console.log(formData.categoryId)
                                                         }}
+                                                        onBlur={handleBlur('categoryId')}
                                                     >
                                                         {categoryData.map((item) => (
                                                             <MenuItem key={item.id} value={item.id} style={{ textAlign: 'left' }} >
@@ -236,8 +292,8 @@ const Create: React.FC = () => {
                                                             let selectedValue = e.target.value
                                                             setFieldValue('companyId', selectedValue); // Update Formik state
                                                             setFormData({ ...formData, companyId: selectedValue });
-                                                            console.log(formData.companyId)
                                                         }}
+                                                        onBlur={handleBlur('companyId')}
                                                     >
                                                         {companyData.map((item) => (
                                                             <MenuItem key={item._id} value={item._id} style={{ textAlign: 'left' }} >
@@ -268,6 +324,7 @@ const Create: React.FC = () => {
                                                             setFieldValue(e.target.name, updatedValue);
                                                         }}
                                                         input={<OutlinedInput label="Tag" />}
+
                                                         renderValue={(selected) => (
                                                             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                                                                 {selected.map((id) => {
@@ -286,10 +343,48 @@ const Create: React.FC = () => {
                                                 </FormControl>
                                             </Grid>
                                         </Grid>
+                                        <Grid container spacing={1} justifyContent="center" mb={1}>
+                                            <Grid item xs={12}>
+                                                <label htmlFor="container-file-input">
+                                                    <input
+                                                        accept="image/*"
+                                                        id="container-file-input"
+                                                        type="file"
+                                                        onChange={handleFileChange}
+                                                        style={{ display: 'none' }}
+
+                                                    />
+                                                    <Button
+                                                        variant="contained"
+                                                        component="span"
+                                                        startIcon={<CloudUploadIcon />}
+                                                        sx={{ mt: 2 }}
+                                                    >
+                                                        Choose Image
+                                                    </Button>
+                                                </label>
+                                                {preview && (
+                                                    <Box
+                                                        component="img"
+                                                        src={preview}
+                                                        alt="Preview"
+                                                        sx={{ mt: 2, width: '100%', maxWidth: 100, height: 'auto', display: 'flex', justifyContent: 'flex-end', }}
+                                                    />
+                                                )}
+                                            </Grid>
+                                        </Grid>
                                     </CardContent>
                                     <CardActions>
                                         <Button
-                                            disabled={!dirty || !isValid}
+                                            variant="outlined"
+                                            sx={{ ml: 'auto', mb: 1 }}
+                                            onClick={handleClickBack}
+                                            startIcon={<ArrowBackIosNewIcon />}
+                                        >
+                                            Back
+                                        </Button>
+                                        <Button
+                                            sx={{ ml: 1, mr: 1, mb: 1 }}
                                             variant="contained"
                                             color="primary"
                                             type="submit"
@@ -307,4 +402,4 @@ const Create: React.FC = () => {
     );
 };
 
-export default Create;
+export default Edit;

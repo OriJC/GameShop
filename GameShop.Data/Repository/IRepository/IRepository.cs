@@ -3,6 +3,8 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,7 +19,7 @@ namespace GameShop.Data.Repository.IRepository
         Task<IEnumerable<object>> GetAllByProjectAndFilter(FilterDefinition<T> filter, ProjectionDefinition<BsonDocument> projection);
         void Update(T obj);
         void Remove(string id);
-        Task<ObjectId> UploadImageAsync(Stream imageStream, string fileName, string contentType);
-        Task<byte[]> GetImageAsync(ObjectId imageId);
+        Task<string> UploadImageAsync(Stream imageStream, string fileName, string contentType);
+        Task<(byte[] Content, string ContentType)> GetImageAsync(string imageId);
     }
 }

@@ -118,7 +118,7 @@ namespace GameShop.Data.Repository
             _mongoContext?.Dispose();
         }
 
-        public async Task<ObjectId> UploadImageAsync(Stream imageStream, string fileName, string contentType)
+        public async Task<string> UploadImageAsync(Stream imageStream, string fileName, string contentType)
         {
             var options = new GridFSUploadOptions
             {
@@ -128,15 +128,25 @@ namespace GameShop.Data.Repository
                 }
             };
             var objectId = await _mongoContext._gridFS.UploadFromStreamAsync(fileName, imageStream, options);
-            return objectId;
+            return objectId.ToString();
         }
 
-        public async Task<byte[]> GetImageAsync(ObjectId imageId)
+        public async Task<(byte[] Content, string ContentType)> GetImageAsync(string imageId)
         {
+            if(!ObjectId.TryParse(imageId, out var objectId))
+            {
+                return (null, null);
+            }
+
+            var fileInfo = await _mongoContext._gridFS.Find(Builders<GridFSFileInfo>.Filter.Eq("_id", objectId)).FirstOrDefaultAsync();
+            if(fileInfo == null)
+            {
+                return (null, null);
+            }
             using(var stream = new MemoryStream())
             {
-                await _mongoContext._gridFS.DownloadToStreamAsync(imageId, stream);
-                return stream.ToArray();
+                await _mongoContext._gridFS.DownloadToStreamAsync(objectId, stream);
+                return (stream.ToArray(), fileInfo.Metadata["contentType"].AsString);
             }
         }
     }
