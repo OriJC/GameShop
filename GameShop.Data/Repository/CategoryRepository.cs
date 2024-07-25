@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace GameShop.Data.Repository
 {
-    public class GameCategoryRepository : Repository<GameCategory> , IGameCategoryRepository
+    public class CategoryRepository : Repository<Category> , ICategoryRepository
     {
-        public GameCategoryRepository(IMongoContext context) : base(context) { }
+        public CategoryRepository(IMongoContext context) : base(context) { }
     }
 }

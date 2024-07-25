@@ -15,10 +15,10 @@ const Delete: React.FC<ModalFormProps> = ({ open, record, onClose, onDelete }) =
     }
     return (
         <Dialog open={open} onClose={onClose}>
-            <DialogTitle>Delete Game Category</DialogTitle>
+            <DialogTitle>Delete Product Tag</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Press Delete to delete this Game Category
+                    Press Delete to delete this Product Tag
                 </DialogContentText>
                 <TextField
                     autoFocus

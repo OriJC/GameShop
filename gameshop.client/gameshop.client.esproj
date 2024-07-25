@@ -11,6 +11,5 @@
   <ItemGroup>
     <Folder Include="src\routers\" />
     <Folder Include="src\utils\" />
-    <Folder Include="src\services\" />
   </ItemGroup>
 </Project>

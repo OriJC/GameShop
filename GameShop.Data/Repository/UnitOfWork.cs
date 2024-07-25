@@ -1,4 +1,6 @@
-﻿using GameShop.Data.Data;
+﻿using Amazon.SecurityToken.Model;
+using Gameshop.model;
+using GameShop.Data.Data;
 using GameShop.Data.Repository.IRepository;
 using System;
 using System.Collections.Generic;
@@ -14,12 +16,16 @@ namespace GameShop.Data.Repository
         public UnitOfWork(IMongoContext mongoContext)
         {
             _mongoContext = mongoContext;
-            GameCategory = new GameCategoryRepository(_mongoContext);
+            Category = new CategoryRepository(_mongoContext);
             Company = new CompanyRepository(_mongoContext);
+            ProductTag = new ProductTagRepository(_mongoContext);
+            Product = new ProductRepository(_mongoContext);
         }
 
-        public IGameCategoryRepository GameCategory { get; private set; }
+        public ICategoryRepository Category { get; private set; }
         public ICompanyRepository Company { get; private set; }
+        public IProductTagRepository ProductTag { get; private set; }
+        public IProductRepository Product {  get; private set; }
 
         public async Task<bool> Commit()
         {

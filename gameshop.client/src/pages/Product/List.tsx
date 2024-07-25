@@ -11,35 +11,46 @@ import {
     Grid,
     TablePagination
 } from '@mui/material';
-import { getAllCompany } from '@/api/Company/Company'
+import { getAllProduct } from '@/api/Product/Product'
+import { getAllCompanyName } from '@/api/Company/Company'
 import { useState, useEffect } from 'react';
-import Company from '@/models/Company'
 import moment from 'moment';
 import { Link } from 'react-router-dom'
+import Company from '../../models/Company';
+import Product from '@/models/Product'
 
 
 
 const List: React.FC = () => {
-    const [data, setData] = useState<Company[]>([])
+    const [data, setData] = useState<Product[]>([])
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
+    const [companyData, setCompanyData] = useState<Company>({})
     // Get Data 
     useEffect(() => {
-        const fetchData = () => {
+        const fetchData = async () => {
             setLoading(true)
-            getAllCompany().then(res => {
-                const formattedData: Company[] = res.data.map(item =>
+            await getAllProduct().then(res => {
+                const formattedData: Product[] = res.data.map(item =>
                 ({
                     ...item,
                     key: item.id,
                 }))
                 setData(formattedData)
-                setLoading(false)
             }).catch(err => {
                 setLoading(false)
                 console.log(err)
             })
+            await getAllCompanyName().then(res => {
+                const formattedData: Company = res.data.map(item =>
+                ({
+                    ...item,
+                    key: item._id,
+                }))
+                setCompanyData(formattedData)
+            })
+            setLoading(false)
         }
         fetchData()
     }, []);
@@ -51,6 +62,18 @@ const List: React.FC = () => {
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0)
+    }
+
+    const handleCompanyTableCell = (item) => {
+        const company = companyData.find(company => company._id === item.companyId)
+        if (!company) {
+            return <TableCell></TableCell>
+        }
+        return (
+            <a href={`/company/detail/${company._id}`} target="_blank" rel="noopener noreferrer">
+                {company.Name}
+            </a>     
+        )
     }
 
 
@@ -66,11 +89,11 @@ const List: React.FC = () => {
             <Grid container alignItems="center" justifyContent="space-between">
                 <Grid item className="ms-3 mt-2">
                     <Typography component="h1" variant="h5">
-                        Company
+                        Product
                     </Typography>
                 </Grid>
                 <Grid item className="me-2 mt-2">
-                    <Button component={Link} to="/Company/Create" variant="contained">
+                    <Button component={Link} to="/Product/Create" variant="contained">
                         Create
                     </Button>
                 </Grid>
@@ -81,7 +104,7 @@ const List: React.FC = () => {
                         <TableRow>
                             <TableCell>Name</TableCell>
                             <TableCell>Created Time</TableCell>
-                            <TableCell>City, State</TableCell>
+                            <TableCell>Company</TableCell>
                             <TableCell align={'right'} sx={{ paddingRight: '150px' }} >Actions</TableCell>
                         </TableRow>
                     </TableHead>
@@ -89,16 +112,20 @@ const List: React.FC = () => {
                         {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => (
                             <TableRow key={item.key}>
                                 <TableCell>
-                                    <Link to={`/company/detail/${item.id}`}>
+                                    <Link to={`/Product/detail/${item.id}`}>
                                         {item.name}
-                                    </Link></TableCell>
+                                    </Link>
+                                </TableCell>
                                 <TableCell>{moment(item.createdDate).isValid()
                                     ? moment(item.createdDate).format('YYYY-MM-DD HH:mm:ss')
-                                    : ''}</TableCell>
-                                <TableCell>{item.address?.city}, {item.address.state}</TableCell>
+                                    : ''}
+                                </TableCell>
+                                <TableCell>
+                                    {handleCompanyTableCell(item)}
+                                </TableCell>
                                 <TableCell align={'right'} sx={{ paddingRight: '50px' }}>
-                                    <Button color="primary" variant="contained" component={Link} sx={{ marginRight:'5px' }} to={`/company/edit/${item.id}`}>Edit</Button>
-                                    <Button color="warning" variant="contained" component={Link} to={`/company/delete/${item.id}`}>Delete</Button>
+                                    <Button color="primary" variant="contained" component={Link} sx={{ marginRight:'5px' }} to={`/Product/edit/${item.id}`}>Edit</Button>
+                                    <Button color="warning" variant="contained" component={Link} to={`/Product/delete/${item.id}`}>Delete</Button>
                                 </TableCell>
                             </TableRow>
                         ))}

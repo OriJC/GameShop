@@ -2,11 +2,14 @@
 using GameShop.Data.Repository.IRepository;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
+using MongoDB.Driver.GridFS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace GameShop.Data.Repository
@@ -43,6 +46,48 @@ namespace GameShop.Data.Repository
             return data.ToList();
         }
 
+        public virtual async Task<object> GetOneByProjectAndFilter(FilterDefinition<T> filter, ProjectionDefinition<BsonDocument> projection)
+        {
+            var bsonCollection = _collection.Database.GetCollection<BsonDocument>(_collection.CollectionNamespace.CollectionName);
+
+            var findOptions = new FindOptions<BsonDocument> { Projection = projection };
+            var cursor = await bsonCollection.FindAsync(filter.Render(BsonSerializer.SerializerRegistry.GetSerializer<T>(), BsonSerializer.SerializerRegistry), findOptions);
+            var result = await cursor.FirstOrDefaultAsync();
+            if (result == null)
+            {
+                return null;
+            }
+            else
+            {
+                var dict = result.ToDictionary();
+                if (dict.ContainsKey("_id") && dict["_id"] is ObjectId objectId)
+                {
+                    dict["_id"] = objectId.ToString();
+                }
+                return dict;
+            }
+        }
+
+        public virtual async Task<IEnumerable<object>> GetAllByProjectAndFilter(FilterDefinition<T> filter, ProjectionDefinition<BsonDocument> projection)
+        {
+            var bsonCollection = _collection.Database.GetCollection<BsonDocument>(_collection.CollectionNamespace.CollectionName);
+
+            var findOptions = new FindOptions<BsonDocument, BsonDocument> { Projection = projection };
+            var cursor = await bsonCollection.FindAsync(filter.Render(BsonSerializer.SerializerRegistry.GetSerializer<T>(), BsonSerializer.SerializerRegistry), findOptions);
+            var results = await cursor.ToListAsync();
+            var jsonResults = new List<object>();
+            foreach (var document in results)
+            {
+                var dict = document.ToDictionary();
+                if (dict.ContainsKey("_id") && dict["_id"] is ObjectId objectId)
+                {
+                    dict["_id"] = objectId.ToString();
+                }
+                jsonResults.Add(dict);
+            }
+            return jsonResults;
+        }
+
         public virtual void Update(T obj)
         {
             var idProperty = typeof(T).GetProperty("Id");
@@ -71,6 +116,38 @@ namespace GameShop.Data.Repository
         public void Dispose()
         {
             _mongoContext?.Dispose();
+        }
+
+        public async Task<string> UploadImageAsync(Stream imageStream, string fileName, string contentType)
+        {
+            var options = new GridFSUploadOptions
+            {
+                Metadata = new BsonDocument
+                {
+                    { "contentType", contentType }
+                }
+            };
+            var objectId = await _mongoContext._gridFS.UploadFromStreamAsync(fileName, imageStream, options);
+            return objectId.ToString();
+        }
+
+        public async Task<(byte[] Content, string ContentType)> GetImageAsync(string imageId)
+        {
+            if(!ObjectId.TryParse(imageId, out var objectId))
+            {
+                return (null, null);
+            }
+
+            var fileInfo = await _mongoContext._gridFS.Find(Builders<GridFSFileInfo>.Filter.Eq("_id", objectId)).FirstOrDefaultAsync();
+            if(fileInfo == null)
+            {
+                return (null, null);
+            }
+            using(var stream = new MemoryStream())
+            {
+                await _mongoContext._gridFS.DownloadToStreamAsync(objectId, stream);
+                return (stream.ToArray(), fileInfo.Metadata["contentType"].AsString);
+            }
         }
     }
 }

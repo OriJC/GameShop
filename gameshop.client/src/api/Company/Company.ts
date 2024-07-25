@@ -8,6 +8,13 @@ export const getAllCompany = () => {
     })
 }
 
+export const getAllCompanyName = () => {
+    return axios.request({
+        url: 'api/Company/GetAllCompanyName',
+        method: 'get'
+    })
+}
+
 export const getCompanyById = (Id: string) => {
     return axios.request({
         url: 'api/Company/GetById/'+ Id,

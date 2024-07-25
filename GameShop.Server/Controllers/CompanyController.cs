@@ -1,7 +1,9 @@
 ﻿using Gameshop.model;
 using GameShop.Data.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Text.Json;
 
 namespace GameShop.Server.Controllers
 {
@@ -23,6 +25,30 @@ namespace GameShop.Server.Controllers
             return Ok(objCompanyList);
         }
 
+        [HttpGet(Name = "GetOneCompanyName")]
+        public async Task<ActionResult> GetOneCompanyNameById(string objectId)
+        {
+            var filter = Builders<Company>.Filter.Eq("_id", new ObjectId(objectId));
+            var projection = Builders<BsonDocument>.Projection.Include("Name").Include("_id");
+
+            var objCompanyList = await _unitOfWork.Company.GetOneByProjectAndFilter(filter, projection);
+
+
+            return Ok(objCompanyList);
+        }
+
+        [HttpGet(Name = "GetAllCompanyName")]
+        public async Task<ActionResult> GetAllCompanyName()
+        {
+            var filter = Builders<Company>.Filter.Empty;
+            var projection = Builders<BsonDocument>.Projection.Include("Name").Include("_id");
+            
+            var objCompanyList = await _unitOfWork.Company.GetAllByProjectAndFilter(filter, projection);
+           
+
+            return Ok(objCompanyList);
+        }
+
         [HttpGet("{id}", Name = "GetCompanyById")]
         public async Task<ActionResult> GetById(string id)
         {
@@ -38,6 +64,7 @@ namespace GameShop.Server.Controllers
             }
             
         }
+
 
         [HttpPost(Name = "InsertCompany")]
         public async Task<ActionResult> Insert(Company company)

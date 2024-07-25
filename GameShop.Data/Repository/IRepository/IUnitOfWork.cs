@@ -8,8 +8,10 @@ namespace GameShop.Data.Repository.IRepository
 {
     public interface IUnitOfWork : IDisposable
     {
-        IGameCategoryRepository GameCategory { get; }
+        ICategoryRepository Category { get; }
         ICompanyRepository Company { get; }
+        IProductTagRepository ProductTag { get; }
+        IProductRepository Product { get; }
 
         Task<bool> Commit();
     }

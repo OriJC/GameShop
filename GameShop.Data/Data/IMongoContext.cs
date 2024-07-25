@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using MongoDB.Driver.GridFS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace GameShop.Data.Data
         void AddCommand(Func<Task> command);
         Task<int> SaveChanges();
         IMongoCollection<T> GetCollection<T>(string name);
+        IGridFSBucket _gridFS { get; }
     }
 }
