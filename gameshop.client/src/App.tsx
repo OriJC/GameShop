@@ -14,8 +14,22 @@ import { Container, Box } from '@mui/material';
 function App() {
     return (
         <Router>
-            <AppHeader />
-            <Container maxWidth="lg" style={{ padding: '0' }}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    minHeight: '100vh',
+                    backgroundColor: '#f0f0f0'
+                }}
+            >
+                <AppHeader />
+                <Container maxWidth="lg"
+                    sx={{
+                        flexGrow: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                    }}
+                >
                 <Box sx={{ margin: '24px ', minHeight: 280 }} className="site-layout-content">
                     <Routes>
                         <Route path="/" element={<Home />} />
@@ -25,7 +39,8 @@ function App() {
                         <Route path="/Product/*" element={<ProductRoute />} />
                     </Routes>
                 </Box>
-            </Container>
+                </Container>
+            </Box>
         </Router>
     );
 

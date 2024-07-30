@@ -2,6 +2,8 @@
 using Gameshop.model;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Reflection.Metadata;
+using Gameshop.model.ViewModel;
 
 namespace GameShop.Server.Controllers
 {
@@ -21,6 +23,32 @@ namespace GameShop.Server.Controllers
         {
             var objProductList = await _unitOfWork.Product.GetAll();
             return Ok(objProductList);
+        }
+
+        [HttpGet(Name = "GetAllProductIncludingImage")]
+        public async Task<ActionResult> GetAllIncludingImage()
+        {
+            var objProductList = await _unitOfWork.Product.GetAll();
+            var productList = new List<ProductViewModel>();
+            foreach(var document in objProductList)
+            {
+                try
+                {
+                    var (imageContent, contentType) = await _unitOfWork.Product.GetImageAsync(document.ImageFileId);
+                    ProductViewModel productItem = new ProductViewModel
+                    {
+                        product = document,
+                        imageContentType = contentType,
+                        imageData = imageContent
+                    };
+                    productList.Add(productItem);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+            return Ok(productList);
         }
 
         [HttpGet("{id}", Name = "GetProductById")]

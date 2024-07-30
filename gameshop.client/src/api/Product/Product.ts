@@ -8,6 +8,13 @@ export const getAllProduct = () => {
     })
 }
 
+export const getAllProductIncludingImage = () => {
+    return axios.request({
+        url: 'api/Product/GetAllIncludingImage',
+        method: 'get'
+    })
+}
+
 export const getProductById = (id: string) => {
     return axios.request({
         url: 'api/Product/GetById/'+ id,
