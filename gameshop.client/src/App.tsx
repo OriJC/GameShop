@@ -10,6 +10,7 @@ import CompanyRoute from './pages/Company/CompanyRoute.tsx'
 import ProductTagRoute from "./pages/ProductTag/ProductTagRoute.tsx";
 import ProductRoute from "./pages/Product/ProductRoute.tsx";
 import { Container, Box } from '@mui/material';
+import UserRoute from "./pages/Identity/User/UserRoute.tsx";
 
 function App() {
     return (
@@ -37,6 +38,7 @@ function App() {
                         <Route path="/Company/*" element={<CompanyRoute />} />
                         <Route path="/ProductTag/*" element={<ProductTagRoute />} />
                         <Route path="/Product/*" element={<ProductRoute />} />
+                        <Route path="/User/*" element={<UserRoute />} />
                     </Routes>
                 </Box>
                 </Container>

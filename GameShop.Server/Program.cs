@@ -1,9 +1,17 @@
+using Gameshop.model;
 using GameShop.Data.Data;
 using GameShop.Data.Repository;
 using GameShop.Data.Repository.IRepository;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
+using MongoDB.Driver.Core.Configuration;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetValue<string>("MongoDB:ConnectionString");
+var databaseName = builder.Configuration.GetValue<string>("MongoDB:DatabaseName");
 
 // Add services to the container.
 builder.Services.AddCors(options =>
@@ -16,10 +24,14 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
 {
-    var configuration = serviceProvider.GetService<IConfiguration>();
-    var connectionString = configuration.GetValue<string>("MongoDB:ConnectionString");
     return new MongoClient(connectionString);
 });
+
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
+    .AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>(
+        connectionString, databaseName
+     )
+    .AddDefaultTokenProviders();
 builder.Services.AddScoped<IMongoContext, MongoContext>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 

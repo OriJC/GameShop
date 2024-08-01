@@ -4,7 +4,6 @@ namespace Gameshop.model
 {
     public class Category
     {
-
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
