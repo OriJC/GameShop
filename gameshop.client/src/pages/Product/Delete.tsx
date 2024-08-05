@@ -172,7 +172,7 @@ const Create: React.FC = () => {
                                                         component="img"
                                                         src={preview}
                                                         alt="Preview"
-                                                        sx={{ mt: 2, ml: 'auto', mr: 15, mb: 2, width: '100%', maxWidth: 100, maxWidth: 150, height: 'auto', display: 'block' }}
+                                                        sx={{ mt: 2, ml: 'auto', mr: 15, mb: 2, width: '100%', maxWidth: 150, height: 'auto', display: 'block' }}
                                                     />
                                                 )}
                                             </Grid>

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Text.Json;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace GameShop.Server.Controllers
 {
@@ -52,16 +53,23 @@ namespace GameShop.Server.Controllers
         [HttpGet("{id}", Name = "GetCompanyById")]
         public async Task<ActionResult> GetById(string id)
         {
-            var Company = await _unitOfWork.Company.GetById(id);
-            if (Company != null)
+            try
             {
-                return Ok(Company);
-
+                var Company = await _unitOfWork.Company.GetById(id);
+                if (Company != null)
+                {
+                    return Ok(Company);
+                }
+                else
+                {
+                    return NotFound(new {message = "Cannot find this company!"});
+                }
             }
-            else
+            catch (Exception ex) 
             {
-                return BadRequest(new { message = "Get Game Category Failed"}); 
+                return BadRequest(new { message = ex.Message });
             }
+            
             
         }
 
@@ -92,6 +100,11 @@ namespace GameShop.Server.Controllers
         {
             try
             {
+                var Company = await _unitOfWork.Company.GetById(company.Id);
+                if (Company == null)
+                {
+                    return NotFound(new { message = "Cannot find this company!" });
+                }
                 //GameCategory obj = new GameCategory(id, name);
                 _unitOfWork.Company.Update(company);
                 await _unitOfWork.Commit();
@@ -100,23 +113,28 @@ namespace GameShop.Server.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = "Update failed"});
+                return BadRequest(new { message = "Update company failed"});
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(string id)
+        public async Task<ActionResult> Delete(string Id)
         {
             try
             {
-                _unitOfWork.Company.Remove(id);
+                var Company = await _unitOfWork.Company.GetById(Id);
+                if (Company == null)
+                {
+                    return NotFound(new { message = "Cannot find this Company!" });
+                }
+                _unitOfWork.Company.Remove(Id);
                 await _unitOfWork.Commit();
 
                 return Ok(new { message = "Delete Sucessfully!" });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = "Delete failed" });
+                return BadRequest(new { message = "Delete company failed" });
             }
         }
     }

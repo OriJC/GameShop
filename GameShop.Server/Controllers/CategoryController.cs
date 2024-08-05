@@ -20,23 +20,36 @@ namespace GameShop.Server.Controllers
         public async Task<ActionResult> GetAll()
         {
             var objCategoryList = await _unitOfWork.Category.GetAll();
-            return Ok(objCategoryList);
+            if (objCategoryList != null)
+            {
+                return Ok(objCategoryList);
+            }
+            else
+            {
+                return NotFound(new {message = "Cannot find any category!"});
+            }
         }
 
         [HttpGet("{id}", Name = "GetCategoryById")]
         public async Task<ActionResult> GetById(string id)
         {
-            var Category = await _unitOfWork.Category.GetById(id);
-            if (Category != null)
+            try
             {
-                return Ok(Category);
+                var Category = await _unitOfWork.Category.GetById(id);
+                if (Category != null)
+                {
+                    return Ok(Category);
 
+                }
+                else
+                {
+                    return NotFound(new { message = "Cannot find this category!" });
+                }
             }
-            else
+            catch (Exception ex) 
             {
-                return BadRequest(new { message = "Get Game Category Failed"}); 
+                return BadRequest(new { message = "Get Game Category Failed" });
             }
-            
         }
 
         [HttpPost(Name = "InsertCategory")]
@@ -61,14 +74,18 @@ namespace GameShop.Server.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(string id, string name)
+        public async Task<ActionResult> Update(string Id, string name)
         {
             try
             {
-                Category oldCategory = await _unitOfWork.Category.GetById(id);
+                Category oldCategory = await _unitOfWork.Category.GetById(Id);
+                if (oldCategory == null)
+                {
+                    return NotFound(new {message = "Cannot find this Category!"});
+                }
                 Category newCategory = new Category
                 {
-                    Id = id,
+                    Id = Id,
                     Name = name,
                     CreatedDate = oldCategory.CreatedDate
                 };
@@ -85,11 +102,16 @@ namespace GameShop.Server.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(string id)
+        public async Task<ActionResult> Delete(string Id)
         {
             try
             {
-                _unitOfWork.Category.Remove(id);
+                Category oldCategory = await _unitOfWork.Category.GetById(Id);
+                if (oldCategory == null)
+                {
+                    return NotFound(new { message = "Cannot find this Category!" });
+                }
+                _unitOfWork.Category.Remove(Id);
                 await _unitOfWork.Commit();
 
                 return Ok(new { message = "Delete Sucessfully!" });

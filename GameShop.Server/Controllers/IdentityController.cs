@@ -1,34 +1,40 @@
-﻿using Gameshop.model;
+﻿using Amazon.Runtime.Internal.Util;
+using Gameshop.model;
 using GameShop.Data.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.Json;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Linq.Expressions;
 using System.Xml.Linq;
 
 namespace GameShop.Server.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]
-    public class OperationController : Controller
+    [Route("api/[controller]")]
+    public class IdentityController : Controller
     {
         private UserManager<ApplicationUser> _userManager;
         private RoleManager<ApplicationRole> _roleManager;
-        public OperationController(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
+        public IdentityController(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
         }
 
         // User Section
-        [HttpGet(Name= "GetAllUser")]
+        [HttpGet("User/[action]", Name= "GetAllUser")]
         public async Task<ActionResult> GetAllUser()
         {
             try
             {
                 var users = _userManager.Users.ToList();
+                if(users == null)
+                {
+                    return NotFound(new { message = "Cannot find any user!"}); 
+                }
                 return Ok(users);
             }
             catch (Exception ex) 
@@ -37,7 +43,7 @@ namespace GameShop.Server.Controllers
             }    
         }
 
-        [HttpGet(Name = "GetAllUserNameAndId")]
+        [HttpGet("User/[action]", Name = "GetAllUserNameAndId")]
         public async Task<ActionResult> GetAllUserNameAndId()
         {
             try
@@ -48,6 +54,10 @@ namespace GameShop.Server.Controllers
                     Email = user.Email,
                     UserName = user.UserName
                 }).ToList();
+                if (users == null)
+                {
+                    return NotFound(new { message = "Cannot find any user!" });
+                }
                 return Ok(users);
             }
             catch (Exception ex)
@@ -56,13 +66,17 @@ namespace GameShop.Server.Controllers
             }
         }
 
-        [HttpGet(Name = "GetUserById")]
+        [HttpGet("User/[action]", Name = "GetUserById")]
         public async Task<ActionResult> GetUserById(string id)
         {
             try
             {
-                var users = await _userManager.FindByIdAsync(id);
-                return Ok(users);
+                var user = await _userManager.FindByIdAsync(id);
+                if (user == null)
+                {
+                    return NotFound(new { message = "Cannot find this user!" });
+                }
+                return Ok(user);
             }
             catch (Exception ex) 
             {
@@ -70,7 +84,7 @@ namespace GameShop.Server.Controllers
             }
         }
 
-        [HttpPost(Name = "InsertUser")]
+        [HttpPost("User/[action]", Name = "InsertUser")]
         public async Task<IActionResult> UserCreate(User user)
         {
             if (ModelState.IsValid)
@@ -105,13 +119,13 @@ namespace GameShop.Server.Controllers
             return BadRequest();
         }
 
-        [HttpPut]
+        [HttpPut("User/[action]", Name = "UpdateUser")]
         public async Task<IActionResult> UpdateUser(string id, User data)
         {
             var user = await _userManager.FindByIdAsync(id);
             if(user == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Cannot find this user"});
             }
             user.Email = data.Email;
             user.UserName = data.UserName;
@@ -125,16 +139,36 @@ namespace GameShop.Server.Controllers
             return BadRequest(result.Errors);
         }
 
+        [HttpDelete("User/[action]", Name = "DeleteUser")]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound(new { message = "Cannot find this user" });
+            }
+            var result = await _userManager.DeleteAsync(user);
+
+            if (result.Succeeded)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Errors);
+        }
+
 
         // Role Section 
-
-        [HttpGet(Name = "GetAllRole")]
+        [HttpGet("Role/[action]", Name = "GetAllRole")]
         public async Task<ActionResult> GetAllRole()
         {
             try
             {
-                var users = _roleManager.Roles.ToList();
-                return Ok(users);
+                var roles = _roleManager.Roles.ToList();
+                if (roles == null)
+                {
+                    return NotFound(new { message = "Cannot find any role!"});
+                }
+                return Ok(roles);
             }
             catch (Exception ex)
             {
@@ -142,7 +176,7 @@ namespace GameShop.Server.Controllers
             }
         }
 
-        [HttpGet(Name = "GetAllRoleNameAndId")]
+        [HttpGet("Role/[action]", Name = "GetAllRoleNameAndId")]
         public async Task<ActionResult> GetAllRoleNameAndId()
         {
             try
@@ -152,6 +186,10 @@ namespace GameShop.Server.Controllers
                     Id = role.Id,
                     Name = role.Name,
                 }).ToList();
+                if (roles == null)
+                {
+                    return NotFound(new { message = "Cannot find any role!" });
+                }
                 return Ok(roles);
             }
             catch (Exception ex)
@@ -160,13 +198,17 @@ namespace GameShop.Server.Controllers
             }
         }
 
-        [HttpGet(Name = "GetRoleById")]
+        [HttpGet("Role/[action]", Name = "GetRoleById")]
         public async Task<ActionResult> GetRoleById(string id)
         {
             try
             {
-                var users = await _roleManager.FindByIdAsync(id);
-                return Ok(users);
+                var role = await _roleManager.FindByIdAsync(id);
+                if (role == null)
+                {
+                    return NotFound(new { message = "Cannot find this role!" });
+                }
+                return Ok(role);
             }
             catch (Exception ex)
             {
@@ -174,7 +216,7 @@ namespace GameShop.Server.Controllers
             }
         }
 
-        [HttpPost(Name = "InsertRole")]
+        [HttpPost("Role/[action]", Name = "InsertRole")]
         public async Task<IActionResult> RoleCreate([Required] string name)
         {
             if (ModelState.IsValid)
@@ -182,7 +224,7 @@ namespace GameShop.Server.Controllers
                 try
                 {
 
-                    IdentityResult result = await _roleManager.CreateAsync(new ApplicationRole() { Name = name});
+                    IdentityResult result = await _roleManager.CreateAsync(new ApplicationRole() { Name = name });
 
                     if (result.Succeeded)
                     {
@@ -198,8 +240,8 @@ namespace GameShop.Server.Controllers
 
                         var errorResponse = new
                         {
-                            Message = "Fail to create user",
-                            errors = errors
+                            Message = "Fail to create role",
+                            Errors = errors
                         };
                         return BadRequest(errorResponse);
                     }
@@ -210,6 +252,39 @@ namespace GameShop.Server.Controllers
                 }
             }
             return BadRequest();
+        }
+
+        [HttpPut("Role/[action]", Name = "UpdateRole")]
+        public async Task<IActionResult> UpdateRole(string id, string name)
+        {
+            var role = await _roleManager.FindByIdAsync(id);
+            if (role == null)
+            {
+                return NotFound(new { message = "Cannot find this role" });
+            }
+            role.Name = name;
+            var result = await _roleManager.UpdateAsync(role);
+            if (result.Succeeded)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Errors);
+        }
+
+        [HttpDelete("Role/[action]", Name = "DeleteRole")]
+        public async Task<IActionResult> DeleteRole(string id)
+        {
+            var role = await _roleManager.FindByIdAsync(id);
+            if (role == null)
+            {
+                return NotFound(new { message = "Cannot find this role" });
+            }
+            var result = await _roleManager.DeleteAsync(role);
+            if (result.Succeeded)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Errors);
         }
     }
 }

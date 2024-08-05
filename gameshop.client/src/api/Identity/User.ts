@@ -1,15 +1,23 @@
 import axios from '@/utils/api.request'
 import User from '@/models/User'
+
 export const getAllUser = () => {
     return axios.request({
-        url: 'api/User/GetAll',
+        url: 'api/Identity/User/GetAllUser',
+        method: 'get'
+    })
+}
+
+export const getAllUserNameAndId = () => {
+    return axios.request({
+        url: 'api/Identity/User/GetAllUserNameAndId',
         method: 'get'
     })
 }
 
 export const getUserById = (Id: string) => {
     return axios.request({
-        url: 'api/User/GetById/'+ Id,
+        url: 'api/Identity/User/GetById/'+ Id,
         method: 'get'
     })
 }

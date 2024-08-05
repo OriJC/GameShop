@@ -22,6 +22,10 @@ namespace GameShop.Server.Controllers
         public async Task<ActionResult> GetAll()
         {
             var objProductList = await _unitOfWork.Product.GetAll();
+            if(objProductList == null)
+            {
+                return NotFound(new { message = "Cannot find any product!" });
+            }
             return Ok(objProductList);
         }
 
@@ -29,6 +33,10 @@ namespace GameShop.Server.Controllers
         public async Task<ActionResult> GetAllIncludingImage()
         {
             var objProductList = await _unitOfWork.Product.GetAll();
+            if (objProductList == null)
+            {
+                return NotFound(new { message = "Cannot find any product!"});
+            }
             var productList = new List<ProductViewModel>();
             foreach(var document in objProductList)
             {
@@ -52,12 +60,12 @@ namespace GameShop.Server.Controllers
         }
 
         [HttpGet("{id}", Name = "GetProductById")]
-        public async Task<ActionResult> GetById(string id)
+        public async Task<ActionResult> GetById(string Id)
         {
-            var product = await _unitOfWork.Product.GetById(id);
+            var product = await _unitOfWork.Product.GetById(Id);
             if (product == null)
             {
-                return NotFound();
+                return NotFound(new {message = "Cannot find this product!"});
 
             }
             var (imageContent, contentType) = await _unitOfWork.Product.GetImageAsync(product.ImageFileId);
@@ -115,7 +123,12 @@ namespace GameShop.Server.Controllers
                 {
                     return BadRequest("No file uploaded");
                 }
+                var oldProduct = _unitOfWork.Product.GetById(product.Id);
+                if (oldProduct == null)
+                {
+                    return NotFound(new { message = "Cannot find this product!" });
 
+                }
                 //GameCategory obj = new GameCategory(id, name);
                 using (var stream = new MemoryStream())
                 {
@@ -133,23 +146,29 @@ namespace GameShop.Server.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = "Update failed" });
+                return BadRequest(new { message = ex.Message });
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(string id)
+        public async Task<ActionResult> Delete(string Id)
         {
             try
             {
-                _unitOfWork.Product.Remove(id);
+                var product = _unitOfWork.Product.GetById(Id);
+                if (product == null)
+                {
+                    return NotFound(new { message = "Cannot find this product!" });
+
+                }
+                _unitOfWork.Product.Remove(Id);
                 await _unitOfWork.Commit();
 
                 return Ok(new { message = "Delete Sucessfully!" });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = "Delete failed" });
+                return BadRequest(new { message = ex.Message });
             }
         }
     }
