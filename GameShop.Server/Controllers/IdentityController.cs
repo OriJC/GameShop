@@ -1,14 +1,8 @@
-﻿using Amazon.Runtime.Internal.Util;
-using Gameshop.model;
-using GameShop.Data.Repository.IRepository;
+﻿using Gameshop.model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.Json;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.Linq.Expressions;
-using System.Xml.Linq;
 
 namespace GameShop.Server.Controllers
 {
@@ -85,7 +79,7 @@ namespace GameShop.Server.Controllers
         }
 
         [HttpPost("User/[action]", Name = "InsertUser")]
-        public async Task<IActionResult> UserCreate(User user)
+        public async Task<IActionResult> CreateUser(User user)
         {
             if (ModelState.IsValid)
             {
@@ -217,7 +211,7 @@ namespace GameShop.Server.Controllers
         }
 
         [HttpPost("Role/[action]", Name = "InsertRole")]
-        public async Task<IActionResult> RoleCreate([Required] string name)
+        public async Task<IActionResult> CreateRole([Required] string name)
         {
             if (ModelState.IsValid)
             {

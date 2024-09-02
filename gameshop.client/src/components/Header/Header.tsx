@@ -5,14 +5,19 @@ import './Header.less'
 import { useState } from 'react'
 
 const AppHeader = () => {
-    const [anchorEl, setAnchorEl] = useState(null);
-
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
+    const [anchorEls, setAnchorEls] = useState({});
+    const handleClick = (event, id) => {
+        setAnchorEls((prev) => ({
+            ...prev,
+            [id]: event.currentTarget,
+        }));
     };
 
-    const handleClose = () => {
-        setAnchorEl(null);
+    const handleClose = (id) => {
+        setAnchorEls((prev) => ({
+            ...prev,
+            [id]: null,
+        }));
     };
 
     return (
@@ -26,16 +31,17 @@ const AppHeader = () => {
                         color="inherit"
                         aria-controls="simple-menu"
                         aria-haspopup="true"
-                        onClick={handleClick}
+                        onClick={(e) => handleClick(e, 'Admin')}
                     >
                         Admin Controller
                     </Button>
+                    
                     <Menu
                         id="simple-menu"
-                        anchorEl={anchorEl}
+                        anchorEl={anchorEls['Admin']}
                         keepMounted
-                        open={Boolean(anchorEl)}
-                        onClose={handleClose}
+                        open={Boolean(anchorEls['Admin'])}
+                        onClose={() => handleClose('Admin')}
                     >
                         <MenuItem color="inherit" component={Link} to="/">
                             Home
@@ -53,6 +59,31 @@ const AppHeader = () => {
                             Product
                         </MenuItem>
                     </Menu>  
+
+                    <Button
+                        color="inherit"
+                        aria-controls="simple-menu"
+                        aria-haspopup="true"
+                        onClick={(e) => handleClick(e, 'User')}
+                    >
+                        User Controller
+                    </Button>
+                    <Menu
+                        id="simple-menu"
+                        anchorEl={anchorEls['User']}
+                        keepMounted
+                        open={Boolean(anchorEls['User'])}
+                        onClose={() => handleClose('User')}
+                    >
+                        <MenuItem color="inherit" component={Link} to="/User">
+                            User
+                        </MenuItem>
+                        <MenuItem color="inherit" component={Link} to="/Role">
+                            Role
+                        </MenuItem>
+                    </Menu>
+                    
+
                 </Box>        
             </Toolbar>
         </AppBar>

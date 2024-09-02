@@ -1,16 +1,16 @@
 //import { useEffect } from 'react';
 import { Routes, Route } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Create from './Create'
+import Create from '@/pages/Identity/Role/Create';
 //import Edit from '@/pages/Company/Edit'
 //import Delete from '@/pages/Company/Delete'
 //import Detail from '@/pages/Company/Detail'
-//import List from '@/pages/Company/List';
+import List from '@/pages/Identity/Role/List';
 
-const UserRoute = () => {
+const RoleRoute = () => {
     return (
         <Routes>
-            <Route path="/" element={<Create />} />
+            <Route path="/" element={<List />} />
             {/*<Route path="create" element={<Create />} />*/}
             {/*<Route path="detail/:companyId" element={<Detail /> } />*/}
             {/*<Route path="edit/:companyId" element={<Edit />} />*/}
@@ -19,4 +19,4 @@ const UserRoute = () => {
     );
 }
 
-export default UserRoute;
+export default RoleRoute;

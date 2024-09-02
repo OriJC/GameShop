@@ -17,29 +17,30 @@ export const getAllUserNameAndId = () => {
 
 export const getUserById = (Id: string) => {
     return axios.request({
-        url: 'api/Identity/User/GetById/'+ Id,
+        url: 'api/Identity/User/GetById?id='+ Id,
         method: 'get'
     })
 }
 
 export const createUser = (data: User) => {
     return axios.request({
-        url: 'api/Operation/UserCreate',
+        url: 'api/Identity/User/CreateUser',
         data: data,
         method: 'post'
     })
 }
 
-export const updateUser = (id: string, name: string) => {
+export const updateUser = (id: string, data: User) => {
     return axios.request({
-        url: 'api/User/Update/' + id + '?name=' + name,
+        url: 'api/Identity/User/UpdateUser?id=' + id ,
+        data: data,
         method: 'put'
     })
 }
 
 export const deleteUser = (id: string) => {
     return axios.request({
-        url: 'api/User/Delete/' + id ,
+        url: 'api/identity/User/DeleteUser?id=' + id ,
         method: 'delete'
     })
 }

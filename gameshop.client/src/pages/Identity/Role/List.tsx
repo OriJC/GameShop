@@ -1,8 +1,8 @@
 ﻿import { useState, useEffect } from 'react';
-import { getAllRole, getRoleById, updateRole, createRole, deleteRole } from '@/api/Role/Role'
-import Create from '@/pages/Role/Create'
-//import Edit from '@/pages/Role/Edit'
-//import Delete from '@/pages/Role/Delete'
+import { getAllRole, getRoleById, updateRole, createRole, deleteRole } from '@/api/Identity/Role'
+import Create from '@/pages/Identity/Role/Create'
+import Edit from '@/pages/Identity/Role/Edit'
+import Delete from '@/pages/Identity/Role/Delete'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography, Grid, TablePagination } from '@mui/material';
 import moment from 'moment';
 
@@ -10,8 +10,8 @@ import moment from 'moment';
 const List: React.FC = () => {
     const [data, setData] = useState([])
     const [openCreate, setOpenCreate] = useState(false);
-    //const [openEdit, setOpenEdit] = useState(false);
-    //const [openDelete, setOpenDelete] = useState(false);
+    const [openEdit, setOpenEdit] = useState(false);
+    const [openDelete, setOpenDelete] = useState(false);
     const [currentItem, setCurrentItem] = useState({});
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(0)
@@ -143,8 +143,8 @@ const List: React.FC = () => {
                             <TableRow key={item.key}>
                                 <TableCell>{item.name}</TableCell>
                                 <TableCell>
-                                    {/*<Button color="primary" onClick={() => handleOpenEdit(item.key)}>Edit</Button>*/}
-                                    {/*<Button color="primary" onClick={() => handleOpenDelete(item.key)}>Delete</Button>*/}
+                                    <Button color="primary" onClick={() => handleOpenEdit(item.key)}>Edit</Button>
+                                    <Button color="primary" onClick={() => handleOpenDelete(item.key)}>Delete</Button>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -162,8 +162,8 @@ const List: React.FC = () => {
                 sx={{ '& .css-pdct74-MuiTablePagination-selectLabel': { margin: 0 }, '& .css-levciy-MuiTablePagination-displayedRows': { margin: 0 } }}
             />
             <Create open={openCreate} onClose={handleCloseCreate} onCreate={handleSaveCreate} />
-            {/*<Edit open={openEdit} record={currentItem} onClose={handleCloseEdit} onUpdate={handleSaveEdit} />*/}
-            {/*<Delete open={openDelete} record={currentItem} onClose={handleCloseDelete} onDelete={handleSaveDelete} />*/}
+            <Edit open={openEdit} record={currentItem} onClose={handleCloseEdit} onUpdate={handleSaveEdit} />
+            <Delete open={openDelete} record={currentItem} onClose={handleCloseDelete} onDelete={handleSaveDelete} />
         </Paper>
     )
 }

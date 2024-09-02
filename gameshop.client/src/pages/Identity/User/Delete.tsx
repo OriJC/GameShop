@@ -7,50 +7,31 @@ import {
     CardHeader,
     CardContent,
     CardActions,
-    InputLabel,
-    FormControl,
-    Select,
-    MenuItem,
+    InputLabel
 } from '@mui/material';
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import User from '@/models/User'
 import * as Yup from 'yup'
 import { Formik, Form, Field } from 'formik'
 import { TextField } from 'formik-material-ui'
 import { createUser } from '@/api/Identity/User'
 import { useNavigate } from 'react-router-dom';
-import { getAllRoleIdAndName } from '@/api/Identity/Role'
 
-const Create: React.FC = () => {
+const Delete: React.FC = () => {
     const navigate = useNavigate();
     // initData
     const formData: User = {
         name: '',
         email: '',
-        password: '',
-        roleIds: []
+        password: ''
     }
-    const [roleData, setRoleData] = useState([]);
     const [error, setError] = useState(false)
-    const [loading, setLoading] = useState(true) 
+
     let validationSchema = Yup.object().shape({
         name: Yup.string().required("Required"),
         email: Yup.string().email("Invalid email"),
         password: ''
     })
-
-    useEffect(() => {
-        fetchData()
-    }, []);
-
-    const fetchData = async () => {
-        setLoading(true)
-        await getAllRoleIdAndName().then(res => {
-            setRoleData(res.data)
-            console.log(res.data)
-        })
-        setLoading(false)
-    }
 
     const onSubmit = (values: Company) => {
         createUser(values).then((res) => {
@@ -75,19 +56,19 @@ const Create: React.FC = () => {
                     >
                         {({ dirty, isValid, values }) => {
                             return (
-                            <Form>
-                                <CardContent>
-                                    <Grid item container spacing={1} justify="center" mb={1}>
-                                        <Grid item xs={12}>
-                                            <Field
-                                                label="Name"
-                                                variant="outlined"
-                                                fullWidth
-                                                name="name"
-                                                value={values.name}
-                                                component={TextField}
-                                            />                      
-                                        </Grid>
+                                <Form>
+                                    <CardContent>
+                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                            <Grid item xs={12}>
+                                                <Field
+                                                    label="Name"
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    name="name"
+                                                    value={values.name}
+                                                    component={TextField}
+                                                />
+                                            </Grid>
                                         </Grid>
                                         <Grid item container spacing={1} justify="center" mb={1}>
                                             <Grid item xs={12}>
@@ -113,33 +94,6 @@ const Create: React.FC = () => {
                                                 />
                                             </Grid>
                                         </Grid>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
-                                            <Grid item md={12}>
-                                                <FormControl fullWidth variant="outlined">
-                                                    <InputLabel id="role-label">Role</InputLabel>
-                                                    <Field
-                                                        label="Role"
-                                                        name="roleId"
-                                                        value={values.roldIds}
-                                                        component={Select}
-
-                                                        onChange={(e) => {
-                                                            let selectedValue = e.target.value
-                                                            setFieldValue('roleId', selectedValue); // Update Formik state
-                                                            setFormData({ ...formData, roleId: selectedValue });
-                                                        }}
-                                                    >
-                                                        {roleData.map((item) => (
-                                                            <MenuItem key={item._d} value={item.id} style={{ textAlign: 'left' }} >
-                                                                {item.name}
-                                                            </MenuItem>
-                                                        ))}
-
-                                                    </Field>
-                                                </FormControl>
-
-                                            </Grid>
-                                        </Grid> 
                                     </CardContent>
                                     <CardActions>
                                         <Button
@@ -151,14 +105,14 @@ const Create: React.FC = () => {
                                             Create
                                         </Button>
                                     </CardActions>
-                            </Form>
+                                </Form>
                             )
                         }}
                     </Formik>
                 </Card>
-                
+
             </Grid>
         </Grid>
     )
 }
-export default Create;
+export default Delete;

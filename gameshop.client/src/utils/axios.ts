@@ -19,7 +19,7 @@ class HttpRequest
     interceptors(instance: AxiosInstance, url: string ) {
         instance.interceptors.request.use(async(config)  => {
             this.queue[url] = true
-            //console.log(config)
+            // Add request header here if needed
            return config
         }, error => {
             return Promise.reject(error)
