@@ -20,7 +20,8 @@ class HttpRequest
         instance.interceptors.request.use(async(config)  => {
             this.queue[url] = true
             // Add request header here if needed
-           return config
+
+            return config
         }, error => {
             return Promise.reject(error)
         })

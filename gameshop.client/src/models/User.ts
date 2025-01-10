@@ -1,8 +1,8 @@
 interface User {
-    name: string;
+    userName: string;
     email: string;
     password: string;
-    roldIds: string[];
+    roles: string[];
 }
 
 export default User;

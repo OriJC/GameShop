@@ -9,7 +9,9 @@ namespace Gameshop.model.ViewModel
     public class ProductViewModel
     {
         public Product product { get; set; }
+
         public byte[] imageData { get; set; }
+
         public string imageContentType { get; set; }
     }
 }

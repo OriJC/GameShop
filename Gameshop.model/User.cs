@@ -14,12 +14,18 @@ namespace Gameshop.model
         [BsonRequired]
         [BsonElement("Name")]
         public string UserName { get; set; }
+
         [BsonRequired]
         [EmailAddress(ErrorMessage = "Invalid Email")]
         [BsonElement("Email")]
         public string Email { get; set; }
+
         [BsonRequired]
         [BsonElement("Password")]
         public string Password { get; set; }
+
+        [Timestamp]
+        [BsonElement("RoleId")]
+        public List<string> Roles { get; set; }
     }
 }

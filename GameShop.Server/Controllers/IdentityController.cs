@@ -88,9 +88,25 @@ namespace GameShop.Server.Controllers
                     ApplicationUser appUser = new ApplicationUser
                     {
                         UserName = user.UserName,
-                        Email = user.Email
+                        Email = user.Email,
+                        SecurityStamp = Guid.NewGuid().ToString()
                     };
                     IdentityResult result = await _userManager.CreateAsync(appUser, user.Password);
+                    List<string> roleNames = new List<string>();
+                    foreach (var roleId in user.Roles) 
+                    {
+                        var role = await _roleManager.FindByIdAsync(roleId);
+   
+                       
+                        if (role == null)
+                        {
+                            return BadRequest("Role with ID {roleId} does not exist");
+                        }
+                        roleNames.Add(role.Name);
+                    }
+                    
+                    var roleAssignResult = await _userManager.AddToRolesAsync(appUser, roleNames);
+
 
                     if (result.Succeeded)
                     {
