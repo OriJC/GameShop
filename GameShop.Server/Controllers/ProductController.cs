@@ -59,7 +59,7 @@ namespace GameShop.Server.Controllers
             return Ok(productList);
         }
 
-        [HttpGet("{id}", Name = "GetProductById")]
+        [HttpGet(Name = "GetProductById")]
         public async Task<ActionResult> GetById(string Id)
         {
             var product = await _unitOfWork.Product.GetById(Id);
@@ -123,7 +123,7 @@ namespace GameShop.Server.Controllers
                 {
                     return BadRequest("No file uploaded");
                 }
-                var oldProduct = _unitOfWork.Product.GetById(product.Id);
+                var oldProduct = await _unitOfWork.Product.GetById(product.Id);
                 if (oldProduct == null)
                 {
                     return NotFound(new { message = "Cannot find this product!" });
@@ -143,6 +143,31 @@ namespace GameShop.Server.Controllers
                     return Ok(new { message = "Update Sucessfully!" });
                 }
                 
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> UpdateProductInventory(string ProductId, int inventory)
+        {
+            try
+            {
+
+                var product = await _unitOfWork.Product.GetById(ProductId);
+                if (product == null)
+                {
+                    return NotFound(new { message = "Cannot find this product!" });
+
+                }
+
+                product.Inventory = inventory;
+                _unitOfWork.Product.Update(product);
+                await _unitOfWork.Commit();
+                return Ok(new { message = "Update Sucessfully!" });
+
             }
             catch (Exception ex)
             {

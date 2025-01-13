@@ -44,7 +44,8 @@ const Create: React.FC = () => {
         price100: 1,
         companyId: '',
         categoryId: '',
-        productTagsIds: []
+        productTagsIds: [],
+        inventory: 1
     });
 
     const [error, setError] = useState(false);
@@ -240,12 +241,15 @@ const Create: React.FC = () => {
                                                 />
                                             </Grid>
                                         </Grid>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
-                                            <Grid item md={12}>
-
-
-                                            </Grid>
-                                        </Grid>
+                                        <Field
+                                            label="Inventory"
+                                            variant="outlined"
+                                            fullWidth
+                                            name="inventory"
+                                            value={values.inventory}
+                                            component={FormikTextField}
+                                            disabled
+                                        />
                                         <Grid item container spacing={1} justify="center" mb={1}>
                                             <Grid item md={12}>
                                                 <FormControl fullWidth variant="outlined">

@@ -75,6 +75,10 @@ namespace Gameshop.model
         [BsonElement("ImageFileId")]
         [BsonRepresentation(BsonType.ObjectId)]
         public string ImageFileId { get; set; } = ObjectId.GenerateNewId().ToString();
+
+        [BsonRequired]
+        [BsonElement("Inventory")]
+        public int Inventory { get; set; } = 0;
     }
 }
 

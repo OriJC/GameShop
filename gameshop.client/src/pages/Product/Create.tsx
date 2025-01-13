@@ -42,7 +42,8 @@ const Create: React.FC = () => {
         price100: 1,
         companyId: '',
         categoryId: '',
-        productTagsIds: []
+        productTagsIds: [],
+        inventory: 1
     });
 
     const [error, setError] = useState(false);
@@ -72,7 +73,7 @@ const Create: React.FC = () => {
         listPrice: Yup.number().min(1, 'Price must be at least 1').max(100000, 'Price must be at most 100000').required("Required"),
         price50: Yup.number().min(1, 'Price must be at least 1').max(100000, 'Price must be at most 100000').required("Required"),
         price100: Yup.number().min(1, 'Price must be at least 1').max(100000, 'Price must be at most 100000').required("Required"),
-
+        Inventory: Yup.number().min(1, 'Price must be at least 1').max(1000000, 'Price must be at most 1000000').required("Required"),
     })
 
 
@@ -333,7 +334,19 @@ const Create: React.FC = () => {
                                                     </Select>
                                                 </FormControl>
                                             </Grid>
-                                        </Grid> 
+                                        </Grid>
+                                        <Grid container spacing={1} justifyContent="center" mb={1}>
+                                            <Grid item xs={12}>
+                                                <Field
+                                                    label="Inventory"
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    name="inventory"
+                                                    value={values.inventory}
+                                                    component={FormikTextField}
+                                                />
+                                            </Grid>
+                                        </Grid>
                                         <Grid container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item xs={12}>
                                                 <label htmlFor="container-file-input">
