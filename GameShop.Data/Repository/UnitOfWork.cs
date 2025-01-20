@@ -1,5 +1,4 @@
 ﻿using Amazon.SecurityToken.Model;
-using Gameshop.model;
 using GameShop.Data.Data;
 using GameShop.Data.Repository.IRepository;
 using System;
@@ -21,6 +20,8 @@ namespace GameShop.Data.Repository
             ProductTag = new ProductTagRepository(_mongoContext);
             Product = new ProductRepository(_mongoContext);
             User = new ApplicationUserRepository(_mongoContext);
+            ShoppingCart = new ShoppingCartRepository(_mongoContext);
+            ShoppingCartItem = new ShoppingCartItemRepository(_mongoContext);
         }
 
         public ICategoryRepository Category { get; private set; }
@@ -28,6 +29,8 @@ namespace GameShop.Data.Repository
         public IProductTagRepository ProductTag { get; private set; }
         public IProductRepository Product {  get; private set; }
         public IApplicationUserRepository User { get; private set; }
+        public IShoppingCartRepository ShoppingCart { get; private set; }
+        public IShoppingCartItemRepository ShoppingCartItem { get; private set; }
 
         public async Task<bool> Commit()
         {

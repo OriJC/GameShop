@@ -17,12 +17,19 @@ export const getAllProductIncludingImage = () => {
 
 export const getProductById = (id: string) => {
     return axios.request({
-        url: 'api/Product/GetById/'+ id,
+        url: 'api/Product/GetById?Id='+ id,
         method: 'get'
     })
 }
 
-export const createProduct = (product) => {
+export const getProductNameAndInventoryById = (id: string) => {
+    return axios.request({
+        url: 'api/Product/GetProductNameAndInventoryById?=' + id,
+        method: 'get'
+    })
+}
+
+export const createProduct = (product: Product) => {
     return axios.request({
         url: 'api/Product/Insert',
         data: product,
@@ -33,7 +40,7 @@ export const createProduct = (product) => {
     })
 }
 
-export const updateProduct = (product) => {
+export const updateProduct = (product: Product) => {
     return axios.request({
         url: 'api/Product/Update',
         data: product,

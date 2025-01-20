@@ -1,8 +1,12 @@
 ﻿using Gameshop.model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using ZstdSharp.Unsafe;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace GameShop.Server.Controllers
 {
@@ -10,12 +14,16 @@ namespace GameShop.Server.Controllers
     [Route("api/[controller]")]
     public class IdentityController : Controller
     {
-        private UserManager<ApplicationUser> _userManager;
-        private RoleManager<ApplicationRole> _roleManager;
-        public IdentityController(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly ILogger<IdentityController> _logger;
+        public IdentityController(UserManager<ApplicationUser> userManager, 
+            RoleManager<ApplicationRole> roleManager,
+            ILogger<IdentityController> logger)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _logger = logger;
         }
 
         // User Section
@@ -27,12 +35,15 @@ namespace GameShop.Server.Controllers
                 var users = _userManager.Users.ToList();
                 if(users == null)
                 {
+                    _logger.LogInformation($"Cannot find any user");
                     return NotFound(new { message = "Cannot find any user!"}); 
                 }
+                _logger.LogInformation("Get All user");
                 return Ok(users);
             }
             catch (Exception ex) 
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }    
         }
@@ -50,30 +61,36 @@ namespace GameShop.Server.Controllers
                 }).ToList();
                 if (users == null)
                 {
+                    _logger.LogInformation("Cannot find any user");
                     return NotFound(new { message = "Cannot find any user!" });
                 }
+                _logger.LogInformation("Get All use Name and Id");
                 return Ok(users);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
         }
 
         [HttpGet("User/[action]", Name = "GetUserById")]
-        public async Task<ActionResult> GetUserById(string id)
+        public async Task<ActionResult> GetUserById(string Id)
         {
             try
             {
-                var user = await _userManager.FindByIdAsync(id);
+                var user = await _userManager.FindByIdAsync(Id);
                 if (user == null)
                 {
+                    _logger.LogInformation("Cannot find any user");
                     return NotFound(new { message = "Cannot find this user!" });
                 }
+                _logger.LogInformation($"Get User by Id {Id}");
                 return Ok(user);
             }
             catch (Exception ex) 
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -97,9 +114,9 @@ namespace GameShop.Server.Controllers
                     {
                         var role = await _roleManager.FindByIdAsync(roleId);
    
-                       
                         if (role == null)
                         {
+                            _logger.LogInformation($"Cannot find role with {roleId} when creating user");
                             return BadRequest("Role with ID {roleId} does not exist");
                         }
                         roleNames.Add(role.Name);
@@ -108,62 +125,89 @@ namespace GameShop.Server.Controllers
                     var roleAssignResult = await _userManager.AddToRolesAsync(appUser, roleNames);
 
 
-                    if (result.Succeeded)
+                    if (result.Succeeded && roleAssignResult.Succeeded)
                     {
+                        _logger.LogInformation("Creating user");
                         return Ok(result);
                     }
                     else
                     {
                         foreach (IdentityError error in result.Errors)
                         {
+                            _logger.LogError(error.Description);
                             ModelState.AddModelError("", error.Description);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex.Message);
                     return BadRequest(ex.Message);
                 }
                 
             }
+            _logger.LogError("Model State is not valid");
             return BadRequest();
         }
 
         [HttpPut("User/[action]", Name = "UpdateUser")]
-        public async Task<IActionResult> UpdateUser(string id, User data)
+        public async Task<IActionResult> UpdateUser(string Id, User data)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            if(user == null)
+            try
             {
-                return NotFound(new { message = "Cannot find this user"});
+                var user = await _userManager.FindByIdAsync(Id);
+                if(user == null)
+                {
+                    _logger.LogInformation($"Cannot find user with Id {Id}");
+                    return NotFound(new { message = "Cannot find this user"});
+                }
+                user.Email = data.Email;
+                user.UserName = data.UserName;
+
+                var result = await _userManager.UpdateAsync(user);
+
+                if (result.Succeeded) 
+                {
+                    _logger.LogInformation($"Update user with Id {Id}");
+                    return Ok(result);
+                }
+                _logger.LogError($"fail to update user with Id {Id}, {result.Errors}");
+                return BadRequest(result.Errors);
             }
-            user.Email = data.Email;
-            user.UserName = data.UserName;
-
-            var result = await _userManager.UpdateAsync(user);
-
-            if (result.Succeeded) 
+            catch (Exception ex)
             {
-                return Ok(result);
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
             }
-            return BadRequest(result.Errors);
+            
         }
 
         [HttpDelete("User/[action]", Name = "DeleteUser")]
-        public async Task<IActionResult> DeleteUser(string id)
+        public async Task<IActionResult> DeleteUser(string Id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
+            try
             {
-                return NotFound(new { message = "Cannot find this user" });
-            }
-            var result = await _userManager.DeleteAsync(user);
+                var user = await _userManager.FindByIdAsync(Id);
+                if (user == null)
+                {
+                    _logger.LogInformation($"Cannot find user with {Id}");
+                    return NotFound(new { message = $"Cannot find this user with {Id}" });
+                }
+                var result = await _userManager.DeleteAsync(user);
 
-            if (result.Succeeded)
-            {
-                return Ok(result);
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation($"Delete user with Id {Id}");
+                    return Ok(result);
+                }
+                _logger.LogError($"Fail to delete user as {result.Errors}");
+                return BadRequest(result.Errors);
             }
-            return BadRequest(result.Errors);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
 
 
@@ -176,12 +220,15 @@ namespace GameShop.Server.Controllers
                 var roles = _roleManager.Roles.ToList();
                 if (roles == null)
                 {
+                    _logger.LogInformation($"Cannot find any role");
                     return NotFound(new { message = "Cannot find any role!"});
                 }
+                _logger.LogInformation($"Get all role");
                 return Ok(roles);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -198,30 +245,36 @@ namespace GameShop.Server.Controllers
                 }).ToList();
                 if (roles == null)
                 {
+                    _logger.LogInformation("Cannot find any role");
                     return NotFound(new { message = "Cannot find any role!" });
                 }
+                _logger.LogInformation("Get all role name and id");
                 return Ok(roles);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
         }
 
         [HttpGet("Role/[action]", Name = "GetRoleById")]
-        public async Task<ActionResult> GetRoleById(string id)
+        public async Task<ActionResult> GetRoleById(string Id)
         {
             try
             {
-                var role = await _roleManager.FindByIdAsync(id);
+                var role = await _roleManager.FindByIdAsync(Id);
                 if (role == null)
                 {
+                    _logger.LogInformation($"Cannot find role by Id {Id}");
                     return NotFound(new { message = "Cannot find this role!" });
                 }
+                _logger.LogInformation($"Get role by Id {Id}");
                 return Ok(role);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -238,6 +291,7 @@ namespace GameShop.Server.Controllers
 
                     if (result.Succeeded)
                     {
+                        _logger.LogInformation($"Create role successfully");
                         return Ok(result);
                     }
                     else
@@ -245,6 +299,7 @@ namespace GameShop.Server.Controllers
                         var errors = new List<string>();
                         foreach (IdentityError error in result.Errors)
                         {
+                            _logger.LogError($"Create role failed as {error}");
                             errors.Add(error.Description);
                         }
 
@@ -253,11 +308,13 @@ namespace GameShop.Server.Controllers
                             Message = "Fail to create role",
                             Errors = errors
                         };
+                        _logger.LogError($"Insert role fail as {errors} to db");
                         return BadRequest(errorResponse);
                     }
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex.Message);
                     return BadRequest(ex.Message);
                 }
             }
@@ -265,36 +322,68 @@ namespace GameShop.Server.Controllers
         }
 
         [HttpPut("Role/[action]", Name = "UpdateRole")]
-        public async Task<IActionResult> UpdateRole(string id, string name)
+        public async Task<IActionResult> UpdateRole(string Id, string name)
         {
-            var role = await _roleManager.FindByIdAsync(id);
-            if (role == null)
+            try
             {
-                return NotFound(new { message = "Cannot find this role" });
+                var role = await _roleManager.FindByIdAsync(Id);
+                if (role == null)
+                {
+                    _logger.LogInformation($"Cannot find role with Id {Id}");
+                    return NotFound(new { message = "Cannot find this role" });
+                }
+                role.Name = name;
+                var result = await _roleManager.UpdateAsync(role);
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation($"Update role with Id {Id}");
+                    return Ok(result);
+                }
+                else
+                {
+                    var errors = new List<string>();
+                    _logger.LogError($"Fail to update role as {errors}");
+                    return BadRequest(errors);
+                }
             }
-            role.Name = name;
-            var result = await _roleManager.UpdateAsync(role);
-            if (result.Succeeded)
+            catch (Exception ex)
             {
-                return Ok(result);
-            }
-            return BadRequest(result.Errors);
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }   
         }
 
         [HttpDelete("Role/[action]", Name = "DeleteRole")]
-        public async Task<IActionResult> DeleteRole(string id)
+        public async Task<IActionResult> DeleteRole(string Id)
         {
-            var role = await _roleManager.FindByIdAsync(id);
-            if (role == null)
+            try
             {
-                return NotFound(new { message = "Cannot find this role" });
+                var role = await _roleManager.FindByIdAsync(Id);
+                if (role == null)
+                {
+                    _logger.LogInformation($"Cannot find this role with Id {Id}");
+                    return NotFound(new { message = "Cannot find this role" });
+                }
+                var result = await _roleManager.DeleteAsync(role);
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation($"Delete role with Id {Id}");
+                    return Ok(result);
+                }
+                else
+                {
+                    var errors = new List<string>();
+                    _logger.LogError($"Fail to delete role with Id {Id} as {errors}");
+                    return BadRequest(errors);
+                }
+                
             }
-            var result = await _roleManager.DeleteAsync(role);
-            if (result.Succeeded)
+            catch (Exception ex)
             {
-                return Ok(result);
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
             }
-            return BadRequest(result.Errors);
+
         }
     }
 }

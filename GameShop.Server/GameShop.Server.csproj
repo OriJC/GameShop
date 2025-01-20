@@ -14,6 +14,7 @@
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy">
       <Version>8.*-*</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.1" />
     <PackageReference Include="MongoDB.Bson" Version="2.27.0" />
     <PackageReference Include="MongoDB.Driver.Core" Version="2.27.0" />
     <PackageReference Include="MongoDB.EntityFramework" Version="1.0.2" />

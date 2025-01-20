@@ -9,9 +9,16 @@ using MongoDB.Driver;
 using MongoDB.Driver.Core.Configuration;
 using System;
 
+
+// Add builder to the app
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetValue<string>("MongoDB:ConnectionString");
 var databaseName = builder.Configuration.GetValue<string>("MongoDB:DatabaseName");
+
+// Add Logging to the app
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
 
 // Add services to the container.
 builder.Services.AddCors(options =>
