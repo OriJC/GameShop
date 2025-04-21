@@ -26,7 +26,7 @@ namespace GameShop.Server.Controllers
                 var objCategoryList = await _unitOfWork.ProductTag.GetAll();
                 if(objCategoryList == null)
                 {
-                    _logger.LogInformation($"Cannot find any product tag");
+                    _logger.LogError($"Cannot find any product tag");
                     return NotFound(new { message ="Cannot find any product tag!"});
                 }
                 _logger.LogInformation($"Get all product tag");
@@ -47,7 +47,7 @@ namespace GameShop.Server.Controllers
                 var ProductTag = await _unitOfWork.ProductTag.GetById(Id);
                 if (ProductTag != null)
                 {
-                    _logger.LogInformation($"Get product tag by Id {Id}");
+                    _logger.LogError($"Get product tag by Id {Id}");
                     return Ok(ProductTag);
                 }
                 else
@@ -93,7 +93,7 @@ namespace GameShop.Server.Controllers
                 ProductTag oldCategory = await _unitOfWork.ProductTag.GetById(Id);
                 if (oldCategory == null) 
                 {
-                    _logger.LogInformation($"Cannot find product tag by Id {Id}");
+                    _logger.LogError($"Cannot find product tag by Id {Id}");
                     return NotFound(new {message = "Cannot find this product Tag"});
                 }
                 ProductTag newCategory = new ProductTag
@@ -123,6 +123,7 @@ namespace GameShop.Server.Controllers
                 ProductTag oldCategory = await _unitOfWork.ProductTag.GetById(Id);
                 if (oldCategory == null)
                 {
+                    _logger.LogError($"Cannot find product tag by Id {Id}");    
                     return NotFound(new { message = "Cannot find this product Tag" });
                 }
                 _unitOfWork.ProductTag.Remove(Id);

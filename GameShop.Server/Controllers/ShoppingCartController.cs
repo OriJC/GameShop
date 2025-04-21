@@ -26,7 +26,7 @@ namespace GameShop.Server.Controllers
                 var carts = await _unitOfWork.ShoppingCart.GetAll();
                 if (carts == null)
                 {
-                    _logger.LogInformation("Cannot find Shopping Carts");
+                    _logger.LogError("Cannot find Shopping Carts");
                     return NotFound();
                 }
                 _logger.LogInformation("Returning All Shopping Carts");
@@ -47,7 +47,7 @@ namespace GameShop.Server.Controllers
                 var cart = await _unitOfWork.ShoppingCart.GetById(shoppingCartId);
                 if (cart == null)
                 {
-                    _logger.LogInformation("Cannot find Shopping Cart with this id");
+                    _logger.LogError("Cannot find Shopping Cart with this id");
                     return NotFound();
                 }
                 _logger.LogInformation($"Returning Shopping Cart with this {shoppingCartId}");
@@ -67,7 +67,7 @@ namespace GameShop.Server.Controllers
             {
                 if (shoppingCart == null)
                 {
-                    _logger.LogInformation("Cannot find Shopping Cart with this id");
+                    _logger.LogError("Cannot find Shopping Cart with this id");
                     return NotFound();
                 }
                 shoppingCart.CreatedDate = DateTime.Now;
@@ -121,7 +121,7 @@ namespace GameShop.Server.Controllers
                 var cart = await _unitOfWork.ShoppingCart.GetById(shoppingCartId);
                 if (cart == null)
                 {
-                    _logger.LogInformation("Cannot find Shopping Cart with this id");
+                    _logger.LogError("Cannot find Shopping Cart with this id");
                     return NotFound();
                 }
                 _unitOfWork.ShoppingCart.Remove(cart.Id);
@@ -184,13 +184,13 @@ namespace GameShop.Server.Controllers
                 var cart = await _unitOfWork.ShoppingCart.GetById(shoppingCartId);
                 if (cart == null)
                 {
-                    _logger.LogInformation($"Cannot find Shopping Cart with this {shoppingCartId}");
+                    _logger.LogError($"Cannot find Shopping Cart with this {shoppingCartId}");
                     return NotFound();
                 }
                 cart.RemoveItem(itemId);
 
                 _unitOfWork.ShoppingCart.Update(cart);
-                await _unitOfWork.Commit();
+                await _unitOfWork.Commit(); 
                 _logger.LogInformation($"Removed item from Shopping Cart with this {shoppingCartId}");
                 return Ok(cart);
             }
@@ -209,7 +209,7 @@ namespace GameShop.Server.Controllers
                 var cart = await _unitOfWork.ShoppingCart.GetById(shoppingCartId);
                 if (cart == null)
                 {
-                    _logger.LogInformation($"Cannot find Shopping Cart with this {shoppingCartId}");
+                    _logger.LogError($"Cannot find Shopping Cart with this {shoppingCartId}");
                     return NotFound();
                 }
                 cart.ClearCart();

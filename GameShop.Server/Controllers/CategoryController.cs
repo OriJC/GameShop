@@ -31,7 +31,7 @@ namespace GameShop.Server.Controllers
                 }
                 else
                 {
-                    _logger.LogInformation("Cannot find any Category");
+                    _logger.LogError("Cannot find any Category");
                     return NotFound(new { message = "Cannot find any category!" });
                 }
             }
@@ -56,7 +56,7 @@ namespace GameShop.Server.Controllers
                 }
                 else
                 {
-                    _logger.LogInformation("Cannot find Category with {Id}", Id);
+                    _logger.LogError("Cannot find Category with {Id}", Id);
                     return NotFound(new { message = "Cannot find this category!" });
                 }
             }
@@ -97,7 +97,7 @@ namespace GameShop.Server.Controllers
                 Category oldCategory = await _unitOfWork.Category.GetById(Id);
                 if (oldCategory == null)
                 {
-                    _logger.LogInformation("Cannot find Category with {Id}", Id);
+                    _logger.LogError("Cannot find Category with {Id}", Id);
                     return NotFound(new {message = "Cannot find this Category!"});
                 }
                 Category newCategory = new Category
@@ -127,7 +127,7 @@ namespace GameShop.Server.Controllers
                 Category oldCategory = await _unitOfWork.Category.GetById(Id);
                 if (oldCategory == null)
                 {
-                    _logger.LogInformation("Cannot find Category with {Id}", Id);
+                    _logger.LogError("Cannot find Category with {Id}", Id);
                     return NotFound(new { message = "Cannot find this Category!" });
                 }
                 _unitOfWork.Category.Remove(Id);

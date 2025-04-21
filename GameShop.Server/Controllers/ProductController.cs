@@ -30,7 +30,7 @@ namespace GameShop.Server.Controllers
                 var objProductList = await _unitOfWork.Product.GetAll();
                 if (objProductList == null)
                 {
-                    _logger.LogInformation("Cannot find any product!");
+                    _logger.LogError("Cannot find any product!");
                     return NotFound(new { message = "Cannot find any product!" });
                 }
                 _logger.LogInformation("Returning All Product");
@@ -49,6 +49,7 @@ namespace GameShop.Server.Controllers
             var objProductList = await _unitOfWork.Product.GetAll();
             if (objProductList == null)
             {
+                _logger.LogError("Cannot find any product!");
                 return NotFound(new { message = "Cannot find any product!"});
             }
             var productList = new List<ProductViewModel>();
@@ -81,13 +82,13 @@ namespace GameShop.Server.Controllers
                 var product = await _unitOfWork.Product.GetById(Id);
                 if (product == null)
                 {
-                    _logger.LogInformation("Cannot find product with id {Id}", Id);
+                    _logger.LogError("Cannot find product with id {Id}", Id);
                     return NotFound(new { message = "Cannot find this product!" });
                 }
                 var (imageContent, contentType) = await _unitOfWork.Product.GetImageAsync(product.ImageFileId);
                 if (imageContent == null)
                 {
-                    _logger.LogInformation("Cannot find any image");
+                    _logger.LogError("Cannot find any image");
                     return NotFound("Image not found");
                 }
                 _logger.LogInformation("Get Product by Id {Id}", Id);
@@ -132,7 +133,7 @@ namespace GameShop.Server.Controllers
                 }
                 if(file == null || file.Length == 0)
                 {
-                    _logger.LogInformation("No Image file while inserting product");
+                    _logger.LogError("No Image file while inserting product");
                     return BadRequest("No file uploaded");
                 }
 
@@ -165,13 +166,13 @@ namespace GameShop.Server.Controllers
                 var objProduct = product;
                 if (file == null || file.Length == 0)
                 {
-                    _logger.LogInformation("No Image file while inserting product");
+                    _logger.LogError("No Image file while inserting product");
                     return BadRequest("No file uploaded");
                 }
                 var oldProduct = await _unitOfWork.Product.GetById(product.Id);
                 if (oldProduct == null)
                 {
-                    _logger.LogInformation("Cannot find product with {Id}", product.Id);
+                    _logger.LogError("Cannot find product with {Id}", product.Id);
                     return NotFound(new { message = "Cannot find this product!" });
                 }
                 //GameCategory obj = new GameCategory(id, name);
@@ -204,7 +205,7 @@ namespace GameShop.Server.Controllers
                 var product = await _unitOfWork.Product.GetById(ProductId);
                 if (product == null)
                 {
-                    _logger.LogInformation("Cannot find product with {Id}", ProductId);
+                    _logger.LogError("Cannot find product with {Id}", ProductId);
                     return NotFound(new { message = "Cannot find this product!" });
                 }
 
@@ -229,7 +230,7 @@ namespace GameShop.Server.Controllers
                 var product = _unitOfWork.Product.GetById(Id);
                 if (product == null)
                 {
-                    _logger.LogInformation("Cannot find this product with {Id}", Id);
+                    _logger.LogError("Cannot find this product with {Id}", Id);
                     return NotFound(new { message = "Cannot find this product!" });
                 }
                 _unitOfWork.Product.Remove(Id);

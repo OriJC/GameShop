@@ -35,7 +35,7 @@ namespace GameShop.Server.Controllers
                 var users = _userManager.Users.ToList();
                 if(users == null)
                 {
-                    _logger.LogInformation($"Cannot find any user");
+                    _logger.LogError($"Cannot find any user");
                     return NotFound(new { message = "Cannot find any user!"}); 
                 }
                 _logger.LogInformation("Get All user");
@@ -61,7 +61,7 @@ namespace GameShop.Server.Controllers
                 }).ToList();
                 if (users == null)
                 {
-                    _logger.LogInformation("Cannot find any user");
+                    _logger.LogError("Cannot find any user");
                     return NotFound(new { message = "Cannot find any user!" });
                 }
                 _logger.LogInformation("Get All use Name and Id");
@@ -82,7 +82,7 @@ namespace GameShop.Server.Controllers
                 var user = await _userManager.FindByIdAsync(Id);
                 if (user == null)
                 {
-                    _logger.LogInformation("Cannot find any user");
+                    _logger.LogError("Cannot find any user");
                     return NotFound(new { message = "Cannot find this user!" });
                 }
                 _logger.LogInformation($"Get User by Id {Id}");
@@ -116,7 +116,7 @@ namespace GameShop.Server.Controllers
    
                         if (role == null)
                         {
-                            _logger.LogInformation($"Cannot find role with {roleId} when creating user");
+                            _logger.LogError($"Cannot find role with {roleId} when creating user");
                             return BadRequest("Role with ID {roleId} does not exist");
                         }
                         roleNames.Add(role.Name);
@@ -158,7 +158,7 @@ namespace GameShop.Server.Controllers
                 var user = await _userManager.FindByIdAsync(Id);
                 if(user == null)
                 {
-                    _logger.LogInformation($"Cannot find user with Id {Id}");
+                    _logger.LogError($"Cannot find user with Id {Id}");
                     return NotFound(new { message = "Cannot find this user"});
                 }
                 user.Email = data.Email;
@@ -190,7 +190,7 @@ namespace GameShop.Server.Controllers
                 var user = await _userManager.FindByIdAsync(Id);
                 if (user == null)
                 {
-                    _logger.LogInformation($"Cannot find user with {Id}");
+                    _logger.LogError($"Cannot find user with {Id}");
                     return NotFound(new { message = $"Cannot find this user with {Id}" });
                 }
                 var result = await _userManager.DeleteAsync(user);
@@ -220,7 +220,7 @@ namespace GameShop.Server.Controllers
                 var roles = _roleManager.Roles.ToList();
                 if (roles == null)
                 {
-                    _logger.LogInformation($"Cannot find any role");
+                    _logger.LogError($"Cannot find any role");
                     return NotFound(new { message = "Cannot find any role!"});
                 }
                 _logger.LogInformation($"Get all role");
@@ -245,7 +245,7 @@ namespace GameShop.Server.Controllers
                 }).ToList();
                 if (roles == null)
                 {
-                    _logger.LogInformation("Cannot find any role");
+                    _logger.LogError("Cannot find any role");
                     return NotFound(new { message = "Cannot find any role!" });
                 }
                 _logger.LogInformation("Get all role name and id");
@@ -266,7 +266,7 @@ namespace GameShop.Server.Controllers
                 var role = await _roleManager.FindByIdAsync(Id);
                 if (role == null)
                 {
-                    _logger.LogInformation($"Cannot find role by Id {Id}");
+                    _logger.LogError($"Cannot find role by Id {Id}");
                     return NotFound(new { message = "Cannot find this role!" });
                 }
                 _logger.LogInformation($"Get role by Id {Id}");
@@ -329,7 +329,7 @@ namespace GameShop.Server.Controllers
                 var role = await _roleManager.FindByIdAsync(Id);
                 if (role == null)
                 {
-                    _logger.LogInformation($"Cannot find role with Id {Id}");
+                    _logger.LogError($"Cannot find role with Id {Id}");
                     return NotFound(new { message = "Cannot find this role" });
                 }
                 role.Name = name;
@@ -361,7 +361,7 @@ namespace GameShop.Server.Controllers
                 var role = await _roleManager.FindByIdAsync(Id);
                 if (role == null)
                 {
-                    _logger.LogInformation($"Cannot find this role with Id {Id}");
+                    _logger.LogError($"Cannot find this role with Id {Id}");
                     return NotFound(new { message = "Cannot find this role" });
                 }
                 var result = await _roleManager.DeleteAsync(role);

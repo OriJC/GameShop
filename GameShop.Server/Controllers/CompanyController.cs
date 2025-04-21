@@ -87,7 +87,7 @@ namespace GameShop.Server.Controllers
                 }
                 else
                 {
-                    _logger.LogInformation($"Cannot find company with Id {Id}");
+                    _logger.LogError($"Cannot find company with Id {Id}");
                     return NotFound(new {message = "Cannot find this company!"});
                 }
             }
@@ -128,7 +128,7 @@ namespace GameShop.Server.Controllers
                 var Company = await _unitOfWork.Company.GetById(company.Id);
                 if (Company == null)
                 {
-                    _logger.LogInformation($"Cannot find Company Name By {company.Id}");
+                    _logger.LogError($"Cannot find Company Name By {company.Id}");
                     return NotFound(new { message = "Cannot find this company!" });
                 }
                 //GameCategory obj = new GameCategory(id, name);
@@ -152,7 +152,7 @@ namespace GameShop.Server.Controllers
                 var Company = await _unitOfWork.Company.GetById(Id);
                 if (Company == null)
                 {
-                    _logger.LogInformation($"Cannot find Company By Id {Id}");
+                    _logger.LogError($"Cannot find Company By Id {Id}");
                     return NotFound(new { message = "Cannot find this Company!" });
                 }
                 _unitOfWork.Company.Remove(Id);
