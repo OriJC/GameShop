@@ -22,9 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\gameshop.client\gameshop.client.esproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\GameShop.Data\GameShop.Data.csproj" />
     <ProjectReference Include="..\Gameshop.model\Gameshop.model.csproj" />
   </ItemGroup>

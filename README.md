@@ -12,7 +12,7 @@
 
 ### Backend
 語言: C#
-* .Net 8.0 with MVC
+* .Net 8.0
 * Mongodb with C# drive 
 * Mongodb file storage(GridFs)
 * MongoContext

@@ -27,5 +27,7 @@ namespace Gameshop.model
         [Timestamp]
         [BsonElement("RoleId")]
         public List<string> Roles { get; set; }
+
+
     }
 }

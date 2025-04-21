@@ -15,15 +15,18 @@ namespace Gameshop.model
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
 
+        [BsonRequired]
         [BsonElement("ShoppingCartId")]
-        public string? ShoppingCartId { get; set; }
+        public string ShoppingCartId { get; set; }
 
+        [BsonRequired]
         [BsonElement("CreatedDate")]
-        public DateTime? CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
 
         [BsonElement("ProductId")]
         public string? ProductId { get; set; }
 
+        [BsonRequired]
         [BsonElement("Product")]
         public Product Product { get; set; }
 
