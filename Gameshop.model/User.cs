@@ -11,6 +11,7 @@ namespace Gameshop.model
 {
     public class User
     {
+
         [BsonRequired]
         [BsonElement("Name")]
         public string UserName { get; set; }

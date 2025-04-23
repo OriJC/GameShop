@@ -23,9 +23,6 @@ namespace Gameshop.model
         [BsonElement("CreatedDate")]
         public DateTime CreatedDate { get; set; }
 
-        [BsonElement("ProductId")]
-        public string? ProductId { get; set; }
-
         [BsonRequired]
         [BsonElement("Product")]
         public Product Product { get; set; }

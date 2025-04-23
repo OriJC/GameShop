@@ -156,7 +156,6 @@ namespace GameShop.Server.Controllers
                 ShoppingCartItem shoppingCartItem = new ShoppingCartItem()
                 {
                     ShoppingCartId = shoppingCartId,
-                    ProductId = productId,
                     Product = product,
                     Quantity = Quantity,                
                     CreatedDate = DateTime.Now

@@ -39,6 +39,7 @@ namespace GameShop.Server.Controllers
                     return NotFound(new { message = "Cannot find any user!"}); 
                 }
                 _logger.LogInformation("Get All user");
+                List<User> result = users.Select(u => new User { })
                 return Ok(users);
             }
             catch (Exception ex) 
@@ -117,7 +118,7 @@ namespace GameShop.Server.Controllers
                         if (role == null)
                         {
                             _logger.LogError($"Cannot find role with {roleId} when creating user");
-                            return BadRequest("Role with ID {roleId} does not exist");
+                            return BadRequest($"Role with ID {roleId} does not exist");
                         }
                         roleNames.Add(role.Name);
                     }

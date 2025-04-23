@@ -1,10 +1,12 @@
 ﻿using Gameshop.model;
 using GameShop.Data.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 
 namespace GameShop.Server.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]/[action]")]
     public class CategoryController : Controller

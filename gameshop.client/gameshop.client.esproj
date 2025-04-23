@@ -8,9 +8,4 @@
     <!-- Folder where production build objects will be placed -->
     <PublishAssetsDirectory>$(MSBuildProjectDirectory)\dist</PublishAssetsDirectory>
   </PropertyGroup>
-  <ItemGroup>
-    <Folder Include="src\api\ShoppingCart\" />
-    <Folder Include="src\routers\" />
-    <Folder Include="src\utils\" />
-  </ItemGroup>
 </Project>

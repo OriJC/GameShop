@@ -1,4 +1,4 @@
-import axios from '@/utils/api.request'
+import axios from '@/services/api.request'
 import Product from '@/models/Product'
 
 export const getAllProduct = () => {

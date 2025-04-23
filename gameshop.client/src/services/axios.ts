@@ -1,4 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios'
+import { clearAuth } from '@/store/authSlice'
+import store from '@/store/store'
 
 interface UrlQueue {
     [key: string]: any
@@ -21,6 +23,11 @@ class HttpRequest
             this.queue[url] = true
             // Add request header here if needed
 
+            const token = store.getState().auth.token
+            if (token && config.headers)
+            {
+                config.headers['Authorization'] = 'Bearer ' + token
+            }
             return config
         }, error => {
             return Promise.reject(error)
@@ -33,7 +40,11 @@ class HttpRequest
         }, error => {
             if (error && error.response) {
                 let response = error.response.data
-                switch (error.response.status) {
+                switch (error.response.status)
+                {
+                    case 401:
+                        store.dispatch(clearAuth())
+                        break
                     case 403:
                         return Promise.reject(response)
                 }

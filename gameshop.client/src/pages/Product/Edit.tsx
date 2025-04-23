@@ -26,7 +26,7 @@ import { getAllCategory } from '@/api/Category/Category'
 import { getAllProductTag } from '@/api/ProductTag/ProductTag'
 import { useNavigate, useParams } from 'react-router-dom';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { base64ToFile } from '@/services/base64Service'
+import { base64ToFile } from '@/utils/base64Translate'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 const Edit: React.FC = () => {

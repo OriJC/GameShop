@@ -11,6 +11,5 @@ namespace Gameshop.model
     [CollectionName("Users")]
     public class ApplicationUser : MongoIdentityUser<Guid>
     {
-
     }
 }
