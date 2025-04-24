@@ -39,8 +39,13 @@ namespace GameShop.Server.Controllers
                     return NotFound(new { message = "Cannot find any user!"}); 
                 }
                 _logger.LogInformation("Get All user");
-                List<User> result = users.Select(u => new User { })
-                return Ok(users);
+                List<User> result = users.Select(u => new User 
+                {
+                    UserName = u.UserName,
+                    Email = u.Email,
+                    Roles = _userManager.GetRolesAsync(u).Result.ToList()
+                }).ToList();
+                return Ok(result);
             }
             catch (Exception ex) 
             {

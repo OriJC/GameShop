@@ -5,4 +5,9 @@ interface User {
     roles: string[];
 }
 
-export default User;
+interface LoginModel {
+    userName: string;
+    password: string;
+}
+
+export type { User, LoginModel }

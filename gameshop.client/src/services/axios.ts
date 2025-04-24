@@ -38,12 +38,19 @@ class HttpRequest
 
             return { data: res.data, status: res.status} as AxiosResponse<any> 
         }, error => {
+            console.log(error)
             if (error && error.response) {
+                console.log(error)
                 let response = error.response.data
-                switch (error.response.status)
+                console.log(error)
+                switch (response.status)
                 {
+                    
                     case 401:
                         store.dispatch(clearAuth())
+                        // Redirect to Login Page
+                        console.log('test')
+                        window.location.href = "/login"
                         break
                     case 403:
                         return Promise.reject(response)

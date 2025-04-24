@@ -16,7 +16,7 @@ import {
     Chip
 } from '@mui/material';
 import { useState, useEffect } from 'react'
-import User from '@/models/User'
+import { User } from '@/models/User'
 import * as Yup from 'yup'
 import { Formik, Form, Field } from 'formik'
 import { TextField } from 'formik-material-ui'

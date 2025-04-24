@@ -70,7 +70,7 @@ namespace GameShop.Server.Controllers
                 var user = await _userManager.FindByNameAsync(model.UserName);
                 if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
                 {
-                    _logger.LogInformation($"Invalid username or password with UserName{user.UserName}");
+                    _logger.LogInformation($"Invalid username or password with UserName{model.UserName}");
                     return Unauthorized("Invalid username or password");
                 }
 

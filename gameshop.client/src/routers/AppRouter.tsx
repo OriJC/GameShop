@@ -6,6 +6,7 @@ import ProductTagRoute from "@/pages/ProductTag/ProductTagRoute.tsx";
 import ProductRoute from "@/pages/Product/ProductRoute.tsx";
 import UserRoute from "@/pages/Identity/User/UserRoute.tsx";
 import RoleRoute from "@/pages/Identity/Role/RoleRoute.tsx";
+import Login from "../pages/Home/Login";
 
 function AppRouter() {
     return (
@@ -17,6 +18,7 @@ function AppRouter() {
             <Route path="/Product/*" element={<ProductRoute />} />
             <Route path="/User/*" element={<UserRoute />} />
             <Route path="/Role/*" element={<RoleRoute />} />
+            <Route path="/Login" element={<Login /> } />
         </Routes>
     )
 }
