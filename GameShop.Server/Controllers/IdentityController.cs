@@ -70,7 +70,7 @@ namespace GameShop.Server.Controllers
                     _logger.LogError("Cannot find any user");
                     return NotFound(new { message = "Cannot find any user!" });
                 }
-                _logger.LogInformation("Get All use Name and Id");
+                _logger.LogInformation("Get All user Name and Id");
                 return Ok(users);
             }
             catch (Exception ex)
