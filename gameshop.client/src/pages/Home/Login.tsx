@@ -50,7 +50,9 @@ const Login: React.FC = () => {
                     username: formData.userName
                 } 
             ))
-            console.log(store.getState().auth.token)
+            console.log('Get and set token successfully')
+            // redirect to last page
+            navigate('/')
         }).catch(error => {
             console.log(error)
         })

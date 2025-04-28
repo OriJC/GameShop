@@ -43,7 +43,8 @@
     "less": "^4.2.0",
     "less-loader": "^12.2.0",
     "typescript": "^5.2.2",
-    "vite": "^5.0.8"
+    "vite": "^5.0.8",
+    "vite-plugin-mkcert": "^1.17.8"
   },
   "main": "index.js",
   "license": "MIT"
