@@ -36,7 +36,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("default", policy =>
     {
-        policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod();
+        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
     });
 });
 builder.Services.AddControllers();
@@ -72,23 +72,35 @@ AddJwtBearer(options =>
 
     options.Events = new JwtBearerEvents
     {
+
         OnChallenge = context =>
         {
-            // Skip the default behavior to prevent automatic response
             context.HandleResponse();
-
-            // Set the response status code and message
-            context.Response.StatusCode = 401;
-            context.Response.ContentType = "application/json";
-            var result = JsonSerializer.Serialize(new { code = 401, message = "Unauthorized access. Please log in." });
-            return context.Response.WriteAsync(result);
+            if (!context.Response.HasStarted)
+            {
+                // Add Header
+                context.Response.Headers["Access-Control-Allow-Origin"] = "*";
+                context.Response.Headers["Access-Control-Allow-Headers"] = "*";
+                context.Response.Headers["Access-Control-Allow-Methods"] = "*";
+                // Set the response status code and message
+                context.Response.StatusCode = 401;
+                context.Response.ContentType = "application/json";
+                var result = JsonSerializer.Serialize(new { code = 401, message = "Unauthorized access. Please log in." });
+                Console.WriteLine("result");
+                return context.Response.WriteAsync(result);
+            }
+            return Task.CompletedTask;
         },
         OnForbidden = context =>
         {
-            context.Response.StatusCode = 403;
-            context.Response.ContentType = "application/json";
-            var result = JsonSerializer.Serialize(new { code = 403, message = "Forbidden access. You do not have permission to access this resource." });
-            return context.Response.WriteAsync(result);
+            if (!context.Response.HasStarted)
+            {
+                context.Response.StatusCode = 403;
+                context.Response.ContentType = "application/json";
+                var result = JsonSerializer.Serialize(new { code = 403, message = "Forbidden access. You do not have permission to access this resource." });
+                return context.Response.WriteAsync(result);
+            }
+            return Task.CompletedTask;
         }
     };
 });
@@ -108,14 +120,16 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthentication();
-app.UseAuthorization();
-
-// Add the custom error response middleware to the pipeline
-app.UseErrorResponseMiddleware();
-
 app.UseCors("default");
+// Add the custom error response middleware to the pipeline
+//app.UseErrorResponseMiddleware();
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api"), appBuilder =>
+{
+    appBuilder.UseAuthentication();
+    appBuilder.UseAuthorization();
+});
+
+
 app.MapControllers();
 app.MapFallbackToFile("/index.html");
 

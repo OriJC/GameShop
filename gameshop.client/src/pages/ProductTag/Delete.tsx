@@ -1,5 +1,13 @@
 //import { useState } from 'react'
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, TextField } from '@mui/material';
+import {
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Button,
+    TextField
+} from '@mui/material';
 interface ModalFormProps {
     open: boolean
     record: Object,

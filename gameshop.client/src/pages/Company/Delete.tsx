@@ -1,14 +1,10 @@
 import {
     Card,
     Button,
-    Typography,
     Grid,
-    Container,
     CardHeader,
     CardContent,
     CardActions,
-    Select,
-    InputLabel
 } from '@mui/material';
 import { useState, useEffect } from 'react'
 import Company from '@/models/Company'

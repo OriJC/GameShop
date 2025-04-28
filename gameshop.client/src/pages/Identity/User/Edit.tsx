@@ -10,7 +10,7 @@ import {
     InputLabel
 } from '@mui/material';
 import { useState } from 'react'
-import User from '@/models/User'
+import { User } from '@/models/User'
 import * as Yup from 'yup'
 import { Formik, Form, Field } from 'formik'
 import { TextField } from 'formik-material-ui'

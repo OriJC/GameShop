@@ -35,21 +35,17 @@ class HttpRequest
 
         instance.interceptors.response.use((res: AxiosResponse<any>) => {
             this.destroy(url)
+            console.log(res.status)
 
             return { data: res.data, status: res.status} as AxiosResponse<any> 
         }, error => {
-            console.log(error)
             if (error && error.response) {
-                console.log(error)
-                let response = error.response.data
-                console.log(error)
+                let response = error.response
                 switch (response.status)
-                {
-                    
+                {   
                     case 401:
                         store.dispatch(clearAuth())
                         // Redirect to Login Page
-                        console.log('test')
                         window.location.href = "/login"
                         break
                     case 403:
