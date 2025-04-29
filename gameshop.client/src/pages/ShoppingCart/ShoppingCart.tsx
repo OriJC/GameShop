@@ -14,7 +14,13 @@ import {
     OutlinedInput,
     Box,
     Chip,
-    CircularProgress
+    CircularProgress,
+    TableContainer,
+    Table,
+    TableCell,
+    TableHead,
+    TableRow,
+    TableBody,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import Product from '@/models/Product';
@@ -49,11 +55,23 @@ const ShoppingCartPage: React.FC = () => {
     }
     return (
         <Paper>
-            <Grid item className="ms-3 mt-2">
-                <Typography component="h1" variant="h5">
-                    {username}'s ShoppingCart
-                </Typography>
+            <Grid container alignItems="center" justifyContent="space-between">
+                <Grid item className="ms-3 mt-2">
+                    <Typography component="h1" variant="h5">
+                        {username}'s Shopping Cart
+                    </Typography>
+                </Grid>
             </Grid>
+            <TableContainer>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Product</TableCell>
+                        </TableRow>
+                    </TableHead>
+                </Table>
+            </TableContainer>
+            
         </Paper>        
     );
 };

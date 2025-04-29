@@ -1,5 +1,6 @@
 ﻿using Gameshop.model;
 using GameShop.Data.Repository.IRepository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.CompilerServices;
 
@@ -11,11 +12,13 @@ namespace GameShop.Server.Controllers
     {
         private readonly ILogger<ShoppingCartController> _logger;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ShoppingCartController(ILogger<ShoppingCartController> logger, IUnitOfWork unitOfWork)
+        public ShoppingCartController(ILogger<ShoppingCartController> logger, IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
 
         [HttpGet(Name = "GetAllCarts")]
@@ -60,7 +63,7 @@ namespace GameShop.Server.Controllers
             }
         }
 
-        [HttpPost(Name = "createNewShoppingCart")]
+        [HttpPost(Name = "CreateNewShoppingCart")]
         public async Task<ActionResult> createNewShoppingCart([FromBody] ShoppingCart shoppingCart)
         {
             try
@@ -71,6 +74,39 @@ namespace GameShop.Server.Controllers
                     return NotFound();
                 }
                 shoppingCart.CreatedDate = DateTime.Now;
+                _unitOfWork.ShoppingCart.Add(shoppingCart);
+                await _unitOfWork.Commit();
+                _logger.LogInformation($"Inserted Shopping Cart with this {shoppingCart.Id}");
+                return Ok(shoppingCart);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost(Name = "createNewShoppingCartByUserId")]
+        public async Task<ActionResult> createNewShoppingCartByUserId(string userId)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if(user == null)
+                {
+                    {
+                        _logger.LogError("Cannot find user with this id");
+                        return NotFound();
+                    }
+                }
+
+                var shoppingCart = new ShoppingCart()
+                {
+                    UserId = userId,
+                    CreatedDate = DateTime.Now,
+                    isActive = true,
+                    ProductCount = 0,
+                };
                 _unitOfWork.ShoppingCart.Add(shoppingCart);
                 await _unitOfWork.Commit();
                 _logger.LogInformation($"Inserted Shopping Cart with this {shoppingCart.Id}");
