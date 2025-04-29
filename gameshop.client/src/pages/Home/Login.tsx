@@ -43,15 +43,15 @@ const Login: React.FC = () => {
 
     const onSubmit = (values: LoginModel) => {
         login(values).then((res) => {
-            console.log(res.data)
             store.dispatch(setAuth(
                 {
                     token: res.data.token,
-                    username: formData.userName
+                    username: values.userName,
+                    isLogin: true
                 } 
             ))
             console.log('Get and set token successfully')
-            // redirect to last page
+            // redirect to home page
             navigate('/')
         }).catch(error => {
             console.log(error)

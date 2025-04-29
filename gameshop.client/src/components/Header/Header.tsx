@@ -2,10 +2,13 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import { Link } from 'react-router-dom'
 import { AppBar, Toolbar, Button, Box, Menu, MenuItem } from '@mui/material';
 import './Header.less'
-import { useState } from 'react'
-
+import { useState, useEffect } from 'react'
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import store from '@/store/store'
+import { useSelector, useDispatch } from 'react-redux'
 const AppHeader = () => {
     const [anchorEls, setAnchorEls] = useState({});
+    const isLogin = useSelector((state: any) => state.auth.isLogin)
     const handleClick = (event, id) => {
         setAnchorEls((prev) => ({
             ...prev,
@@ -20,6 +23,9 @@ const AppHeader = () => {
         }));
     };
 
+    useEffect(() => {
+    }, []);
+
     return (
         <AppBar position="static">
             <Toolbar>
@@ -33,7 +39,7 @@ const AppHeader = () => {
                         aria-haspopup="true"
                         onClick={(e) => handleClick(e, 'Admin')}
                     >
-                        Admin Controller
+                        Admin
                     </Button>
                     
                     <Menu
@@ -66,7 +72,7 @@ const AppHeader = () => {
                         aria-haspopup="true"
                         onClick={(e) => handleClick(e, 'User')}
                     >
-                        User Controller
+                        User
                     </Button>
                     <Menu
                         id="simple-menu"
@@ -84,7 +90,12 @@ const AppHeader = () => {
                     </Menu>
                     
 
-                </Box>        
+                </Box> 
+                {
+                    isLogin &&
+                    <Button color="inherit" component={Link} to="/ShoppingCart"><ShoppingCartIcon /></Button>  
+                }                
+                <Button color="inherit" component={Link} to="/Login">Login</Button>                     
             </Toolbar>
         </AppBar>
     )

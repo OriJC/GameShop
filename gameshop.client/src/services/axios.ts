@@ -35,7 +35,6 @@ class HttpRequest
 
         instance.interceptors.response.use((res: AxiosResponse<any>) => {
             this.destroy(url)
-            console.log(res.status)
 
             return { data: res.data, status: res.status} as AxiosResponse<any> 
         }, error => {

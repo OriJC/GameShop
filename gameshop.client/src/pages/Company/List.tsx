@@ -25,25 +25,26 @@ const List: React.FC = () => {
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
     // Get Data 
-    useEffect(() => {
-        const fetchData = () => {
-            setLoading(true)
-            getAllCompany().then(res => {
-                const formattedData: Company[] = res.data.map(item =>
-                ({
-                    ...item,
-                    key: item.id,
-                }))
-                setData(formattedData)
-                setLoading(false)
-            }).catch(err => {
-                setLoading(false)
-                console.log(err)
-            })
-        }
+    useEffect(() => { 
         fetchData()
     }, []);
 
+
+    const fetchData = () => {
+        setLoading(true)
+        getAllCompany().then(res => {
+            const formattedData: Company[] = res.data.map(item =>
+            ({
+                ...item,
+                key: item.id,
+            }))
+            setData(formattedData)
+            setLoading(false)
+        }).catch(err => {
+            setLoading(false)
+            console.log(err)
+        })
+    }
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage)
     }
