@@ -9,7 +9,7 @@ interface Product {
     price100: number;
     companyId: string;
     categoryId: string;
-    ProductTag: string[];
+    productTag: string[];
     Inventory: number;
 }
 

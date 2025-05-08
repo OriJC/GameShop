@@ -21,6 +21,7 @@ import {
     TableHead,
     TableRow,
     TableBody,
+    Tab,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import Product from '@/models/Product';
@@ -30,6 +31,7 @@ import { TextField as FormikTextField, TextField } from 'formik-material-ui';
 import { useNavigate } from 'react-router-dom';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import store from '@/store/store'
+import { getShoppingCart } from '@/api/ShoppingCart/ShoppingCart';
 
 
 
@@ -37,26 +39,22 @@ const ShoppingCartPage: React.FC = () => {
     const navigate = useNavigate();
     const [data, setData] = useState<ShoppingCartItem[]>([])
     const [username, setUsername] = useState<string>("")
-    const getUserData = () => {
-        const username = store.getState().auth.username
-        console.log(store.getState().auth)
-        if (username == null) {
-            console.log('testing')
-        }else {
-            setUsername(username)
-        }
-    }
 
     useEffect(() => {
         fetchData()
     }, []);
 
-    const fetchData = () => {
-        getUserData()
+    const fetchData = async () => {
+        getUserShoppingCartData()
     }
 
     const getUserShoppingCartData = () => {
-        
+        const userName = store.getState().auth.userName
+        console.log(userName)
+        const cart = getShoppingCart(userName ? userName : '').then(res => {
+            setUsername(userName ? userName : '')
+            setData(res.data.Items? res.data.Items : [])
+        })
     }
     return (
         <Paper>
@@ -75,16 +73,37 @@ const ShoppingCartPage: React.FC = () => {
             <TableContainer>
                 <Table>
                     <TableHead>
-                        <TableRow>
-                            // add empty cell for style
+                        <TableRow>                       
                             <TableCell />
                             <TableCell />
-                        </TableRow>
-                        
+                        </TableRow>                     
                     </TableHead>
+                    <TableBody>
+                        {
+                            data.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={1} align="center">
+                                        <Typography variant="h6">Your shopping cart is empty</Typography>
+                                    </TableCell>
+                                </TableRow>
+                            ): (
+                                data.map((item, index) => (
+                                    
+                                    <TableRow key={index}>
+                                        <TableCell>
+                                        
+                                            <Typography variant="h6">{item.Product.Name}</Typography>
+                                            <Typography variant="body1">Price: {item.Product.Price}</Typography>
+                                            <Typography variant="body1">Quantity: {item.Quantity}</Typography>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )
+                        }
+                    </TableBody>
                 </Table>
-            </TableContainer>
-            
+                </TableContainer>
+                
         </Paper>        
     );
 };

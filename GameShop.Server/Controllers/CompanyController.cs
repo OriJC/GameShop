@@ -43,7 +43,7 @@ namespace GameShop.Server.Controllers
             {
                 var filter = Builders<Company>.Filter.Eq("_id", new ObjectId(objectId));
                 var projection = Builders<BsonDocument>.Projection.Include("Name").Include("_id");
-                var objCompanyList = await _unitOfWork.Company.GetOneByProjectAndFilter(filter, projection);
+                var objCompanyList = await _unitOfWork.Company.GetOneByProjectionAndFilter(filter, projection);
                 _logger.LogInformation($"Get Company Name By {objectId}");
                 return Ok(objCompanyList);
             }
@@ -61,8 +61,7 @@ namespace GameShop.Server.Controllers
             {
                 var filter = Builders<Company>.Filter.Empty;
                 var projection = Builders<BsonDocument>.Projection.Include("Name").Include("_id");
-
-                var objCompanyList = await _unitOfWork.Company.GetAllByProjectAndFilter(filter, projection);
+                var objCompanyList = await _unitOfWork.Company.GetAllByProjectionAndFilter(filter, projection);
                 _logger.LogInformation($"Get All Company Name");
 
                 return Ok(objCompanyList);

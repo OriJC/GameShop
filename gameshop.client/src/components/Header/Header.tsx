@@ -33,7 +33,7 @@ const AppHeader = () => {
         store.dispatch(setAuth(
             {
                 token: '',
-                username: '',
+                userName: '',
                 isLogin: false
             } 
         ))

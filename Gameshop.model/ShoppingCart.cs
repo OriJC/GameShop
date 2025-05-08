@@ -15,8 +15,8 @@ namespace Gameshop.model
         public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
 
         [BsonRequired]
-        [BsonElement("UserId")]
-        public string UserId { get; set; }
+        [BsonElement("UserName")]
+        public string UserName { get; set; }
 
         [BsonElement("CreatedDate")]
         public DateTime CreatedDate { get; set; }
@@ -41,7 +41,7 @@ namespace Gameshop.model
         public int TotalPrice { get; private set; }
 
         [BsonElement("IsActive")]
-        public bool isActive { get; set; }
+        public bool IsActive { get; set; }
 
         public void AddItem(ShoppingCartItem item)
         {

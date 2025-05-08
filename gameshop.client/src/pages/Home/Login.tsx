@@ -46,7 +46,7 @@ const Login: React.FC = () => {
             store.dispatch(setAuth(
                 {
                     token: res.data.token,
-                    username: values.userName,
+                    userName: values.userName,
                     isLogin: true
                 } 
             ))

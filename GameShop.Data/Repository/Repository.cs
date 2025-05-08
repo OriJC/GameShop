@@ -46,7 +46,29 @@ namespace GameShop.Data.Repository
             return data.ToList();
         }
 
-        public virtual async Task<object> GetOneByProjectAndFilter(FilterDefinition<T> filter, ProjectionDefinition<BsonDocument> projection)
+        public virtual async Task<object> GetOneByFilter(FilterDefinition<T> filter)
+        {
+            var bsonCollection = _collection.Database.GetCollection<BsonDocument>(_collection.CollectionNamespace.CollectionName);
+
+            filter ??= Builders<T>.Filter.Empty;
+            var cursor = await bsonCollection.FindAsync(filter.Render(BsonSerializer.SerializerRegistry.GetSerializer<T>(), BsonSerializer.SerializerRegistry));
+            var result = await cursor.FirstOrDefaultAsync();
+            if (result == null)
+            {
+                return null;
+            }
+            else
+            {
+                var dict = result.ToDictionary();
+                if (dict.ContainsKey("_id") && dict["_id"] is ObjectId objectId)
+                {
+                    dict["_id"] = objectId.ToString();
+                }
+                return dict;
+            }
+        }
+
+        public virtual async Task<object> GetOneByProjectionAndFilter(FilterDefinition<T> filter = null, ProjectionDefinition<BsonDocument> projection = null)
         {
             var bsonCollection = _collection.Database.GetCollection<BsonDocument>(_collection.CollectionNamespace.CollectionName);
 
@@ -68,7 +90,27 @@ namespace GameShop.Data.Repository
             }
         }
 
-        public virtual async Task<IEnumerable<object>> GetAllByProjectAndFilter(FilterDefinition<T> filter, ProjectionDefinition<BsonDocument> projection)
+        public virtual async Task<IEnumerable<object>> GetAllByFilter(FilterDefinition<T> filter = null)
+        {
+            var bsonCollection = _collection.Database.GetCollection<BsonDocument>(_collection.CollectionNamespace.CollectionName);
+            filter ??= Builders<T>.Filter.Empty;
+
+            var cursor = await bsonCollection.FindAsync(filter.Render(BsonSerializer.SerializerRegistry.GetSerializer<T>(), BsonSerializer.SerializerRegistry));
+            var results = await cursor.ToListAsync();
+            var jsonResults = new List<object>();
+            foreach (var document in results)
+            {
+                var dict = document.ToDictionary();
+                if (dict.ContainsKey("_id") && dict["_id"] is ObjectId objectId)
+                {
+                    dict["_id"] = objectId.ToString();
+                }
+                jsonResults.Add(dict);
+            }
+            return jsonResults;
+        }
+
+        public virtual async Task<IEnumerable<object>> GetAllByProjectionAndFilter(FilterDefinition<T> filter = null, ProjectionDefinition<BsonDocument> projection = null)
         {
             var bsonCollection = _collection.Database.GetCollection<BsonDocument>(_collection.CollectionNamespace.CollectionName);
 

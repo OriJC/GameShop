@@ -109,7 +109,7 @@ namespace GameShop.Server.Controllers
                 var filter = Builders<Product>.Filter.Eq("_id", new ObjectId(Id)); ;
                 var projection = Builders<BsonDocument>.Projection.Include("Name").Include("Inventory");
 
-                var objCompanyList = await _unitOfWork.Product.GetAllByProjectAndFilter(filter, projection);
+                var objCompanyList = await _unitOfWork.Product.GetAllByProjectionAndFilter(filter, projection);
 
 
                 return Ok(objCompanyList);

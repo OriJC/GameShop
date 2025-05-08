@@ -2,6 +2,8 @@
 using GameShop.Data.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using System.Runtime.CompilerServices;
 
 namespace GameShop.Server.Controllers
@@ -63,8 +65,33 @@ namespace GameShop.Server.Controllers
             }
         }
 
+        [HttpGet(Name = "GetCartByUserName")]
+        public async Task<ActionResult> GetCartByUserName(string userName)
+        {
+            try
+            {
+                var filter = Builders<ShoppingCart>.Filter.Eq("UserName", userName); ;
+
+                var objectCart = await _unitOfWork.ShoppingCart.GetOneByFilter(filter);
+
+                if(objectCart == null)
+                {
+                    _logger.LogInformation($"Cannot found shopping cart with user name {userName}");
+                    return NotFound();
+                }
+
+                _logger.LogInformation($"Return shopping cart with user name {userName}");
+                return Ok(objectCart);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
         [HttpPost(Name = "CreateNewShoppingCart")]
-        public async Task<ActionResult> createNewShoppingCart([FromBody] ShoppingCart shoppingCart)
+        public async Task<ActionResult> CreateNewShoppingCart([FromBody] ShoppingCart shoppingCart)
         {
             try
             {
@@ -86,25 +113,25 @@ namespace GameShop.Server.Controllers
             }
         }
 
-        [HttpPost(Name = "createNewShoppingCartByUserId")]
-        public async Task<ActionResult> createNewShoppingCartByUserId(string userId)
+        [HttpPost(Name = "createNewShoppingCartByUserName")]
+        public async Task<ActionResult> createNewShoppingCartByUserName(string userName)
         {
             try
             {
-                var user = await _userManager.FindByIdAsync(userId);
+                var user = await _userManager.FindByNameAsync(userName);
                 if(user == null)
                 {
                     {
-                        _logger.LogError("Cannot find user with this id");
+                        _logger.LogError($"Cannot find user with this user id {userName}");
                         return NotFound();
                     }
                 }
 
                 var shoppingCart = new ShoppingCart()
                 {
-                    UserId = userId,
+                    UserName = user.UserName,   
                     CreatedDate = DateTime.Now,
-                    isActive = true,
+                    IsActive = true,
                     ProductCount = 0,
                 };
                 _unitOfWork.ShoppingCart.Add(shoppingCart);

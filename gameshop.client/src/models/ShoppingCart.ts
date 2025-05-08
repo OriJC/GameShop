@@ -14,7 +14,7 @@ interface ShoppingCartItem {
     createdAt: Date;
     product: Product;
     quantity: number;
-    Price: number;
+    price: number;
 }
 
 export type { ShoppingCart, ShoppingCartItem }

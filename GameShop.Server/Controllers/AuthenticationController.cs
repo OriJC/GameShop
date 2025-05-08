@@ -94,7 +94,7 @@ namespace GameShop.Server.Controllers
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 var tokenString = tokenHandler.WriteToken(token);
                 _logger.LogInformation($"Get Token successfully, userName: {user.UserName}");
-                return Ok(new { Token = tokenString });
+                return Ok(new { Token = tokenString, UserName = user.UserName });
             }
             catch (Exception ex)
             {
