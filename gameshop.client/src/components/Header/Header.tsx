@@ -1,12 +1,15 @@
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { AppBar, Toolbar, Button, Box, Menu, MenuItem } from '@mui/material';
 import './Header.less'
 import { useState, useEffect } from 'react'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import store from '@/store/store'
 import { useSelector, useDispatch } from 'react-redux'
+import { setAuth } from '@/store/authSlice';
 const AppHeader = () => {
+    const navigate = useNavigate();
+    
     const [anchorEls, setAnchorEls] = useState({});
     const isLogin = useSelector((state: any) => state.auth.isLogin)
     const handleClick = (event, id) => {
@@ -25,6 +28,22 @@ const AppHeader = () => {
 
     useEffect(() => {
     }, []);
+
+    const handleLogout = () => {
+        store.dispatch(setAuth(
+            {
+                token: '',
+                username: '',
+                isLogin: false
+            } 
+        ))
+    }
+
+    const handleLogIn = () => {
+        navigate('/Login')
+        console.log('Login')
+    }
+
 
     return (
         <AppBar position="static">
@@ -93,9 +112,13 @@ const AppHeader = () => {
                 </Box> 
                 {
                     isLogin &&
-                    <Button color="inherit" component={Link} to="/ShoppingCart"><ShoppingCartIcon /></Button>  
+                    <Button color="inherit" component={Link} to="/ShoppingCart"><ShoppingCartIcon /></Button>
+                }
+                {   !isLogin
+                    ?<Button color="inherit" onClick={handleLogIn}>Login</Button>    
+                    :<Button color="inherit" onClick={handleLogout}>Logout</Button>       
                 }                
-                <Button color="inherit" component={Link} to="/Login">Login</Button>                     
+                     
             </Toolbar>
         </AppBar>
     )

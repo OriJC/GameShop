@@ -34,6 +34,7 @@ import store from '@/store/store'
 
 
 const ShoppingCartPage: React.FC = () => {
+    const navigate = useNavigate();
     const [data, setData] = useState<ShoppingCartItem[]>([])
     const [username, setUsername] = useState<string>("")
     const getUserData = () => {
@@ -53,6 +54,10 @@ const ShoppingCartPage: React.FC = () => {
     const fetchData = () => {
         getUserData()
     }
+
+    const getUserShoppingCartData = () => {
+        
+    }
     return (
         <Paper>
             <Grid container alignItems="center" justifyContent="space-between">
@@ -61,13 +66,21 @@ const ShoppingCartPage: React.FC = () => {
                         {username}'s Shopping Cart
                     </Typography>
                 </Grid>
+                <Grid item className="me-3 mt-2">
+                    <Button variant="outlined" color="primary" onClick={() => {navigate('/')}}>
+                        Continue Shopping
+                    </Button>
+                </Grid>
             </Grid>
             <TableContainer>
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Product</TableCell>
+                            // add empty cell for style
+                            <TableCell />
+                            <TableCell />
                         </TableRow>
+                        
                     </TableHead>
                 </Table>
             </TableContainer>

@@ -38,11 +38,11 @@ const Login: React.FC = () => {
             .matches(/[0-9]/, "Password must contain at least one number")
             .matches(/[@$!%*?&_-]/, "Password must contain at least one special character")
             .required("Password is required"),
-
     })
 
     const onSubmit = (values: LoginModel) => {
         login(values).then((res) => {
+            localStorage.setItem('token', res.data.token)
             store.dispatch(setAuth(
                 {
                     token: res.data.token,

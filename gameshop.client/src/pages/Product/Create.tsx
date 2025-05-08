@@ -73,7 +73,7 @@ const Create: React.FC = () => {
         listPrice: Yup.number().min(1, 'Price must be at least 1').max(100000, 'Price must be at most 100000').required("Required"),
         price50: Yup.number().min(1, 'Price must be at least 1').max(100000, 'Price must be at most 100000').required("Required"),
         price100: Yup.number().min(1, 'Price must be at least 1').max(100000, 'Price must be at most 100000').required("Required"),
-        Inventory: Yup.number().min(1, 'Price must be at least 1').max(1000000, 'Price must be at most 1000000').required("Required"),
+        inventory: Yup.number().min(1, 'Price must be at least 1').max(1000000, 'Price must be at most 1000000').required("Required"),
     })
 
 
@@ -96,7 +96,7 @@ const Create: React.FC = () => {
     }
 
     const handleFileChange = (e) => {
-        const file = event.target.files[0];
+        const file = e.target.files[0];
         if (file) {
             setCoverImage(file);
             const reader = new FileReader();
@@ -120,6 +120,7 @@ const Create: React.FC = () => {
         //productData.append('id', '')
         //productData.append('createdDate', null)
         productData.append('ImageFileId', 'string')
+        console.log(productData)
         if (!values.id) {
             productData.delete('id')
         }
@@ -137,6 +138,7 @@ const Create: React.FC = () => {
         //for (const pair of productData.entries()) {
         //    console.log(pair[0], pair[1]);
         //}
+        console.log(productData)
         createProduct(productData).then((res) => {
             console.log(res.data);
             setTimeout(() => {

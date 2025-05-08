@@ -23,7 +23,7 @@ class HttpRequest
             this.queue[url] = true
             // Add request header here if needed
 
-            const token = store.getState().auth.token
+            const token = localStorage.getItem('token')
             if (token && config.headers)
             {
                 config.headers['Authorization'] = 'Bearer ' + token

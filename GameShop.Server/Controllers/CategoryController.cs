@@ -2,7 +2,6 @@
 using GameShop.Data.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
 
 namespace GameShop.Server.Controllers
 {
