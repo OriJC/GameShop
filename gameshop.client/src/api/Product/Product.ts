@@ -57,3 +57,10 @@ export const deleteProduct = (id: string) => {
         method: 'delete'
     })
 }
+
+export const getProductImageByImageId = (id: string) => {
+    return axios.request({
+        url: 'api/Product/GetProductImageById?imageId=' + id ,
+        method: 'get'
+    })
+}

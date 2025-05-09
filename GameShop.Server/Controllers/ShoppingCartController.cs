@@ -73,6 +73,7 @@ namespace GameShop.Server.Controllers
                 var filter = Builders<ShoppingCart>.Filter.Eq("UserName", userName); ;
 
                 var objectCart = await _unitOfWork.ShoppingCart.GetOneByFilter(filter);
+            
 
                 if(objectCart == null)
                 {
@@ -238,46 +239,46 @@ namespace GameShop.Server.Controllers
             }
         }
 
-        //[HttpPost(Name = "AddItemToCartByUserName")]
-        //public async Task<ActionResult> AddItemToCartByUserName(string userName, string productId, int Quantity = 1)
-        //{
-        //    try
-        //    {
-        //        var filter = Builders<ShoppingCart>.Filter.Eq("UserName", userName); ;
+        [HttpPost(Name = "AddItemToCartByUserName")]
+        public async Task<ActionResult> AddItemToCartByUserName(string userName, string productId, int Quantity = 1)
+        {
+            try
+            {
+                var filter = Builders<ShoppingCart>.Filter.Eq("UserName", userName); ;
 
-        //        var objectCart = await _unitOfWork.ShoppingCart.GetOneByFilter(filter);
-        //        if (objectCart == null)
-        //        {
-        //            _logger.LogError($"Cannot find Shopping Cart with username {userName}");
-        //            return NotFound();
-        //        }
-        //        Product product = await _unitOfWork.Product.GetById(productId);
-        //        if (product == null)
-        //        {
-        //            _logger.LogError($"Cannot find product with product id {productId}");
-        //            return NotFound();
-        //        }
-        //        ShoppingCartItem shoppingCartItem = new ShoppingCartItem()
-        //        {
-        //            ShoppingCartId = objectCart.,
-        //            Product = product,
-        //            Quantity = Quantity,
-        //            CreatedDate = DateTime.Now
-        //        };
+                var objectCart = await _unitOfWork.ShoppingCart.GetOneByFilter(filter);
+                if (objectCart == null)
+                {
+                    _logger.LogError($"Cannot find Shopping Cart with username {userName}");
+                    return NotFound();
+                }
+                Product product = await _unitOfWork.Product.GetById(productId);
+                if (product == null)
+                {
+                    _logger.LogError($"Cannot find product with product id {productId}");
+                    return NotFound();
+                }
+                ShoppingCartItem shoppingCartItem = new ShoppingCartItem()
+                {
+                    ShoppingCartId = objectCart.Id,
+                    Product = product,
+                    Quantity = Quantity,
+                    CreatedDate = DateTime.Now
+                };
 
-        //        cart.AddItem(shoppingCartItem);
+                objectCart.AddItem(shoppingCartItem);
 
-        //        _unitOfWork.ShoppingCart.Update(cart);
-        //        await _unitOfWork.Commit();
-        //        _logger.LogInformation($"Added item to Shopping Cart with this {shoppingCartItem.ShoppingCartId}");
-        //        return Ok(cart);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex.Message);
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
+                _unitOfWork.ShoppingCart.Update(objectCart);
+                await _unitOfWork.Commit();
+                _logger.LogInformation($"Added item to Shopping Cart with this {shoppingCartItem.ShoppingCartId}");
+                return Ok(objectCart);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpDelete(Name = "RemoveItemFromCart")]
         public async Task<ActionResult> RemoveItemFromCart(string shoppingCartId, string itemId)

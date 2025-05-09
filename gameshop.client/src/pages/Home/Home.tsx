@@ -60,7 +60,7 @@ const Home = () => {
                                 height="250"
                                 alt={"alt"}
                                 sx={{ padding: "1em 1em 0 1em", objectFit: "contain" }}
-                                image={'data:' + item.iamgeContentType + ';base64,' + item.imageData}
+                                image={'data:' + item.imageContentType + ';base64,' + item.imageData}
                                 title={item.product.name}
                             />
 

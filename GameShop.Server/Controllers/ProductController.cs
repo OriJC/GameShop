@@ -75,6 +75,54 @@ namespace GameShop.Server.Controllers
             return Ok(productList);
         }
 
+        [HttpGet(Name = "GetOneProductIncludingImage")]
+        public async Task<ActionResult> GetOneProductIncludingImage(string productId)
+        {
+            try
+            {
+                var objProduct = await _unitOfWork.Product.GetById(productId);
+                if (objProduct == null)
+                {
+                    _logger.LogError("Cannot find this product!");
+                    return NotFound(new { message = "Cannot find this product!" });
+                }
+
+                var (imageContent, contentType) = await _unitOfWork.Product.GetImageAsync(objProduct.ImageFileId);
+                ProductViewModel productItem = new ProductViewModel
+                {
+                    product = objProduct,
+                    imageContentType = contentType,
+                    imageData = imageContent
+                };
+
+                return Ok(productItem);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            
+        }
+
+        [HttpGet(Name = "GetProductImageById")]
+        public async Task<ActionResult> GetProductImageById(string imageId)
+        {
+            try
+            {
+                var (imageContent, contentType) = await _unitOfWork.Product.GetImageAsync(imageId);
+
+
+                return Ok(new { imageContent, contentType });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
+        }
+
         [HttpGet(Name = "GetProductById")]
         public async Task<ActionResult> GetById(string Id)
         {
@@ -110,10 +158,10 @@ namespace GameShop.Server.Controllers
                 var filter = Builders<Product>.Filter.Eq("_id", new ObjectId(Id)); ;
                 var projection = Builders<Product>.Projection.Include("Name").Include("Inventory");
 
-                var objCompanyList = await _unitOfWork.Product.GetAllByProjectionAndFilter<ProductProjection>(filter, projection);
+                var objProductList = await _unitOfWork.Product.GetAllByProjectionAndFilter<ProductProjection>(filter, projection);
 
 
-                return Ok(objCompanyList);
+                return Ok(objProductList);
             }
             catch (Exception ex)
             {
@@ -255,5 +303,16 @@ namespace GameShop.Server.Controllers
         public string Id { get; set; }
         public string Name { get; set; }
         public int Inventory { get; set; }
+    }
+
+    class ProductProjectionWithImageId
+    {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        [BsonElement("_id")]
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public int Inventory { get; set; }
+        public string ImageFileId { get; set; }
     }
 }

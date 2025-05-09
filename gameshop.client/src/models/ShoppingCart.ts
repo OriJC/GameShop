@@ -15,6 +15,7 @@ interface ShoppingCartItem {
     product: Product;
     quantity: number;
     price: number;
+    image?: object;
 }
 
 export type { ShoppingCart, ShoppingCartItem }

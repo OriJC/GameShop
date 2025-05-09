@@ -10,7 +10,8 @@ interface Product {
     companyId: string;
     categoryId: string;
     productTag: string[];
-    Inventory: number;
+    inventory: number;
+    imageFileId: string;
 }
 
 export default Product;
