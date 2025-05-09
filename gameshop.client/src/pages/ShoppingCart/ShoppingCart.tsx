@@ -76,6 +76,7 @@ const ShoppingCartPage: React.FC = () => {
                         <TableRow>                       
                             <TableCell />
                             <TableCell />
+                            <TableCell />
                         </TableRow>                     
                     </TableHead>
                     <TableBody>

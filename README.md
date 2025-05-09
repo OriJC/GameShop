@@ -3,7 +3,7 @@
 作為一個商店網站，客戶可以瀏覽商品和建立訂單等。商家可以上下架商品，觀看購物記錄等
 ## 使用的語言,套件,工具等
 ### Frontend
-語言: Typescript
+語言: TypeScript
 * ReactJS, including React-router-dom
 * Axios
 * Less.css
@@ -13,9 +13,10 @@
 ### Backend
 語言: C#
 * .Net 8.0
-* Mongodb with C# drive 
-* Mongodb file storage(GridFs)
-* MongoContext (EF Core of Mongodb)
-* Repository
+* MongoDB with C# drive 
+* MongoDB file storage(GridFs)
+* MongoContext (EF Core of MongoDB)
+* Repository Pattern
 * Unit of work
-* Using OAuth2 as Authorization
+* Using JWT as Authorization
+* Using MongoDB identity Server(including application user and role)
