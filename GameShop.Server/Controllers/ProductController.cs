@@ -6,6 +6,7 @@ using System.Reflection.Metadata;
 using Gameshop.model.ViewModel;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace GameShop.Server.Controllers
 {
@@ -40,7 +41,7 @@ namespace GameShop.Server.Controllers
             {
                 _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
-            }            
+            }
         }
 
         [HttpGet(Name = "GetAllProductIncludingImage")]
@@ -50,10 +51,10 @@ namespace GameShop.Server.Controllers
             if (objProductList == null)
             {
                 _logger.LogError("Cannot find any product!");
-                return NotFound(new { message = "Cannot find any product!"});
+                return NotFound(new { message = "Cannot find any product!" });
             }
             var productList = new List<ProductViewModel>();
-            foreach(var document in objProductList)
+            foreach (var document in objProductList)
             {
                 try
                 {
@@ -107,9 +108,9 @@ namespace GameShop.Server.Controllers
             try
             {
                 var filter = Builders<Product>.Filter.Eq("_id", new ObjectId(Id)); ;
-                var projection = Builders<BsonDocument>.Projection.Include("Name").Include("Inventory");
+                var projection = Builders<Product>.Projection.Include("Name").Include("Inventory");
 
-                var objCompanyList = await _unitOfWork.Product.GetAllByProjectionAndFilter(filter, projection);
+                var objCompanyList = await _unitOfWork.Product.GetAllByProjectionAndFilter<ProductProjection>(filter, projection);
 
 
                 return Ok(objCompanyList);
@@ -122,7 +123,7 @@ namespace GameShop.Server.Controllers
         }
 
         [HttpPost(Name = "InsertProduct")]
-        public async Task<ActionResult> Insert([FromForm]Product product, IFormFile file)
+        public async Task<ActionResult> Insert([FromForm] Product product, IFormFile file)
         {
             try
             {
@@ -131,7 +132,7 @@ namespace GameShop.Server.Controllers
                 {
                     product.CreatedDate = DateTime.Now;
                 }
-                if(file == null || file.Length == 0)
+                if (file == null || file.Length == 0)
                 {
                     _logger.LogError("No Image file while inserting product");
                     return BadRequest("No file uploaded");
@@ -149,7 +150,7 @@ namespace GameShop.Server.Controllers
                     _logger.LogInformation("Inserting product to db");
                     return Ok(product);
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -244,5 +245,15 @@ namespace GameShop.Server.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+    }
+
+    class ProductProjection
+    {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        [BsonElement("_id")]
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public int Inventory { get; set; }
     }
 }

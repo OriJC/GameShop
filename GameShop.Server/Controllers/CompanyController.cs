@@ -2,6 +2,7 @@
 using GameShop.Data.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using System.Text.Json;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -42,16 +43,16 @@ namespace GameShop.Server.Controllers
             try
             {
                 var filter = Builders<Company>.Filter.Eq("_id", new ObjectId(objectId));
-                var projection = Builders<BsonDocument>.Projection.Include("Name").Include("_id");
-                var objCompanyList = await _unitOfWork.Company.GetOneByProjectionAndFilter(filter, projection);
+                var projection = Builders<Company>.Projection.Include("Name").Include("_id");
+                var objCompanyList = await _unitOfWork.Company.GetOneByProjectionAndFilter<CompanyProjection>(filter, projection);
                 _logger.LogInformation($"Get Company Name By {objectId}");
                 return Ok(objCompanyList);
             }
             catch (Exception ex)
-            { 
+            {
                 _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
-            }  
+            }
         }
 
         [HttpGet(Name = "GetAllCompanyName")]
@@ -60,8 +61,8 @@ namespace GameShop.Server.Controllers
             try
             {
                 var filter = Builders<Company>.Filter.Empty;
-                var projection = Builders<BsonDocument>.Projection.Include("Name").Include("_id");
-                var objCompanyList = await _unitOfWork.Company.GetAllByProjectionAndFilter(filter, projection);
+                var projection = Builders<Company>.Projection.Include("Name").Include("_id");
+                var objCompanyList = await _unitOfWork.Company.GetAllByProjectionAndFilter<CompanyProjection>(filter, projection);
                 _logger.LogInformation($"Get All Company Name");
 
                 return Ok(objCompanyList);
@@ -70,7 +71,7 @@ namespace GameShop.Server.Controllers
             {
                 _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
-            }   
+            }
         }
 
         [HttpGet("{id}", Name = "GetCompanyById")]
@@ -87,14 +88,14 @@ namespace GameShop.Server.Controllers
                 else
                 {
                     _logger.LogError($"Cannot find company with Id {Id}");
-                    return NotFound(new {message = "Cannot find this company!"});
+                    return NotFound(new { message = "Cannot find this company!" });
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return BadRequest(new { message = ex.Message });
-            } 
+            }
         }
 
 
@@ -112,10 +113,10 @@ namespace GameShop.Server.Controllers
                 await _unitOfWork.Commit();
                 _logger.LogInformation("Insert new company to db");
                 return Ok(company);
-        }
-            catch(Exception ex)
+            }
+            catch (Exception ex)
             {
-                return BadRequest(new { message = "Insert Company failed", detail = ex.Message});
+                return BadRequest(new { message = "Insert Company failed", detail = ex.Message });
             }
         }
 
@@ -139,7 +140,7 @@ namespace GameShop.Server.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                return BadRequest(new { message = "Update company failed"});
+                return BadRequest(new { message = "Update company failed" });
             }
         }
 
@@ -165,5 +166,14 @@ namespace GameShop.Server.Controllers
                 return BadRequest(new { message = "Delete company failed" });
             }
         }
+    }
+
+    class CompanyProjection
+    {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        [BsonElement("_id")] 
+        public string Id { get; set; }
+        public string Name { get; set; }
     }
 }

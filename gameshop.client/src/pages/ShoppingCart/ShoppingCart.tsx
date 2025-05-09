@@ -32,7 +32,7 @@ import { useNavigate } from 'react-router-dom';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import store from '@/store/store'
 import { getShoppingCart } from '@/api/ShoppingCart/ShoppingCart';
-
+import  './ShoppingCart.less'
 
 
 const ShoppingCartPage: React.FC = () => {
@@ -92,8 +92,10 @@ const ShoppingCartPage: React.FC = () => {
                                     
                                     <TableRow key={index}>
                                         <TableCell>
-                                        
-                                            <Typography variant="h6">{item.Product.Name}</Typography>
+                                            <Typography variant="h6">{item.Product.Name}</Typography>                                            
+                                        </TableCell>
+                                        <TableCell></TableCell>
+                                        <TableCell align="right">
                                             <Typography variant="body1">Price: {item.Product.Price}</Typography>
                                             <Typography variant="body1">Quantity: {item.Quantity}</Typography>
                                         </TableCell>
