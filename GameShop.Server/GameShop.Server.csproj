@@ -24,7 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GameShop.Data\GameShop.Data.csproj" />
-    <ProjectReference Include="..\Gameshop.model\Gameshop.model.csproj" />
+    <ProjectReference Include="..\Gameshop.model\Gameshop.Model.csproj" />
   </ItemGroup>
 
 </Project>

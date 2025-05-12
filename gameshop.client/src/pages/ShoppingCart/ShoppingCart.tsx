@@ -26,10 +26,8 @@ import {
 import { useState, useEffect } from 'react';
 import Product from '@/models/Product';
 import { ShoppingCart, ShoppingCartItem } from '@/models/ShoppingCart';
-import { Formik, Form, Field } from 'formik';
 import { TextField as FormikTextField, TextField } from 'formik-material-ui';
 import { useNavigate } from 'react-router-dom';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import store from '@/store/store'
 import { getShoppingCart } from '@/api/ShoppingCart/ShoppingCart';
 import  './ShoppingCart.less'
@@ -121,13 +119,13 @@ const ShoppingCartPage: React.FC = () => {
                                             </Typography>                                   
                                         </TableCell>
                                         <TableCell align="right">
-                                            <Button variant="contained" color="secondary" onClick={() => {}}>
+                                            <Button variant="contained" className="itemNumberButton" onClick={() => {}}>
                                                 <RemoveOutlinedIcon />
                                             </Button>
                                             <Typography variant="body1">
                                                 {item.quantity}
                                             </Typography>
-                                            <Button variant="contained" color="secondary" onClick={() => {}}>
+                                            <Button variant="contained" onClick={() => {}}>
                                                 <AddOutlinedIcon />
                                             </Button>
                                         </TableCell>
