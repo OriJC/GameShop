@@ -2,7 +2,7 @@ interface Product {
     id: string;
     name: string;
     description: string;
-    createdDate: Date;
+    createdDate: Date | null;
     listPrice: number;
     price: number;
     price50: number;

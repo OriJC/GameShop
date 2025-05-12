@@ -6,3 +6,29 @@ export const getShoppingCart = (userName: string) => {
         method: 'get'
     })
 }
+
+export const updateItemQuantity = (userName: string, cartItemId: string, newQuantity: number) => {
+    return axios.request({
+        url: 'api/ShoppingCart/UpdateShoppingCartQuantity?userName=' + userName + '&shoppingCartItemId=' + cartItemId + '&newQuantity=' + newQuantity,
+        method: 'put'
+    })
+}
+
+export const RemoveItemFromCart = (userName: string, cartItemId: string) => {
+    return axios.request({
+        url: 'api/ShoppingCart/RemoveItemFromCart?userName=' + userName + '&shoppingCartItemId=' + cartItemId,
+        method: 'delete'
+    })
+}
+
+export const addShoppingCartItemToCart = (userName: string, productId: string, quantity: number) => {
+    return axios.request({
+        url: 'api/ShoppingCart/AddItemToCartByUserName',
+        method: 'post',
+        data: {
+            userName: userName,
+            productId: productId,
+            quantity: quantity
+        },
+    })
+}

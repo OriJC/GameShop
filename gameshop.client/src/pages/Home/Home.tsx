@@ -40,7 +40,7 @@ const Home = () => {
     }
 
     const handleGoToProduct = (id) => {
-        navigate(`/Product/detail/${id}`);
+        navigate(`/Product/shopitem/${id}`);
     }
     return (
         <Grid container spacing={1}>

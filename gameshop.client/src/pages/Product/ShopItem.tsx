@@ -6,11 +6,15 @@ import {
     CardContent,
     CardActions,
     Box,
-    CircularProgress
+    CircularProgress,
+    Icon,
+    IconButton,
+    Typography,
+    TextField as Textarea,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import Product from '@/models/Product';
-import Company from '@/models/Company';
+import store from '@/store/store'
 import { Formik, Form, Field } from 'formik';
 import { TextField as FormikTextField, TextField } from 'formik-material-ui';
 import { getProductById } from '@/api/Product/Product';
@@ -19,10 +23,22 @@ import { getAllCategory } from '@/api/Category/Category'
 import { getAllProductTag } from '@/api/ProductTag/ProductTag'
 import { useNavigate, useParams } from 'react-router-dom';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import { styled } from "@mui/material/styles";
+import { addShoppingCartItemToCart } from '@/api/ShoppingCart/ShoppingCart';
 
-const Detail: React.FC = () => {
+const ShopItem: React.FC = () => {
     const navigate = useNavigate();
 
+    const NoSpinnerTextField = styled(TextField)({
+    "& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button": {
+        WebkitAppearance: "none",
+        margin: 0,
+    },
+    "& input[type=number]": {
+        MozAppearance: "textfield",
+    },
+    });
     // Initial form data
     const [formData, setFormData] = useState<Product>({
         id: '',
@@ -39,18 +55,17 @@ const Detail: React.FC = () => {
         inventory: 1
     });
 
+    const [quantity, setQuantity] = useState(1);
+    const [price, setPrice] = useState(0)
     const [error, setError] = useState(false);
     const [companyData, setCompanyData] = useState([]);
-    const [categoryData, setCategoryData] = useState([])
-    const [productTagsIdsData, setproductTagsIdsData] = useState([])
+    const [categoryData, setCategoryData] = useState([]);
+    const [productTagsIdsData, setproductTagsIdsData] = useState([]);
     const routeParams = useParams<{ productId: string }>();
 
     const [preview, setPreview] = useState(null)
     const [loading, setLoading] = useState(true)
 
-    // Style
-    const ITEM_HEIGHT = 48;
-    const ITEM_PADDING_TOP = 8;
 
 
     useEffect(() => {
@@ -84,6 +99,33 @@ const Detail: React.FC = () => {
         navigate(-1)
     }
 
+    const handleInputChange = (e) => {
+        let value = parseInt(e.target.value, 10);
+        if (isNaN(value) || value < 1) {
+            value = 1;
+        } else if (value > formData.inventory) {
+            value = formData.inventory;
+        }
+        setQuantity(value);
+        calculatePrice(value)
+    }
+
+    const calculatePrice = (count: number) => {
+        if (count > 100)
+            setPrice(count * formData.price100)
+        else if (count <= 100 && count > 50)
+            setPrice(count * formData.price50)
+        else if (count <= 50 && count > 10)
+            setPrice(count * formData.price)
+        else 
+            setPrice(count * formData.listPrice)
+    }
+
+    const addItemToCart = () => {
+        const userName = store.getState().auth.userName
+        addShoppingCartItemToCart(userName, formData.id, quantity)
+    }
+
     if (loading) {
         return <CircularProgress />;
     }
@@ -92,7 +134,7 @@ const Detail: React.FC = () => {
         <Grid container justifyContent="center" spacing={1}>
             <Grid item md={12}>
                 <Card>
-                    <CardHeader title="Product Detail" />
+                    <CardHeader title="Update Product Form" />
                     <Formik
                         enableReinitialize
                         initialValues={formData}
@@ -212,7 +254,7 @@ const Detail: React.FC = () => {
                                             </Grid>
                                         </Grid>
                                         <Grid item container spacing={1} justify="center" mb={1}>
-                                            <Grid item md={12}>
+                                            <Grid item md={9}>
                                                 <Field
                                                     label="Inventory"
                                                     variant="outlined"
@@ -223,20 +265,63 @@ const Detail: React.FC = () => {
                                                     disabled
                                                 />
                                             </Grid>
+                                            <Grid item md={3} sx={{mt: 1, ms:1}}>
+                                                <Typography variant="h6" sx={{ minWidth: 32, textAlign: "center" }}>
+                                                    Current Price: {price}
+                                                </Typography>
+                                            </Grid>
                                         </Grid>
+
                                         
                                         
                                     </CardContent>
-                                    <CardActions>
-                                        <Button
-                                            variant="outlined"
-
-                                            onClick={handleClickBack}
-                                            startIcon={<ArrowBackIosNewIcon />}
+                                    <CardActions
+                                        sx={{
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                            width: "100%",
+                                            p: 2
+                                        }}
+                                    >
+                                        <Box
+                                            sx={{   
+                                                   
+                                                    ml: 1 ,
+                                                }}
                                         >
-                                            Back
+                                            <Button
+                                                variant="outlined"
+                                                sx ={{ ml: 1, mb: 2 }}
+                                                onClick={handleClickBack}
+                                                startIcon={<ArrowBackIosNewIcon />}
+                                            >
+                                                Back
                                         </Button>
-
+                                        </Box>
+                                        
+                                        <Box
+                                            sx={{   
+                                                    display: 'flex', 
+                                                    alignItems: 'center',                                                    
+                                                    gap: 1, 
+                                                    mb: 2, 
+                                                    mr: 1 ,
+                                                }}
+                                        >
+                                            <Textarea
+                                                type="number"
+                                                value={quantity}
+                                                onChange={handleInputChange}
+                                                inputProps={{ min: 1, max: formData.inventory, style: {textAlign: 'center', width: "60px"} }}
+                                                sx={{ width: '80px'}}
+                                                size="small"
+                                                disabled={formData.inventory <= 0}
+                                            />
+                                            <Button onClick={() => addItemToCart}>
+                                                <AddShoppingCartIcon />
+                                            </Button>
+                                        </Box>
                                     </CardActions>
                                 </Form>
                             );
@@ -248,4 +333,4 @@ const Detail: React.FC = () => {
     );
 };
 
-export default Detail;
+export default ShopItem;

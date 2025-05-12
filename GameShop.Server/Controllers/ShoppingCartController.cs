@@ -92,20 +92,20 @@ namespace GameShop.Server.Controllers
         }
 
         [HttpPost(Name = "CreateNewShoppingCart")]
-        public async Task<ActionResult> CreateNewShoppingCart([FromBody] ShoppingCart shoppingCart)
+        public async Task<ActionResult> CreateNewShoppingCart([FromBody] ShoppingCart cart)
         {
             try
             {
-                if (shoppingCart == null)
+                if (cart == null)
                 {
                     _logger.LogError("Cannot find Shopping Cart with this id");
                     return NotFound();
                 }
-                shoppingCart.CreatedDate = DateTime.Now;
-                _unitOfWork.ShoppingCart.Add(shoppingCart);
+                cart.CreatedDate = DateTime.Now;
+                _unitOfWork.ShoppingCart.Add(cart);
                 await _unitOfWork.Commit();
-                _logger.LogInformation($"Inserted Shopping Cart with this {shoppingCart.Id}");
-                return Ok(shoppingCart);
+                _logger.LogInformation($"Inserted Shopping Cart with this {cart.Id}");
+                return Ok(cart);
             }
             catch (Exception ex)
             {
@@ -128,17 +128,17 @@ namespace GameShop.Server.Controllers
                     }
                 }
 
-                var shoppingCart = new ShoppingCart()
+                var cart = new ShoppingCart()
                 {
                     UserName = user.UserName,   
                     CreatedDate = DateTime.Now,
                     IsActive = true,
                     ProductCount = 0,
                 };
-                _unitOfWork.ShoppingCart.Add(shoppingCart);
+                _unitOfWork.ShoppingCart.Add(cart);
                 await _unitOfWork.Commit();
-                _logger.LogInformation($"Inserted Shopping Cart with this {shoppingCart.Id}");
-                return Ok(shoppingCart);
+                _logger.LogInformation($"Inserted Shopping Cart with this {cart.Id}");
+                return Ok(cart);
             }
             catch (Exception ex)
             {
@@ -148,27 +148,29 @@ namespace GameShop.Server.Controllers
         }
 
         [HttpPut(Name = "UpdateShoppingCartQuantity")]
-        public async Task<ActionResult> UpdateShoppingCartQuantity(string shoppingCartId, string shoppingCartItemId, int newQuantity)
+        public async Task<ActionResult> UpdateShoppingCartQuantity(string userName, string shoppingCartItemId, int newQuantity)
         {
             try
             {
-                var existingCart = await _unitOfWork.ShoppingCart.GetById(shoppingCartId);
-                if (existingCart == null)
+                var filter = Builders<ShoppingCart>.Filter.Eq("UserName", userName); ;
+
+                var cart = await _unitOfWork.ShoppingCart.GetOneByFilter(filter);
+                if (cart == null)
                 {
-                    _logger.LogError("Cannot find Shopping Cart with this id");
+                    _logger.LogError($"Cannot find Shopping Cart with username {userName}");
                     return NotFound();
                 }
-                var existingItem = existingCart.Items.FirstOrDefault(i => i.Id == shoppingCartItemId);
+                var existingItem = cart.Items.FirstOrDefault(i => i.Id == shoppingCartItemId);
                 if(existingItem == null)
                 {
                     _logger.LogError($"Cannot find Shopping Cart Item with this {shoppingCartItemId}");
                     return NotFound();
                 }
-                existingCart.UpdateItemQuantity(shoppingCartItemId, newQuantity);
-                _unitOfWork.ShoppingCart.Update(existingCart);
+                cart.UpdateItemQuantity(shoppingCartItemId, newQuantity);
+                _unitOfWork.ShoppingCart.Update(cart);
                 await _unitOfWork.Commit();
-                _logger.LogInformation($"Updated Shopping Cart with this {existingCart.Id}");
-                return Ok(existingCart);
+                _logger.LogInformation($"Updated Shopping Cart with this {cart.Id}");
+                return Ok(cart);
             }
             catch (Exception ex)
             {
@@ -246,8 +248,8 @@ namespace GameShop.Server.Controllers
             {
                 var filter = Builders<ShoppingCart>.Filter.Eq("UserName", userName); ;
 
-                var objectCart = await _unitOfWork.ShoppingCart.GetOneByFilter(filter);
-                if (objectCart == null)
+                var cart = await _unitOfWork.ShoppingCart.GetOneByFilter(filter);
+                if (cart == null)
                 {
                     _logger.LogError($"Cannot find Shopping Cart with username {userName}");
                     return NotFound();
@@ -260,18 +262,18 @@ namespace GameShop.Server.Controllers
                 }
                 ShoppingCartItem shoppingCartItem = new ShoppingCartItem()
                 {
-                    ShoppingCartId = objectCart.Id,
+                    ShoppingCartId = cart.Id,
                     Product = product,
                     Quantity = Quantity,
                     CreatedDate = DateTime.Now
                 };
 
-                objectCart.AddItem(shoppingCartItem);
+                cart.AddItem(shoppingCartItem);
 
-                _unitOfWork.ShoppingCart.Update(objectCart);
+                _unitOfWork.ShoppingCart.Update(cart);
                 await _unitOfWork.Commit();
                 _logger.LogInformation($"Added item to Shopping Cart with this {shoppingCartItem.ShoppingCartId}");
-                return Ok(objectCart);
+                return Ok(cart);
             }
             catch (Exception ex)
             {
@@ -281,21 +283,23 @@ namespace GameShop.Server.Controllers
         }
 
         [HttpDelete(Name = "RemoveItemFromCart")]
-        public async Task<ActionResult> RemoveItemFromCart(string shoppingCartId, string itemId)
+        public async Task<ActionResult> RemoveItemFromCart(string userName, string itemId)
         {
             try
             {
-                var cart = await _unitOfWork.ShoppingCart.GetById(shoppingCartId);
+                var filter = Builders<ShoppingCart>.Filter.Eq("UserName", userName); ;
+
+                var cart = await _unitOfWork.ShoppingCart.GetOneByFilter(filter);
                 if (cart == null)
                 {
-                    _logger.LogError($"Cannot find Shopping Cart with this {shoppingCartId}");
+                    _logger.LogError($"Cannot find Shopping Cart with username {userName}");
                     return NotFound();
                 }
                 cart.RemoveItem(itemId);
 
                 _unitOfWork.ShoppingCart.Update(cart);
                 await _unitOfWork.Commit(); 
-                _logger.LogInformation($"Removed item from Shopping Cart with this {shoppingCartId}");
+                _logger.LogInformation($"Removed item from Shopping Cart with user name {userName}");
                 return Ok(cart);
             }
             catch (Exception ex)
@@ -306,21 +310,23 @@ namespace GameShop.Server.Controllers
         }
 
         [HttpDelete(Name = "ClearCart")]
-        public async Task<ActionResult> ClearCart(string shoppingCartId)
+        public async Task<ActionResult> ClearCart(string userName)
         {
             try
             {
-                var cart = await _unitOfWork.ShoppingCart.GetById(shoppingCartId);
+                var filter = Builders<ShoppingCart>.Filter.Eq("UserName", userName); ;
+
+                var cart = await _unitOfWork.ShoppingCart.GetOneByFilter(filter);
                 if (cart == null)
                 {
-                    _logger.LogError($"Cannot find Shopping Cart with this {shoppingCartId}");
+                    _logger.LogError($"Cannot find Shopping Cart with username {userName}");
                     return NotFound();
                 }
                 cart.ClearCart();
 
                 _unitOfWork.ShoppingCart.Update(cart);
                 await _unitOfWork.Commit();
-                _logger.LogInformation($"Cleared Shopping Cart with this {shoppingCartId}");
+                _logger.LogInformation($"Cleared Shopping Cart with userName {userName}");
                 return Ok(cart);
             }
             catch (Exception ex)

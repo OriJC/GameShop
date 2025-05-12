@@ -1,10 +1,20 @@
-﻿/// <reference path="../company/list.tsx" />
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { getAllCategory, getCategoryById, updateCategory, createCategory, deleteCategory } from '@/api/Category/Category'
 import Create from '@/pages/Category/Create'
 import Edit from '@/pages/Category/Edit'
 import Delete from '@/pages/Category/Delete'
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography, Grid, TablePagination } from '@mui/material';
+import {Table, 
+        TableBody, 
+        TableCell, 
+        TableContainer, 
+        TableHead, 
+        TableRow, 
+        Paper, 
+        Button, 
+        Typography, 
+        Grid, 
+        TablePagination } 
+from '@mui/material';
 import moment from 'moment';
 
 
