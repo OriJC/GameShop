@@ -74,7 +74,7 @@ namespace GameShop.Server.Controllers
             }
         }
 
-        [HttpGet("{id}", Name = "GetCompanyById")]
+        [HttpGet(Name = "GetCompanyById")]
         public async Task<ActionResult> GetById(string Id)
         {
             try

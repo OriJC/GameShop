@@ -121,11 +121,20 @@ const ShopItem: React.FC = () => {
             setPrice(count * formData.listPrice)
     }
 
-    const addItemToCart = () => {
+    const addItemToCart = async() => {
+        console.log('test')
         const userName = store.getState().auth.userName
-        addShoppingCartItemToCart(userName, formData.id, quantity)
-    }
+        console.log(userName, formData.id, quantity)
+        if (userName != null){
+            await addShoppingCartItemToCart(userName, formData.id, quantity)
+            navigate('/ShoppingCart')
+        }
+        else {
+            console.log('No user name found in local store')
+        }
 
+    }
+        
     if (loading) {
         return <CircularProgress />;
     }
@@ -134,7 +143,7 @@ const ShopItem: React.FC = () => {
         <Grid container justifyContent="center" spacing={1}>
             <Grid item md={12}>
                 <Card>
-                    <CardHeader title="Update Product Form" />
+                    <CardHeader title="Product" />
                     <Formik
                         enableReinitialize
                         initialValues={formData}
@@ -318,7 +327,7 @@ const ShopItem: React.FC = () => {
                                                 size="small"
                                                 disabled={formData.inventory <= 0}
                                             />
-                                            <Button onClick={() => addItemToCart}>
+                                            <Button onClick={addItemToCart}>
                                                 <AddShoppingCartIcon />
                                             </Button>
                                         </Box>

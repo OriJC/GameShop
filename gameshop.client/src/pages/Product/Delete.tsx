@@ -16,8 +16,6 @@ import {
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import Product from '@/models/Product';
-import Company from '@/models/Company';
-import * as Yup from 'yup';
 import { Formik, Form, Field } from 'formik';
 import { TextField as FormikTextField, TextField } from 'formik-material-ui';
 import { deleteProduct, getProductById } from '@/api/Product/Product';
@@ -25,8 +23,6 @@ import { getAllCompanyName } from '@/api/Company/Company'
 import { getAllCategory } from '@/api/Category/Category'
 import { getAllProductTag } from '@/api/ProductTag/ProductTag'
 import { useNavigate, useParams } from 'react-router-dom';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { base64ToFile } from '@/utils/base64Translate'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 const Create: React.FC = () => {

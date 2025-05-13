@@ -10,7 +10,6 @@ import {
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import Product from '@/models/Product';
-import Company from '@/models/Company';
 import { Formik, Form, Field } from 'formik';
 import { TextField as FormikTextField, TextField } from 'formik-material-ui';
 import { getProductById } from '@/api/Product/Product';

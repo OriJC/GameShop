@@ -16,14 +16,14 @@ export const updateItemQuantity = (userName: string, cartItemId: string, newQuan
 
 export const RemoveItemFromCart = (userName: string, cartItemId: string) => {
     return axios.request({
-        url: 'api/ShoppingCart/RemoveItemFromCart?userName=' + userName + '&shoppingCartItemId=' + cartItemId,
+        url: 'api/ShoppingCart/RemoveItemFromCart?userName=' + userName + '&itemId=' + cartItemId,
         method: 'delete'
     })
 }
 
 export const addShoppingCartItemToCart = (userName: string, productId: string, quantity: number) => {
     return axios.request({
-        url: 'api/ShoppingCart/AddItemToCartByUserName',
+        url: 'api/ShoppingCart/AddItemToCartByUserName?userName='+ userName +'&productId=' + productId+'&Quantity=' + quantity,
         method: 'post',
         data: {
             userName: userName,

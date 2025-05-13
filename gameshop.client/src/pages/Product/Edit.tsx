@@ -16,7 +16,6 @@ import {
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import Product from '@/models/Product';
-import Company from '@/models/Company';
 import * as Yup from 'yup';
 import { Formik, Form, Field } from 'formik';
 import { TextField as FormikTextField, TextField } from 'formik-material-ui';
@@ -297,8 +296,8 @@ const Edit: React.FC = () => {
                                                         onBlur={handleBlur('companyId')}
                                                     >
                                                         {companyData.map((item) => (
-                                                            <MenuItem key={item._id} value={item._id} style={{ textAlign: 'left' }} >
-                                                                {item.Name}
+                                                            <MenuItem key={item.id} value={item.id} style={{ textAlign: 'left' }} >
+                                                                {item.name}
                                                             </MenuItem>
                                                         ))}
 

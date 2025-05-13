@@ -34,9 +34,10 @@ const ShoppingCartPage: React.FC = () => {
     const [data, setData] = useState<ShoppingCartItem[]>([])
     const [username, setUsername] = useState<string>("")
     const [open, setOpen] = useState(false);
-
-    const handleClickOpen = () => {
+    const [dialogId, setDialogId] = useState('')
+    const handleClickOpen = (itemId: string) => {
         setOpen(true);
+        setDialogId(itemId)
     };
     const handleClose = () => {
         setOpen(false);
@@ -77,9 +78,9 @@ const ShoppingCartPage: React.FC = () => {
     const updateShoppingItemQuantity = async (item: ShoppingCartItem, action: number) => {
         let newQuantity = item.quantity + action
         const userName = store.getState().auth.userName
-        if (newQuantity === 0)
-        {
-            RemoveItemFromCart(userName || '', item.id).then((res) => {
+        if (newQuantity <= 0){
+            handleClickOpen(item.id)
+            /*RemoveItemFromCart(userName || '', item.id).then((res) => {
                 if(res.status === 200){
                     setData((prevData) => {
                         return prevData.filter((prevItem) => prevItem.id !== item.id)
@@ -87,22 +88,49 @@ const ShoppingCartPage: React.FC = () => {
                 }
             }).catch((error) => {
                 console.log(error)
+            })*/
+        }
+        else{
+                updateItemQuantity(userName || '', item.id, newQuantity).then((res) => {
+                    if(res.status === 200){
+                        setData((prevData) => {
+                            return prevData.map((prevItem) => {
+                                let totalPrice = 0
+                                if (newQuantity > 100)
+                                    totalPrice= newQuantity * prevItem.product.price100
+                                else if (newQuantity <= 100 && newQuantity > 50)
+                                    totalPrice= newQuantity * prevItem.product.price50
+                                else if (newQuantity <= 50 && newQuantity > 10)
+                                    totalPrice= newQuantity * prevItem.product.price
+                                else 
+                                    totalPrice= newQuantity * prevItem.product.listPrice
+                                if(prevItem.id === item.id){
+
+                                    return {...prevItem, quantity: newQuantity, totalPrice: totalPrice}
+                                }
+                                return prevItem
+                            })
+                        })
+                    }
+                }).catch((error) => {
+                    console.log(error)
+                })
+        }    
+    }
+
+    const handleRemoveItem = () => {
+        const userName = store.getState().auth.userName
+        console.log('Removing:', dialogId)
+        if(userName != null)
+        {
+            RemoveItemFromCart(userName, dialogId).then((res) => {
+                if(res.status === 200){
+                    fetchData()
+                }
             })
         }
-        updateItemQuantity(userName || '', item.id, newQuantity).then((res) => {
-            if(res.status === 200){
-                setData((prevData) => {
-                    return prevData.map((prevItem) => {
-                        if(prevItem.id === item.id){
-                            return {...prevItem, quantity: newQuantity}
-                        }
-                        return prevItem
-                    })
-                })
-            }
-        }).catch((error) => {
-            console.log(error)
-        })
+        handleClose()
+            
     }
     return (
         <Paper>
@@ -112,6 +140,16 @@ const ShoppingCartPage: React.FC = () => {
                 aria-labelledby="alert-dialog-title" 
                 aria-describedby="alert-dialog-description"
             >
+                <DialogTitle id="alert-dialog-title">
+                    {"Comfirm to remove this item from shopping Cart?"}
+                </DialogTitle>
+                <DialogContent id="alert-dialog-description">
+                    Press Confirm this item from shopping cart
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>DisAgree</Button>
+                    <Button onClick={handleRemoveItem} autoFocus>Agree</Button>
+                </DialogActions>
             </Dialog>
             <Grid container alignItems="center" justifyContent="space-between">
                 <Grid item className="ms-3 mt-2">
@@ -155,7 +193,7 @@ const ShoppingCartPage: React.FC = () => {
                                             </Typography>   
                                             <br />
                                             <Typography variant="body1">
-                                                ${item.product.price}
+                                                ${item.totalPrice}
                                             </Typography>                                   
                                         </TableCell>
                                         <TableCell align="right">

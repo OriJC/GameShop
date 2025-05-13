@@ -18,6 +18,7 @@ import moment from 'moment';
 import { Link } from 'react-router-dom'
 import Company from '../../models/Company';
 import Product from '@/models/Product'
+import { cp } from 'fs';
 
 
 
@@ -65,13 +66,14 @@ const List: React.FC = () => {
     }
 
     const handleCompanyTableCell = (item) => {
-        const company = companyData.find(company => company._id === item.companyId)
+        const company = companyData.find(company => company.id === item.companyId)
+        console.log(company)
         if (!company) {
             return <TableCell></TableCell>
         }
         return (
-            <a href={`/company/detail/${company._id}`} target="_blank" rel="noopener noreferrer">
-                {company.Name}
+            <a href={`/company/detail/${company.id}`} target="_blank" rel="noopener noreferrer">
+                {company.name}
             </a>     
         )
     }

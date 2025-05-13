@@ -10,7 +10,7 @@ import { useState, useEffect } from 'react';
 import Product from '@/models/Product';
 import Company from '@/models/Company';
 import { getAllProductIncludingImage } from '@/api/Product/Product';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
 
 
 const Home = () => {
@@ -59,7 +59,7 @@ const Home = () => {
                                 component="img"
                                 height="250"
                                 alt={"alt"}
-                                sx={{ padding: "1em 1em 0 1em", objectFit: "contain" }}
+                                sx={{ maxWidth: 200, margin:'0 auto',padding: "1em 1em 0 1em", objectFit: "contain" }}
                                 image={'data:' + item.imageContentType + ';base64,' + item.imageData}
                                 title={item.product.name}
                             />
