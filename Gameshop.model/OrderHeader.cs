@@ -40,9 +40,11 @@ namespace Gameshop.model
         [BsonElement("TrackingNumber")]
         public string? TrackingNumber { get; set; }
 
+        [BsonRequired]
         [BsonElement("PaymentDate")]
         public DateTime PaymentDate { get; set; }
 
+        [BsonRequired]
         [BsonElement("PaymentDueDate")]
         public DateTime PaymemntDueDate { get; set; }
 

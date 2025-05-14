@@ -19,17 +19,19 @@ namespace Gameshop.model
         [BsonElement("OrderId")]
         public int OrderId { get; set; }
 
-        [ValidateNever]
-
+        [BsonRequired]
         [BsonElement("OrderHeader")]
         public OrderHeader OrderHeader { get; set; }
 
+        [BsonRequired]
         [BsonElement("Product")]
         public List<Product> Product { get; set; }
 
+        [BsonRequired]
         [BsonElement("ProductCount")]
         public int ProrductCount { get; set; }
 
+        [BsonRequired]
         [BsonElement("Price")]
         public double Price { get; set; }
     }
