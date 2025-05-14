@@ -15,6 +15,7 @@ namespace GameShop.Data.Repository.IRepository
         IApplicationUserRepository User { get; }
         IShoppingCartRepository ShoppingCart { get; }
         IShoppingCartItemRepository ShoppingCartItem { get; }
+        IOrderDetailRepository OrderDetail { get; }
 
         Task<bool> Commit();
     }

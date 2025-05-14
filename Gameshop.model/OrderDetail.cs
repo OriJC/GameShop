@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Gameshop.model
 {
-    public class Orderetail
+    public class OrderDetail
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]

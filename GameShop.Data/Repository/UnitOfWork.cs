@@ -22,6 +22,7 @@ namespace GameShop.Data.Repository
             User = new ApplicationUserRepository(_mongoContext);
             ShoppingCart = new ShoppingCartRepository(_mongoContext);
             ShoppingCartItem = new ShoppingCartItemRepository(_mongoContext);
+            OrderDetail = new OrderDetailRepository(_mongoContext);
         }
 
         public ICategoryRepository Category { get; private set; }
@@ -31,6 +32,7 @@ namespace GameShop.Data.Repository
         public IApplicationUserRepository User { get; private set; }
         public IShoppingCartRepository ShoppingCart { get; private set; }
         public IShoppingCartItemRepository ShoppingCartItem { get; private set; }
+        public IOrderDetailRepository OrderDetail { get; private set; }
 
         public async Task<bool> Commit()
         {
