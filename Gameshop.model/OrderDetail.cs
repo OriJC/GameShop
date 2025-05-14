@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
@@ -14,16 +15,22 @@ namespace Gameshop.model
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
 
-        [BsonElement("State")]
-        public string? State { get; set; }
+        [BsonRequired]
+        [BsonElement("OrderId")]
+        public int OrderId { get; set; }
 
-        [BsonElement("City")]
-        public string? City { get; set; }
+        [ValidateNever]
 
-        [BsonElement("Street")]
-        public string? Street { get; set; }
+        [BsonElement("OrderHeader")]
+        public OrderHeader OrderHeader { get; set; }
 
-        [BsonElement("ZipCode")]
-        public string? ZipCode { get; set; }
+        [BsonElement("Product")]
+        public List<Product> Product { get; set; }
+
+        [BsonElement("ProductCount")]
+        public int ProrductCount { get; set; }
+
+        [BsonElement("Price")]
+        public double Price { get; set; }
     }
 }

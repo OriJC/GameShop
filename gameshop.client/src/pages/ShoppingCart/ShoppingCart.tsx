@@ -15,7 +15,8 @@ import {
     TableHead,
     TableRow,
     TableBody,
-    Tab,
+    Box,
+    Stack
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import Product from '@/models/Product';
@@ -23,7 +24,7 @@ import { ShoppingCart, ShoppingCartItem } from '@/models/ShoppingCart';
 import { TextField as FormikTextField, TextField } from 'formik-material-ui';
 import { useNavigate } from 'react-router-dom';
 import store from '@/store/store'
-import { getShoppingCart, updateItemQuantity, RemoveItemFromCart } from '@/api/ShoppingCart/ShoppingCart';
+import { getShoppingCart, updateItemQuantity, RemoveItemFromCart, getShoppingCartInfo } from '@/api/ShoppingCart/ShoppingCart';
 import  './ShoppingCart.less'
 import { getProductImageByImageId } from '@/api/Product/Product';
 import RemoveOutlinedIcon from '@mui/icons-material/RemoveOutlined';
@@ -35,6 +36,7 @@ const ShoppingCartPage: React.FC = () => {
     const [username, setUsername] = useState<string>("")
     const [open, setOpen] = useState(false);
     const [dialogId, setDialogId] = useState('')
+    const [cart, setCart] = useState<ShoppingCart>()
     const handleClickOpen = (itemId: string) => {
         setOpen(true);
         setDialogId(itemId)
@@ -55,7 +57,7 @@ const ShoppingCartPage: React.FC = () => {
         const userName = store.getState().auth.userName
         const res = await getShoppingCart(userName || '')
         let items : ShoppingCartItem[] = res.data.items || []
-
+        setCart(res.data)
         items = await Promise.all(
             items.map(async (item) => {
                 if(item.product?.imageFileId){
@@ -69,7 +71,6 @@ const ShoppingCartPage: React.FC = () => {
                 return {...item, imageString: ''}
             })
         )
-        console.log(items)
         setUsername(userName || '')
         setData(items)
         
@@ -110,6 +111,17 @@ const ShoppingCartPage: React.FC = () => {
                                 }
                                 return prevItem
                             })
+                        })
+                        const cart = getShoppingCartInfo(userName || '').then(res =>{
+                                setCart(prev => {
+                                if (!prev) return prev; 
+                                    return {
+                                        ...prev,
+                                        totalPrice: res.data.totalPrice
+                                    };
+                                });     
+                        }).catch(error =>{
+                            console.log(error)
                         })
                     }
                 }).catch((error) => {
@@ -197,20 +209,41 @@ const ShoppingCartPage: React.FC = () => {
                                             </Typography>                                   
                                         </TableCell>
                                         <TableCell align="right">
-                                            <Button variant="contained" className="itemNumberButton" onClick={() => updateShoppingItemQuantity(item, -1)}>
-                                                <RemoveOutlinedIcon />
-                                            </Button>
-                                            <Typography variant="body1">
-                                                {item.quantity}
-                                            </Typography>
-                                            <Button variant="contained" onClick={() => updateShoppingItemQuantity(item, 1)}>
-                                                <AddOutlinedIcon />
-                                            </Button>
+                                            <Stack direction="row" alignItems="center" spacing={1} justifyContent="flex-end" sx={{mr:2}}>
+                                                <Button variant="contained" className="itemNumberButton" onClick={() => updateShoppingItemQuantity(item, -1)}>
+                                                    <RemoveOutlinedIcon />
+                                                </Button>
+                                                <Box sx={{width: 30, display: 'flex', alignItems: 'center', justifyContent:'center'}}>
+                                                    <Typography variant="body1" sx={{align: 'center'}}>
+                                                        {item.quantity}
+                                                    </Typography>
+                                                </Box>
+                                                
+                                                <Button variant="contained" className="itemNumberButton" onClick={() => updateShoppingItemQuantity(item, 1)}>
+                                                    <AddOutlinedIcon />
+                                                </Button>
+                                            </Stack>                                         
                                         </TableCell>
                                     </TableRow>
                                 ))
                             )
                         }
+                        <TableRow>
+                            <TableCell></TableCell>
+                            <TableCell></TableCell>
+                            <TableCell align='right' sx={{pr:2}}>
+                                <Stack direction="row" alignItems="center" spacing={1} justifyContent="flex-end" sx={{mr:2}}>
+                                    <Typography>
+                                        Total Price: ${cart?.totalPrice? cart?.totalPrice : 0}
+                                    </Typography>
+                                    <Button className="checkoutButton">
+                                        <Typography>
+                                            Checkout
+                                        </Typography>
+                                    </Button>
+                                </Stack>    
+                            </TableCell>
+                        </TableRow>
                     </TableBody>
                 </Table>
                 </TableContainer>

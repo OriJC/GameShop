@@ -1,5 +1,12 @@
 import axios from '@/services/api.request'
 
+export const getShoppingCartInfo = (userName: string) => {
+    return axios.request({
+        url: 'api/ShoppingCart/GetCartInfoByUserName?userName=' + userName,
+        method: 'get'
+    })
+}
+
 export const getShoppingCart = (userName: string) => {
     return axios.request({
         url: 'api/ShoppingCart/GetCartByUserName?userName=' + userName,
@@ -32,3 +39,6 @@ export const addShoppingCartItemToCart = (userName: string, productId: string, q
         },
     })
 }
+
+
+

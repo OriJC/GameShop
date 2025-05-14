@@ -38,7 +38,7 @@ namespace Gameshop.model
         public int ProductCount { get; set; }
 
         [BsonElement("TotalPrice")]
-        public int TotalPrice { get; private set; }
+        public double TotalPrice { get; private set; }
 
         [BsonElement("IsActive")]
         public bool IsActive { get; set; }

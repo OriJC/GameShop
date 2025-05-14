@@ -3,6 +3,7 @@ using GameShop.Data.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using System.Runtime.CompilerServices;
 
@@ -91,6 +92,33 @@ namespace GameShop.Server.Controllers
 
         }
 
+        [HttpGet(Name = "GetCartInfoByUserName")]
+        public async Task<ActionResult> GetCartInfoByUserName(string userName)
+        {
+            try
+            {
+                var filter = Builders<ShoppingCart>.Filter.Eq("UserName", userName); ;
+                var projection = Builders<ShoppingCart>.Projection.Include("UserName").Include("_id").Include("ProductCount").Include("TotalPrice");
+
+                var objectCart = await _unitOfWork.ShoppingCart.GetOneByProjectionAndFilter<CartInfoProjection>(filter, projection);
+
+
+                if (objectCart == null)
+                {
+                    _logger.LogInformation($"Cannot found shopping cart with user name {userName}");
+                    return NotFound();
+                }
+
+                _logger.LogInformation($"Return shopping cart with user name {userName}");
+                return Ok(objectCart);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
         [HttpPost(Name = "CreateNewShoppingCart")]
         public async Task<ActionResult> CreateNewShoppingCart([FromBody] ShoppingCart cart)
         {
@@ -115,7 +143,7 @@ namespace GameShop.Server.Controllers
         }
 
         [HttpPost(Name = "createNewShoppingCartByUserName")]
-        public async Task<ActionResult> createNewShoppingCartByUserName(string userName)
+        public async Task<ActionResult> CreateNewShoppingCartByUserName(string userName)
         {
             try
             {
@@ -335,5 +363,16 @@ namespace GameShop.Server.Controllers
                 return BadRequest(ex.Message);
             }
         }
+    }
+
+    class CartInfoProjection
+    {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        [BsonElement("_id")]
+        public string Id { get; set; }
+        public string UserName { get; set; }
+        public int ProductCount { get; set; }
+        public double TotalPrice { get; set; }
     }
 }

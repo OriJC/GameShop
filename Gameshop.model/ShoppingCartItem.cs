@@ -48,11 +48,12 @@ namespace Gameshop.model
 
         private void UpdatePricing()
         {
+            if (Product == null) return;
             if (Quantity >= 0 && Quantity < 50)
             {
                 UnitPrice = Product.Price;
             }
-            else if (Quantity >= 50 && UnitPrice < 100)
+            else if (Quantity >= 50 && Quantity < 100)
             {
                 UnitPrice = Product.Price50;
             }
