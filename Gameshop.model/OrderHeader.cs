@@ -15,11 +15,8 @@ namespace Gameshop.model
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
 
-        [BsonElement("ApplicationUser")]
-        public string ApplicationUserId { get; set; }
-
-        [ValidateNever]
-        public ApplicationUser ApplicationUser { get; set; }
+        [BsonElement("ApplicationUserName")]
+        public string ApplicationUserName { get; set; }
 
         [BsonRequired]
         [BsonElement("OrderDate")]

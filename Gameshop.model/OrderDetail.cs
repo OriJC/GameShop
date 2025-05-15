@@ -17,7 +17,7 @@ namespace Gameshop.model
 
         [BsonRequired]
         [BsonElement("OrderId")]
-        public int OrderId { get; set; }
+        public string OrderId { get; set; }
 
         [BsonRequired]
         [BsonElement("OrderHeader")]
@@ -29,7 +29,7 @@ namespace Gameshop.model
 
         [BsonRequired]
         [BsonElement("ProductCount")]
-        public int ProrductCount { get; set; }
+        public int ProductCount { get; set; }
 
         [BsonRequired]
         [BsonElement("Price")]
