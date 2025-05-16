@@ -189,7 +189,7 @@ const Create: React.FC = () => {
                                                 />
                                             </Grid>
                                         </Grid>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item md={6}>
                                                 <Field
                                                     label="List Price"
@@ -213,7 +213,7 @@ const Create: React.FC = () => {
                                                 />
                                             </Grid>
                                         </Grid>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item md={6}>
                                                 <Field
                                                     label="Price(51~100)"
@@ -246,7 +246,7 @@ const Create: React.FC = () => {
                                             component={FormikTextField}
                                             disabled
                                         />
-                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item md={12}>
                                                 <FormControl fullWidth variant="outlined">
                                                     <InputLabel id="company-label">Company</InputLabel>
@@ -268,7 +268,7 @@ const Create: React.FC = () => {
 
                                             </Grid>
                                         </Grid>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item md={12}>
                                                 <FormControl fullWidth variant="outlined">
                                                     <InputLabel id="productTagLabelId">Tag</InputLabel>

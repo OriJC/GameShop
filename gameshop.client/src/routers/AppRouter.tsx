@@ -8,7 +8,7 @@ import UserRoute from "@/pages/Identity/User/UserRoute.tsx";
 import RoleRoute from "@/pages/Identity/Role/RoleRoute.tsx";
 import Login from "@/pages/Home/Login";
 import ShoppingCart from "@/pages/ShoppingCart/ShoppingCart";
-
+import OrderRoute from "@/pages/Order/OrderRoute";
 function AppRouter() {
     return (
         <Routes>
@@ -21,6 +21,7 @@ function AppRouter() {
             <Route path="/Role/*" element={<RoleRoute />} />
             <Route path="/Login" element={<Login />} />
             <Route path="/ShoppingCart" element={<ShoppingCart />} />
+            <Route path="/Order/*" element={<OrderRoute />} />
         </Routes>
     )
 }

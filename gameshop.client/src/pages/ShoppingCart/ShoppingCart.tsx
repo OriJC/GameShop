@@ -41,6 +41,7 @@ const ShoppingCartPage: React.FC = () => {
         setOpen(true);
         setDialogId(itemId)
     };
+
     const handleClose = () => {
         setOpen(false);
     };
@@ -144,6 +145,12 @@ const ShoppingCartPage: React.FC = () => {
         handleClose()
             
     }
+
+    const handleGo = () => {
+        navigate('/order/paymentInfo', {state: cart})
+    }
+
+
     return (
         <Paper>
             <Dialog 
@@ -197,7 +204,7 @@ const ShoppingCartPage: React.FC = () => {
                                     
                                     <TableRow key={index}>
                                         <TableCell>
-                                            <img src={'data:' + item.imageString?.contentType + ';base64,' + item.imageString?.imageContent} alt={item.product.name} style={{ width: '100px', height: '100px' }} />
+                                            <img src={'data:' + item.imageString.contentType + ';base64,' + item.imageString.imageContent} alt={item.product.name} style={{ width: '100px', height: '100px' }} />
                                         </TableCell>
                                         <TableCell>
                                             <Typography variant="h6">
@@ -236,7 +243,7 @@ const ShoppingCartPage: React.FC = () => {
                                     <Typography>
                                         Total Price: ${cart?.totalPrice? cart?.totalPrice : 0}
                                     </Typography>
-                                    <Button className="checkoutButton">
+                                    <Button className="checkoutButton" onClick={handleGo}>
                                         <Typography>
                                             Checkout
                                         </Typography>

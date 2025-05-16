@@ -86,7 +86,7 @@ const Create: React.FC = () => {
     }
 
     return (
-        <Grid container justify="center" spacing={1}>
+        <Grid container justifyContent="center" spacing={1}>
             <Grid item md={12}>
                 <Card>
                     <CardHeader title="Create User" />
@@ -99,7 +99,7 @@ const Create: React.FC = () => {
                             return (
                             <Form>
                                 <CardContent>
-                                    <Grid item container spacing={1} justify="center" mb={1}>
+                                    <Grid item container spacing={1} justifyContent="center" mb={1}>
                                         <Grid item xs={12}>
                                             <Field
                                                 label="Name"
@@ -111,7 +111,7 @@ const Create: React.FC = () => {
                                             />                      
                                         </Grid>
                                         </Grid>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item xs={12}>
                                                 <Field
                                                     label="Email"
@@ -123,7 +123,7 @@ const Create: React.FC = () => {
                                                 />
                                             </Grid>
                                         </Grid>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item xs={12}>
                                                 <Field
                                                     label="Password"
@@ -135,7 +135,7 @@ const Create: React.FC = () => {
                                                 />
                                             </Grid>
                                         </Grid>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item md={12}>
                                                 <FormControl fullWidth variant="outlined">
                                                     <InputLabel id="roleLabelId">Tag</InputLabel>

@@ -14,8 +14,16 @@ interface ShoppingCartItem {
     createdAt: Date;
     product: Product;
     quantity: number;
-    price: number;
-    imageString?: string;
+    totalPrice: number;
+    imageString: ImageString;
 }
+
+interface ImageString
+{
+    contentType: string;
+    imageContent: string;
+}
+
+
 
 export type { ShoppingCart, ShoppingCartItem }

@@ -7,50 +7,48 @@ import {
     CardActions,
 } from '@mui/material';
 import { useState } from 'react'
-import Company from '@/models/Company'
+import { PaymentInfo } from '@/models/PaymentInfo'
 import * as Yup from 'yup'
 import { Formik, Form, Field } from 'formik'
 import { TextField } from 'formik-material-ui'
-import { createCompany } from '@/api/Company/Company'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-const Create: React.FC = () => {
+const PaymentInformation: React.FC = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const cartData = location.state;
     // initData
-    const formData: Company = {
+    const formData: PaymentInfo = {
         name: '',
-        address: {
-            state: '',
-            city: '',
-            street: '',
-            zipCode: ''
-        },
-        phoneNumber: '',
-        email: ''
+        phoneNumber: '', 
+        state: '',
+        city: '',
+        streetAddress: '',
+        postalCode: ''
     }
     const [error, setError] = useState(false)
 
     let validationSchema = Yup.object().shape({
         name: Yup.string().required("Required"),
-        email: Yup.string().email("Invalid email")
+        phoneNumber: Yup.string().required("Required"),
+        state: Yup.string().required("Required"),
+        city: Yup.string().required("Required"),
+        streetAddress: Yup.string().required("Required"),
+        postalCode: Yup.string().required("Required"),
     })
 
-    const onSubmit = (values: Company) => {
-        createCompany(values).then((res) => {
-            console.log(res.data)
-            setTimeout(() => {
-                navigate('/Company');
-            }, 500)
-        }).catch(error => {
-            console.log(error)
-        })
+    const onSubmit = (values: PaymentInfo) => {
+        const orderRequstBody = {
+            cart: cartData,
+            paymentInfo: formData
+        }
     }
 
     return (
         <Grid container justifyContent="center" spacing={1}>
             <Grid item md={12}>
                 <Card>
-                    <CardHeader title="Create Company Form" />
+                    <CardHeader title="Order Payment Detail Form" />
                     <Formik
                         initialValues={formData}
                         validationSchema={validationSchema}
@@ -78,8 +76,8 @@ const Create: React.FC = () => {
                                                     label="State"
                                                     variant="outlined"
                                                     fullWidth
-                                                    name="address.state"
-                                                    value={values.address.state}
+                                                    name="state"
+                                                    value={values.state}
                                                     component={TextField}
                                                 />
                                             </Grid>
@@ -88,30 +86,20 @@ const Create: React.FC = () => {
                                                     label="City"
                                                     variant="outlined"
                                                     fullWidth
-                                                    name="address.city"
-                                                    value={values.address.city}
+                                                    name="city"
+                                                    value={values.city}
                                                     component={TextField}
                                                 />
                                             </Grid>
                                         </Grid> 
                                         <Grid item container spacing={1} justifyContent="center" mb={1}>
-                                            <Grid item md={6}>
+                                            <Grid item xs={12}>
                                                 <Field
-                                                    label="Street"
+                                                    label="Street Address"
                                                     variant="outlined"
                                                     fullWidth
-                                                    name="address.street"
-                                                    value={values.address.street}
-                                                    component={TextField}
-                                                />
-                                            </Grid>
-                                            <Grid item md={6}>
-                                                <Field
-                                                    label="ZipCode"
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    name="address.zipCode"
-                                                    value={values.address.zipCode}
+                                                    name="streetAddress"
+                                                    value={values.streetAddress}
                                                     component={TextField}
                                                 />
                                             </Grid>
@@ -129,11 +117,11 @@ const Create: React.FC = () => {
                                             </Grid>
                                             <Grid item md={6}>
                                                 <Field
-                                                    label="Email"
+                                                    label="Postal Code"
                                                     variant="outlined"
                                                     fullWidth
-                                                    name="email"
-                                                    value={values.email}
+                                                    name="postalCode"
+                                                    value={values.postalCode}
                                                     component={TextField}
                                                 />
                                             </Grid>
@@ -146,7 +134,7 @@ const Create: React.FC = () => {
                                             color="primary"
                                             type="submit"
                                         >
-                                            Create
+                                            Submit
                                         </Button>
                                     </CardActions>
                                 </Form>
@@ -159,4 +147,4 @@ const Create: React.FC = () => {
     );
 }
 
-export default Create;
+export default PaymentInformation;

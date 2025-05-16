@@ -63,7 +63,7 @@ const Detail: React.FC = () => {
                         
                     <CardContent>
 
-                        <Grid item container spacing={1} justify="center" mb={1}>
+                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                             <Grid item md={6}>
                                 <Typography variant="h3" color="text.secondary">
                                     {data.Name}

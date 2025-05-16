@@ -162,7 +162,7 @@ const Detail: React.FC = () => {
                                                 />
                                             </Grid>
                                         </Grid>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item md={6}>
                                                 <Field
                                                     label="List Price"
@@ -186,7 +186,7 @@ const Detail: React.FC = () => {
                                                 />
                                             </Grid>
                                         </Grid>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item md={6}>
                                                 <Field
                                                     label="Price(51~100)"
@@ -210,7 +210,7 @@ const Detail: React.FC = () => {
                                                 />
                                             </Grid>
                                         </Grid>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item md={12}>
                                                 <Field
                                                     label="Inventory"

@@ -61,13 +61,13 @@ namespace GameShop.Server.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] ShoppingCart cart)
+        public async Task<ActionResult> Create([FromBody] createOrderRequest requestBody)
         {
             try
             {
                 // Get Product in the shopping cart item
-
-                List<Product> products = cart.Items.Select(i => i.Product).ToList();
+                
+                List<Product> products = requestBody.cart.Items.Select(i => i.Product).ToList();
 
                 if (products == null || !products.Any())
                 {
@@ -78,20 +78,20 @@ namespace GameShop.Server.Controllers
                 // Create OrderHeader
                 OrderHeader newOrderHeader = new OrderHeader
                 {
-                    ApplicationUserName = cart.UserName,
+                    ApplicationUserName = requestBody.cart.UserName,
                     OrderDate = DateTime.Now,
                     ShippingDate = DateTime.Now.AddDays(1),
-                    OrderTotal = cart.TotalPrice,
+                    OrderTotal = requestBody.cart.TotalPrice,
                     OrderStatus = "CREATED",
                     PaymentStatus = "PENDING_PAYMENT",
                     PaymentDate = DateTime.Now,
                     PaymemntDueDate = DateTime.Now.AddDays(7),
-                    PhoneNumber = "",
-                    State = "",
-                    City = "",
-                    StreetAddress = "",
-                    PostalCode = "",
-                    Name = ""
+                    PhoneNumber = requestBody.paymentInfo.PhoneNumber,
+                    State = requestBody.paymentInfo.State,
+                    City = requestBody.paymentInfo.City,
+                    StreetAddress = requestBody.paymentInfo.StreetAddress,
+                    PostalCode = requestBody.paymentInfo.PostalCode,
+                    Name = requestBody.paymentInfo.Name
                 };
 
                 // Create OrderDetail
@@ -100,8 +100,8 @@ namespace GameShop.Server.Controllers
                     OrderId = newOrderHeader.Id,
                     OrderHeader = newOrderHeader,
                     Product = products,
-                    ProductCount = cart.ProductCount,
-                    Price = cart.TotalPrice
+                    ProductCount = requestBody.cart.ProductCount,
+                    Price = requestBody.cart.TotalPrice
 
                 };
                 _unitOfWork.OrderDetail.Add(neworderDetail);
@@ -140,7 +140,7 @@ namespace GameShop.Server.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{orderId}")]
         public async Task<ActionResult> Delete(string orderId)
         {
             try
@@ -163,6 +163,13 @@ namespace GameShop.Server.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+    }
+
+    public class createOrderRequest
+    {
+        public ShoppingCart cart { get; set; }
+        public PaymentInformation paymentInfo { get; set; }
 
     }
 }
