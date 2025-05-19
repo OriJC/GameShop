@@ -1,4 +1,5 @@
 import Product from "./Product";
+import { ShoppingCart, ShoppingCartItem } from "./ShoppingCart";
 
 interface OrderHeader {
     id: string;
@@ -24,9 +25,9 @@ interface OrderDetail {
     id: string;
     orderId: string;
     orderHeader: OrderHeader;
-    product: Product[];
-    productCount: number;
+    items: ShoppingCartItem[];
+    itemCount: number;
     price: number;
 }
 
-export default OrderDetail;
+export type {OrderDetail};

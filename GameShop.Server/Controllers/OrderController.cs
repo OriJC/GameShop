@@ -86,12 +86,12 @@ namespace GameShop.Server.Controllers
                     PaymentStatus = "PENDING_PAYMENT",
                     PaymentDate = DateTime.Now,
                     PaymemntDueDate = DateTime.Now.AddDays(7),
-                    PhoneNumber = requestBody.paymentInfo.PhoneNumber,
-                    State = requestBody.paymentInfo.State,
-                    City = requestBody.paymentInfo.City,
-                    StreetAddress = requestBody.paymentInfo.StreetAddress,
-                    PostalCode = requestBody.paymentInfo.PostalCode,
-                    Name = requestBody.paymentInfo.Name
+                    PhoneNumber = requestBody.paymentInfo.phoneNumber,
+                    State = requestBody.paymentInfo.state,
+                    City = requestBody.paymentInfo.city,
+                    StreetAddress = requestBody.paymentInfo.streetAddress,
+                    PostalCode = requestBody.paymentInfo.postalCode,
+                    Name = requestBody.paymentInfo.name
                 };
 
                 // Create OrderDetail
@@ -99,7 +99,7 @@ namespace GameShop.Server.Controllers
                 {
                     OrderId = newOrderHeader.Id,
                     OrderHeader = newOrderHeader,
-                    Product = products,
+                    Items = requestBody.cart.Items,
                     ProductCount = requestBody.cart.ProductCount,
                     Price = requestBody.cart.TotalPrice
 

@@ -17,7 +17,7 @@ export const getAllCompanyName = () => {
 
 export const getCompanyById = (Id: string) => {
     return axios.request({
-        url: 'api/Company/GetById/'+ Id,
+        url: 'api/Company/GetById?Id='+ Id,
         method: 'get'
     })
 }

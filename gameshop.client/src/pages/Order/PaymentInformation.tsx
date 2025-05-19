@@ -12,6 +12,7 @@ import * as Yup from 'yup'
 import { Formik, Form, Field } from 'formik'
 import { TextField } from 'formik-material-ui'
 import { useNavigate, useLocation } from 'react-router-dom';
+import { createOrder } from '@/api/Order/Order'
 
 const PaymentInformation: React.FC = () => {
     const navigate = useNavigate();
@@ -37,11 +38,16 @@ const PaymentInformation: React.FC = () => {
         postalCode: Yup.string().required("Required"),
     })
 
-    const onSubmit = (values: PaymentInfo) => {
+    const onSubmit = async (values: PaymentInfo) => {
         const orderRequstBody = {
             cart: cartData,
-            paymentInfo: formData
+            paymentInfo: values
         }
+
+        await createOrder(orderRequstBody).then(res => {
+            console.log(res.data)
+            navigate('/order/orderdetail/' + res.data.id)
+        })
     }
 
     return (

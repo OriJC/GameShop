@@ -8,10 +8,10 @@ export const getOrderById = (orderId: string) => {
     })
 }
 
-export const createOrderByShoppingCart = (cart: ShoppingCart) => {
+export const createOrder = (data: object) => {
     return axios.request({
         url: 'api/Order',
-        data: cart,
+        data: data,
         method: 'post'
     })
 }

@@ -12,26 +12,26 @@ namespace Gameshop.model
     {
         [BsonRequired]
         [BsonElement("Name")]
-        public string Name { get; set; }
+        public string name { get; set; }
 
         [BsonRequired]
         [BsonElement("PhoneNumber")]
-        public string PhoneNumber { get; set; }
+        public string phoneNumber { get; set; }
 
         [BsonRequired]
         [BsonElement("State")]
-        public string State { get; set; }
+        public string state { get; set; }
 
         [BsonRequired]
         [BsonElement("City")]
-        public string City { get; set; }
+        public string city { get; set; }
 
         [BsonElement("StreetAddress")]
-        public string StreetAddress { get; set; }
+        public string streetAddress { get; set; }
 
         [BsonRequired]
         [BsonElement("PostalCode")]
-        public string PostalCode { get; set; }
+        public string postalCode { get; set; }
 
 
     }

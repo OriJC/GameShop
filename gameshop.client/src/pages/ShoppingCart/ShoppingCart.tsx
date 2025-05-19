@@ -253,7 +253,7 @@ const ShoppingCartPage: React.FC = () => {
                         </TableRow>
                     </TableBody>
                 </Table>
-                </TableContainer>
+            </TableContainer>
                 
         </Paper>        
     );

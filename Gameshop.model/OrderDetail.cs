@@ -23,12 +23,20 @@ namespace Gameshop.model
         [BsonElement("OrderHeader")]
         public OrderHeader OrderHeader { get; set; }
 
-        [BsonRequired]
-        [BsonElement("Product")]
-        public List<Product> Product { get; set; }
+        private ICollection<ShoppingCartItem> _items;
 
         [BsonRequired]
-        [BsonElement("ProductCount")]
+        [BsonElement("Items")]
+        public ICollection<ShoppingCartItem> Items
+        {   get => _items;
+            set 
+            {
+                _items = value;
+            }
+        }
+
+        [BsonRequired]
+        [BsonElement("ItemCount")]
         public int ProductCount { get; set; }
 
         [BsonRequired]

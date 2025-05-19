@@ -12,15 +12,15 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 const Detail: React.FC = () => {
     const formData: Company = {
-        Name: '',
-        Address: {
-            State: '',
-            City: '',
-            Street: '',
-            ZipCode: ''
+        name: '',
+        address: {
+            state: '',
+            city: '',
+            street: '',
+            zipCode: ''
         },
-        PhoneNumber: '',
-        Email: ''
+        phoneNumber: '',
+        email: ''
     }
     const routeParams = useParams<{ companyId: string }>();
     const [data, setData] = useState<Company | null>(formData);
@@ -66,24 +66,24 @@ const Detail: React.FC = () => {
                         <Grid item container spacing={1} justifyContent="center" mb={1}>
                             <Grid item md={6}>
                                 <Typography variant="h3" color="text.secondary">
-                                    {data.Name}
+                                    {data?.name}
                                 </Typography>
                                 <Typography variant="h5" color="text.secondary">
-                                    {data.Address.City}, {data.Address.State}
+                                    {data?.address.city}, {data?.address.state}
                                 </Typography>
                             </Grid>
                             <Grid item md={6} style={{ textAlign: 'left', paddingLeft: '50px' }}>
                                 <Typography variant="body2" color="text.secondary">
-                                    Email: {data.Email}
+                                    Email: {data?.email}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    Phone Number: {data.PhoneNumber}
+                                    Phone Number: {data?.phoneNumber}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    Street: {data.Address.Street}
+                                    Street: {data?.address.street}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    Zip Code: {data.Address.ZipCode}
+                                    Zip Code: {data?.address.zipCode}
                                 </Typography>
                             </Grid>
                         </Grid> 

@@ -72,7 +72,7 @@ const Login: React.FC = () => {
                             return (
                                 <Form>
                                     <CardContent>
-                                        <Grid item container spacing={1} jujustifyContentstify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item xs={12}>
                                                 <Field
                                                     label="User Name"

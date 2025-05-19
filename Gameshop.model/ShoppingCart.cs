@@ -26,7 +26,7 @@ namespace Gameshop.model
 
         [BsonElement("Items")]
         public ICollection<ShoppingCartItem>? Items 
-        { get => _items; 
+        {   get => _items; 
             set
             {
                 _items = value;
