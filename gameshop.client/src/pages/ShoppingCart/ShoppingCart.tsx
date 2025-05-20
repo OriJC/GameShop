@@ -96,9 +96,9 @@ const ShoppingCartPage: React.FC = () => {
                         setData((prevData) => {
                             return prevData.map((prevItem) => {
                                 let totalPrice = 0
-                                if (newQuantity > 100)
+                                if (newQuantity >= 100)
                                     totalPrice= newQuantity * prevItem.product.price100
-                                else if (newQuantity <= 100 && newQuantity >= 50)
+                                else if (newQuantity < 100 && newQuantity >= 50)
                                     totalPrice= newQuantity * prevItem.product.price50
                                 else if (newQuantity < 50 && newQuantity > 10)
                                     totalPrice= newQuantity * prevItem.product.price

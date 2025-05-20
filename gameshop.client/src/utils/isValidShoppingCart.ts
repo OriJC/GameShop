@@ -6,7 +6,6 @@ export const isValidShoppingCart = (obj: any): obj is ShoppingCart => {
     return (
         obj &&
         typeof obj.id === 'string' &&
-        typeof obj.userId === 'number' &&
         Array.isArray(obj.items) &&
         typeof obj.productCount === 'number' &&
         typeof obj.totalPrice === 'number'

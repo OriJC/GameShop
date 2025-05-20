@@ -15,7 +15,8 @@ import { getAllOrder } from '@/api/Order/Order'
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'
 import { OrderDetail } from '@/models/Order';
-
+import { removeUnderscoreBetweenWords } from '@/utils/removeUnderscoreBetweenWords';
+import './OrderList.less';
 
 
 const List: React.FC = () => {
@@ -23,6 +24,24 @@ const List: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
+    
+    const orderStatusMap: {[key: string]: string} = {
+        PENDING: 'Pending',
+        PROCESSING: 'Processing',
+        SHIPPED: 'Shipped',
+        COMPLETED: 'Completed',
+        CANCELLED: 'Cancelled'
+    };
+
+    const paymentStatusMap: {[key: string]: string} = {
+        PENDING_PAYMENT: 'Pending Payment',
+        PAID: 'Paid',
+        REFUNDED: 'Refunded',
+        FAILED: 'Failed'
+    };
+    
+    
+    
     // Get Data 
     useEffect(() => { 
         fetchData()
@@ -34,7 +53,7 @@ const List: React.FC = () => {
         getAllOrder().then(res => {
             const formattedData: OrderDetail[] = res.data.map(item =>
             ({
-                ...item
+                ...item,
             }))
             setData(formattedData)
             setLoading(false)
@@ -65,7 +84,7 @@ const List: React.FC = () => {
             <Grid container alignItems="center" justifyContent="space-between">
                 <Grid item className="ms-3 mt-2">
                     <Typography component="h1" variant="h5">
-                        Order
+                        Order List
                     </Typography>
                 </Grid>
                 <Grid item className="me-2 mt-2">
@@ -79,6 +98,7 @@ const List: React.FC = () => {
                     <TableHead>
                         <TableRow>
                             <TableCell>Name</TableCell>
+                            <TableCell>Order Status</TableCell>
                             <TableCell>Payment Status</TableCell>
                             <TableCell>City, State</TableCell>
                             <TableCell align={'right'} sx={{ paddingRight: '150px' }} >Actions</TableCell>
@@ -90,13 +110,32 @@ const List: React.FC = () => {
                                 <TableCell>
                                     <Link to={`/order/orderDetail/${item.id}`}>
                                         {item.orderHeader.name}
-                                    </Link></TableCell>
-                                <TableCell>{item.orderHeader.paymentStatus}
+                                    </Link>
                                 </TableCell>
+                                <TableCell>
+                                    <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                                        <Typography
+                                            component="span"
+                                            className={`status-label status-order ${item.orderHeader.orderStatus}`}
+                                            variant='body2'
+                                        >
+                                            {orderStatusMap[removeUnderscoreBetweenWords(item.orderHeader.orderStatus)]|| removeUnderscoreBetweenWords(item.orderHeader.orderStatus)}
+                                        </Typography>
+                                    </div>
+                                </TableCell>
+                                <TableCell>
+                                    <Typography
+                                        component="span"
+                                        className={`status-label status-payment ${item.orderHeader.paymentStatus}`}
+                                        variant='body2'
+                                    >
+                                        {paymentStatusMap[removeUnderscoreBetweenWords(item.orderHeader.paymentStatus)]|| removeUnderscoreBetweenWords(item.orderHeader.paymentStatus)}
+                                    </Typography>                
+                                </TableCell>
+                                
                                 <TableCell>{item.orderHeader?.city}, {item.orderHeader.state}</TableCell>
                                 <TableCell align={'right'} sx={{ paddingRight: '50px' }}>
                                     <Button color="primary" variant="contained" component={Link} sx={{ marginRight:'5px' }} to={`/order/edit/${item.id}`}>Edit</Button>
-                                    <Button color="warning" variant="contained" component={Link} to={`/company/delete/${item.id}`}>Delete</Button>
                                 </TableCell>
                             </TableRow>
                         ))}

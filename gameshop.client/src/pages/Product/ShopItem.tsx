@@ -112,9 +112,9 @@ const ShopItem: React.FC = () => {
 
     const calculatePrice = (count: number, product = formData) => {
         console.log(formData.price)
-        if (count > 100)
+        if (count >= 100)
             setShowPrice(count * product.price100)
-        else if (count <= 100 && count >= 50)
+        else if (count < 100 && count >= 50)
             setShowPrice(count * product.price50)
         else if (count < 50 && count > 10)
             setShowPrice(count * product.price)

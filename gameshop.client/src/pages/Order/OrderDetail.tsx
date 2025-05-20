@@ -10,9 +10,7 @@ import {
     TableCell,
     TableHead,
     TableBody,
-    Stack,
     Button,
-    Box
 } from '@mui/material';
 import { useState, useEffect } from 'react'
 import type * as Order from '@/models/Order'; 
@@ -23,6 +21,7 @@ import { getProductImageByImageId } from '@/api/Product/Product';
 import PlaceIcon from '@mui/icons-material/Place';
 import MailIcon from '@mui/icons-material/Mail';
 import PhoneEnabledIcon from '@mui/icons-material/PhoneEnabled';
+import { removeUnderscoreBetweenWords } from '@/utils/removeUnderscoreBetweenWords';
 
 const OrderDetail: React.FC = () => {
     const routeParams = useParams<{ orderId: string }>();
@@ -34,16 +33,12 @@ const OrderDetail: React.FC = () => {
     
 
     useEffect(() => {
+        setLoading(true)
         fetchData()
+        setLoading(false)
     }, []);
 
-    if (loading) {
-        return (
-            <div>
-                Loading
-            </div>
-        )
-    }
+    
 
     const fetchData = async () => {
         let orderId = routeParams.orderId ?? ''
@@ -67,17 +62,20 @@ const OrderDetail: React.FC = () => {
         })
     }
 
-    const removeUnderscoreBetweenWords = (str: string | undefined) =>{
-        if(str == undefined) return ''
-        let prev;
-            do {
-                prev = str;
-                str = str.replace(/_?([A-Z0-9]+)_([A-Z0-9]+)_?/g, (match, p1, p2) => {
-                return p1 + ' ' + p2;
-                });
-            } while (str !== prev);
-            return str.trim();
-        }
+    
+
+    const handleBack = () => {
+        navigate('/')
+    }
+
+    if (loading) {
+        return (
+            <div>
+                Loading
+            </div>
+        )
+    }
+    else
     return (
         <Grid container spacing={1}>
             <Grid item md={12}>
@@ -142,7 +140,7 @@ const OrderDetail: React.FC = () => {
                                     }
                                     <TableRow>
                                         <TableCell>
-                                            <Button variant='outlined'>
+                                            <Button variant='outlined' onClick={handleBack}>
                                                 Back 
                                             </Button>
                                         </TableCell>
@@ -155,7 +153,7 @@ const OrderDetail: React.FC = () => {
   
                                         </TableCell>
                                         <TableCell>
-                                            <Typography>
+                                            <Typography sx={{textAlign: 'right'}}>
                                                 Total Price: ${data?.price}
                                             </Typography>
                                         </TableCell>

@@ -28,11 +28,15 @@ namespace Gameshop.model
         [BsonElement("OrderTotal")]
         public double OrderTotal { get; set; }
 
+        [BsonRequired]
+        [BsonRepresentation(BsonType.String)]
         [BsonElement("OrderStatus")]
-        public string? OrderStatus { get; set; }
+        public OrderStatus OrderStatus { get; set; }
 
+        [BsonRequired]
+        [BsonRepresentation(BsonType.String)]
         [BsonElement("PaymentStatus")]
-        public string? PaymentStatus { get; set; }
+        public PaymentStatus PaymentStatus { get; set; }
 
         [BsonElement("TrackingNumber")]
         public string? TrackingNumber { get; set; }
@@ -71,5 +75,23 @@ namespace Gameshop.model
         [BsonRequired]
         [BsonElement("Name")]
         public string Name { get; set; }
+    }
+
+
+    public enum OrderStatus
+    {
+        PENDING,
+        PROCESSING,
+        SHIPPED,
+        COMPLETED,
+        CANCELLED
+    }
+
+    public enum PaymentStatus
+    {
+        PENDING_PAYMENT,
+        PAID,
+        REFUNDED,
+        FAILED
     }
 }

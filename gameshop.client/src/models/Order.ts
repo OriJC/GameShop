@@ -30,4 +30,5 @@ interface OrderDetail {
     price: number;
 }
 
+
 export type {OrderDetail};

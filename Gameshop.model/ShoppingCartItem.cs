@@ -57,7 +57,7 @@ namespace Gameshop.model
             {
                 UnitPrice = Product.Price50;
             }
-            else if (Quantity > 100)
+            else if (Quantity >= 100)
             {
                 UnitPrice = Product.Price100;
             }

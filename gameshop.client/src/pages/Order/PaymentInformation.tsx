@@ -38,6 +38,7 @@ const PaymentInformation: React.FC = () => {
     useEffect(()=>
     {
         // Prevent users from being directed to this page from other than shopping cart page or directly using a URL
+        console.log(cartData)
         if(!isValidShoppingCart(cartData)){
             navigate("/", { replace: true });
         }
@@ -56,7 +57,7 @@ const PaymentInformation: React.FC = () => {
     const onSubmit = async (values: PaymentInfo) => {
         const orderRequstBody = {
             cart: cartData,
-            paymentInfo: values
+            paymentInfo: values,
         }
 
         await createOrder(orderRequstBody).then(async (res) => {

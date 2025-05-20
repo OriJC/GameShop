@@ -82,8 +82,8 @@ namespace GameShop.Server.Controllers
                     OrderDate = DateTime.Now,
                     ShippingDate = DateTime.Now.AddDays(1),
                     OrderTotal = requestBody.cart.TotalPrice,
-                    OrderStatus = "CREATED",
-                    PaymentStatus = "PENDING_PAYMENT",
+                    OrderStatus = OrderStatus.PENDING,
+                    PaymentStatus = PaymentStatus.PENDING_PAYMENT,
                     PaymentDate = DateTime.Now,
                     PaymemntDueDate = DateTime.Now.AddDays(7),
                     PhoneNumber = requestBody.paymentInfo.phoneNumber,
@@ -170,7 +170,6 @@ namespace GameShop.Server.Controllers
     {
         public ShoppingCart cart { get; set; }
         public PaymentInformation paymentInfo { get; set; }
-
     }
 }
 
