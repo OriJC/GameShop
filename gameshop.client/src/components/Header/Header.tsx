@@ -106,6 +106,9 @@ const AppHeader = () => {
                         <MenuItem color="inherit" component={Link} to="/Role">
                             Role
                         </MenuItem>
+                        <MenuItem color="inherit" component={Link} to="/Order">
+                            Order
+                        </MenuItem>
                     </Menu>
                     
 

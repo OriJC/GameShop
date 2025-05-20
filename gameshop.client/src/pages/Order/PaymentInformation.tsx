@@ -13,7 +13,9 @@ import { Formik, Form, Field } from 'formik'
 import { TextField } from 'formik-material-ui'
 import { useNavigate, useLocation } from 'react-router-dom';
 import { createOrder } from '@/api/Order/Order'
-
+import { clearUserCart } from '@/api/ShoppingCart/ShoppingCart';
+import store from '@/store/store'
+import { retryUntilSuccess } from '@/utils/retryPromise';
 const PaymentInformation: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -44,9 +46,13 @@ const PaymentInformation: React.FC = () => {
             paymentInfo: values
         }
 
-        await createOrder(orderRequstBody).then(res => {
+        await createOrder(orderRequstBody).then(async (res) => {
             console.log(res.data)
-            navigate('/order/orderdetail/' + res.data.id)
+            const userName: string = store.getState().auth.userName ?? ''
+            await retryUntilSuccess(() =>clearUserCart(userName), 10, 500).then(()=>{
+                navigate('/order/orderdetail/' + res.data.id)
+            })
+            
         })
     }
 

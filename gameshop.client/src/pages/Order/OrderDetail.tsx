@@ -20,6 +20,9 @@ import { getOrderById } from '@/api/Order/Order'
 import { useNavigate, useParams } from 'react-router-dom';
 import { ShoppingCartItem } from '@/models/ShoppingCart';
 import { getProductImageByImageId } from '@/api/Product/Product';
+import PlaceIcon from '@mui/icons-material/Place';
+import MailIcon from '@mui/icons-material/Mail';
+import PhoneEnabledIcon from '@mui/icons-material/PhoneEnabled';
 
 const OrderDetail: React.FC = () => {
     const routeParams = useParams<{ orderId: string }>();
@@ -85,11 +88,19 @@ const OrderDetail: React.FC = () => {
                     />
                         
                     <CardContent>
-
+                        <Typography variant="body1" sx={{textAlign: 'center'}}>
+                            <PlaceIcon />
+                            {data?.orderHeader.streetAddress}, {data?.orderHeader.city}, {data?.orderHeader.state}
+                            <br />
+                            <MailIcon /> {data?.orderHeader.name}
+                            <br />
+                            <PhoneEnabledIcon /> {data?.orderHeader.phoneNumber}
+                        </Typography>  
                         <TableContainer>
                             <Table>
                                 <TableHead>
                                     <TableRow>                       
+                                        <TableCell />
                                         <TableCell />
                                         <TableCell />
                                         <TableCell />
@@ -111,32 +122,42 @@ const OrderDetail: React.FC = () => {
                                                         <img src={'data:' + item.imageString.contentType + ';base64,' + item.imageString.imageContent} alt={item.product.name} style={{ width: '100px', height: '100px' }} />
                                                     </TableCell>
                                                     <TableCell>
-                                                        <Typography variant="h6">
-                                                            {item.product.name}
+                                                        <Typography variant="h6" sx={{pl: 2}}>
+                                                            {item.product.name} 
+                                                        </Typography>                                                                                           
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Typography variant="body1" sx={{textAlign: 'right', pr: 'auto'}}>
+                                                            x {item.quantity}
                                                         </Typography>   
-                                                        <br />
-                                                        <Typography variant="body1">
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Typography variant="body1" sx={{textAlign: 'right'}}>
                                                             ${item.totalPrice}
-                                                        </Typography>                                   
+                                                        </Typography>   
                                                     </TableCell>
                                                 </TableRow>
                                             ))
                                         )
                                     }
                                     <TableRow>
-                                        <TableCell></TableCell>
-                                        <TableCell></TableCell>
+                                        <TableCell>
+                                            <Button variant='outlined'>
+                                                Back 
+                                            </Button>
+                                        </TableCell>
+                                        <TableCell >
+                                            <Typography variant="body1" sx={{textAlign: 'left', pl: 2}}>
+                                                Order Id: {data?.orderId}
+                                            </Typography>
+                                        </TableCell>
                                         <TableCell align='right' sx={{pr:2}}>
-                                            <Stack direction="row" alignItems="center" spacing={1} justifyContent="flex-end" sx={{mr:2}}>
-                                                <Typography>
-                                                    Total Price: ${data?.price}
-                                                </Typography>
-                                                <Button className="checkoutButton">
-                                                    <Typography>
-                                                        Checkout
-                                                    </Typography>
-                                                </Button>
-                                            </Stack>    
+  
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography>
+                                                Total Price: ${data?.price}
+                                            </Typography>
                                         </TableCell>
                                     </TableRow>
                                 </TableBody>

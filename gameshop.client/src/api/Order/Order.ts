@@ -1,6 +1,14 @@
 import { ShoppingCart } from '@/models/ShoppingCart'
 import axios from '@/services/api.request'
 
+
+export const getAllOrder = () => {
+    return axios.request({
+        url: 'api/Order',
+        method: 'get'
+    })
+}
+
 export const getOrderById = (orderId: string) => {
     return axios.request({
         url: 'api/Order/' + orderId,

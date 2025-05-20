@@ -28,6 +28,13 @@ export const RemoveItemFromCart = (userName: string, cartItemId: string) => {
     })
 }
 
+export const clearUserCart = (userName: string) => {
+    return axios.request({
+        url: 'api/ShoppingCart/ClearCart?userName=' + userName ,
+        method: 'delete'
+    })
+}
+
 export const addShoppingCartItemToCart = (userName: string, productId: string, quantity: number) => {
     return axios.request({
         url: 'api/ShoppingCart/AddItemToCartByUserName?userName='+ userName +'&productId=' + productId+'&Quantity=' + quantity,

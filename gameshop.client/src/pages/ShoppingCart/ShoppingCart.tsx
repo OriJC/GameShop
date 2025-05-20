@@ -146,7 +146,8 @@ const ShoppingCartPage: React.FC = () => {
             
     }
 
-    const handleGo = () => {
+    const handleGo = async() => {
+
         navigate('/order/paymentInfo', {state: cart})
     }
 
@@ -243,7 +244,7 @@ const ShoppingCartPage: React.FC = () => {
                                     <Typography>
                                         Total Price: ${cart?.totalPrice? cart?.totalPrice : 0}
                                     </Typography>
-                                    <Button className="checkoutButton" onClick={handleGo}>
+                                    <Button className="checkoutButton" onClick={handleGo} disabled={data.length===0}>
                                         <Typography>
                                             Checkout
                                         </Typography>
