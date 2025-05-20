@@ -1,13 +1,11 @@
 import {
     Paper,
     Typography,
-    Card,
     Button,
     Grid,
     Dialog, 
     DialogActions, 
     DialogContent, 
-    DialogContentText, 
     DialogTitle,
     TableContainer,
     Table,
@@ -100,9 +98,9 @@ const ShoppingCartPage: React.FC = () => {
                                 let totalPrice = 0
                                 if (newQuantity > 100)
                                     totalPrice= newQuantity * prevItem.product.price100
-                                else if (newQuantity <= 100 && newQuantity > 50)
+                                else if (newQuantity <= 100 && newQuantity >= 50)
                                     totalPrice= newQuantity * prevItem.product.price50
-                                else if (newQuantity <= 50 && newQuantity > 10)
+                                else if (newQuantity < 50 && newQuantity > 10)
                                     totalPrice= newQuantity * prevItem.product.price
                                 else 
                                     totalPrice= newQuantity * prevItem.product.listPrice

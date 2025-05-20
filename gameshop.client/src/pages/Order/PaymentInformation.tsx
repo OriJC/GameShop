@@ -6,7 +6,7 @@ import {
     CardContent,
     CardActions,
 } from '@mui/material';
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { PaymentInfo } from '@/models/PaymentInfo'
 import * as Yup from 'yup'
 import { Formik, Form, Field } from 'formik'
@@ -16,10 +16,13 @@ import { createOrder } from '@/api/Order/Order'
 import { clearUserCart } from '@/api/ShoppingCart/ShoppingCart';
 import store from '@/store/store'
 import { retryUntilSuccess } from '@/utils/retryPromise';
+import { ShoppingCart } from '@/models/ShoppingCart';
+import { isValidShoppingCart } from '@/utils/isValidShoppingCart'
 const PaymentInformation: React.FC = () => {
+    
     const navigate = useNavigate();
     const location = useLocation();
-    const cartData = location.state;
+    const cartData = location.state as ShoppingCart | undefined;
     // initData
     const formData: PaymentInfo = {
         name: '',
@@ -30,6 +33,16 @@ const PaymentInformation: React.FC = () => {
         postalCode: ''
     }
     const [error, setError] = useState(false)
+
+    
+    useEffect(()=>
+    {
+        // Prevent users from being directed to this page from other than shopping cart page or directly using a URL
+        if(!isValidShoppingCart(cartData)){
+            navigate("/", { replace: true });
+        }
+    },[cartData, navigate])
+
 
     let validationSchema = Yup.object().shape({
         name: Yup.string().required("Required"),
@@ -56,6 +69,7 @@ const PaymentInformation: React.FC = () => {
         })
     }
 
+    
     return (
         <Grid container justifyContent="center" spacing={1}>
             <Grid item md={12}>

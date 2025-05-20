@@ -7,8 +7,6 @@ import {
     CardActions,
     Box,
     CircularProgress,
-    Icon,
-    IconButton,
     Typography,
     TextField as Textarea,
 } from '@mui/material';
@@ -51,19 +49,20 @@ const ShopItem: React.FC = () => {
         price100: 1,
         companyId: '',
         categoryId: '',
-        productTagsIds: [],
-        inventory: 1
+        productTag: [],
+        inventory: 1,
+        imageFileId: ''
     });
 
     const [quantity, setQuantity] = useState(1);
-    const [price, setPrice] = useState(0)
+    const [showPrice, setShowPrice] = useState(0)
     const [error, setError] = useState(false);
     const [companyData, setCompanyData] = useState([]);
     const [categoryData, setCategoryData] = useState([]);
     const [productTagsIdsData, setproductTagsIdsData] = useState([]);
     const routeParams = useParams<{ productId: string }>();
 
-    const [preview, setPreview] = useState(null)
+    const [preview, setPreview] = useState('')
     const [loading, setLoading] = useState(true)
 
 
@@ -85,12 +84,13 @@ const ShopItem: React.FC = () => {
         })
 
         let id = routeParams.productId
-        await getProductById(id).then(res => {
+        await getProductById(id??'').then((res) => {
             const imageSrc = 'data:' + res.data.contentType + ';base64,' + res.data.image
             setFormData(res.data.product)
             setPreview(imageSrc)
-
+            calculatePrice(1, res.data.product)
         })
+        
         setLoading(false)
     }
 
@@ -110,21 +110,20 @@ const ShopItem: React.FC = () => {
         calculatePrice(value)
     }
 
-    const calculatePrice = (count: number) => {
+    const calculatePrice = (count: number, product = formData) => {
+        console.log(formData.price)
         if (count > 100)
-            setPrice(count * formData.price100)
-        else if (count <= 100 && count > 50)
-            setPrice(count * formData.price50)
-        else if (count <= 50 && count > 10)
-            setPrice(count * formData.price)
+            setShowPrice(count * product.price100)
+        else if (count <= 100 && count >= 50)
+            setShowPrice(count * product.price50)
+        else if (count < 50 && count > 10)
+            setShowPrice(count * product.price)
         else 
-            setPrice(count * formData.listPrice)
+            setShowPrice(count * product.listPrice)
     }
 
     const addItemToCart = async() => {
-        console.log('test')
         const userName = store.getState().auth.userName
-        console.log(userName, formData.id, quantity)
         if (userName != null){
             await addShoppingCartItemToCart(userName, formData.id, quantity)
             navigate('/ShoppingCart')
@@ -138,7 +137,7 @@ const ShopItem: React.FC = () => {
     if (loading) {
         return <CircularProgress />;
     }
-
+    else
     return (
         <Grid container justifyContent="center" spacing={1}>
             <Grid item md={12}>
@@ -147,6 +146,7 @@ const ShopItem: React.FC = () => {
                     <Formik
                         enableReinitialize
                         initialValues={formData}
+                        onSubmit={() => {}}
                     >
                         {({ values }) => {
                             return (
@@ -276,7 +276,7 @@ const ShopItem: React.FC = () => {
                                             </Grid>
                                             <Grid item md={3} sx={{mt: 1, ms:1}}>
                                                 <Typography variant="h6" sx={{ minWidth: 32, textAlign: "center" }}>
-                                                    Current Price: {price}
+                                                    Current Price: {showPrice}
                                                 </Typography>
                                             </Grid>
                                         </Grid>

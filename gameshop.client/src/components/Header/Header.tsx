@@ -7,6 +7,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import store from '@/store/store'
 import { useSelector, useDispatch } from 'react-redux'
 import { setAuth } from '@/store/authSlice';
+
 const AppHeader = () => {
     const navigate = useNavigate();
     
@@ -100,12 +101,13 @@ const AppHeader = () => {
                         open={Boolean(anchorEls['User'])}
                         onClose={() => handleClose('User')}
                     >
-                        <MenuItem color="inherit" component={Link} to="/User">
+                        {/* this two features are almost done in back-end*/}   
+                        {/* <MenuItem color="inherit" component={Link} to="/User">
                             User
                         </MenuItem>
                         <MenuItem color="inherit" component={Link} to="/Role">
                             Role
-                        </MenuItem>
+                        </MenuItem> */}
                         <MenuItem color="inherit" component={Link} to="/Order">
                             Order
                         </MenuItem>
