@@ -117,11 +117,11 @@ namespace GameShop.Server.Controllers
 
 
         [HttpPut]
-        public async Task<ActionResult> Update([FromForm] OrderDetail order)
+        public async Task<ActionResult> Update(OrderDetail order)
         {
             try
             {
-                var oldProduct = await _unitOfWork.Product.GetById(order.Id);
+                var oldProduct = await _unitOfWork.OrderDetail.GetById(order.Id);
                 if (oldProduct == null)
                 {
                     _logger.LogError("Cannot find order with {Id}", order.Id);
@@ -145,7 +145,7 @@ namespace GameShop.Server.Controllers
         {
             try
             {
-                var oldProduct = await _unitOfWork.Product.GetById(orderId);
+                var oldProduct = await _unitOfWork.OrderDetail.GetById(orderId);
                 if (oldProduct == null)
                 {
                     _logger.LogError("Cannot find order with {Id}", orderId);

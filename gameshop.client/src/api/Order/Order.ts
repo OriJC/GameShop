@@ -1,3 +1,4 @@
+import { OrderDetail } from '@/models/Order'
 import { ShoppingCart } from '@/models/ShoppingCart'
 import axios from '@/services/api.request'
 
@@ -24,10 +25,10 @@ export const createOrder = (data: object) => {
     })
 }
 
-export const updateOrder = (cart: ShoppingCart) => {
+export const updateOrder = (orderDetail: OrderDetail) => {
     return axios.request({
         url: 'api/Order',
-        data: cart,
+        data: orderDetail,
         method: 'put'
     })
 }

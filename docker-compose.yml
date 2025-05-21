@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo:7
+    restart: always
+    container_name: gameshop-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build:
+      context: ./GameShop.Server
+    container_name: gameshop-backend
+    ports:
+      - "7118:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - MongoDB__ConnectionString=mongodb://mongo:27017
+      - MongoDB__DatabaseName=gameshop
+      - JWT__Secret=your_jwt_secret
+    depends_on:
+      - mongo
+
+  frontend:
+    build:
+      context: ./gameshop.client
+    container_name: gameshop-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:

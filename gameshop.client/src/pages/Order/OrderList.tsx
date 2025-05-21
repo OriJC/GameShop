@@ -108,7 +108,7 @@ const List: React.FC = () => {
                         {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => (
                             <TableRow key={item.id}>
                                 <TableCell>
-                                    <Link to={`/order/orderDetail/${item.id}`}>
+                                    <Link to={`/order/orderDetail/customer/${item.id}`}>
                                         {item.orderHeader.name}
                                     </Link>
                                 </TableCell>
@@ -135,7 +135,7 @@ const List: React.FC = () => {
                                 
                                 <TableCell>{item.orderHeader?.city}, {item.orderHeader.state}</TableCell>
                                 <TableCell align={'right'} sx={{ paddingRight: '50px' }}>
-                                    <Button color="primary" variant="contained" component={Link} sx={{ marginRight:'5px' }} to={`/order/edit/${item.id}`}>Edit</Button>
+                                    <Button color="primary" variant="contained" component={Link} sx={{ marginRight:'5px' }} to={`/order/orderDetail/admin/${item.id}`}>Edit</Button>
                                 </TableCell>
                             </TableRow>
                         ))}

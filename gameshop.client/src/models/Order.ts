@@ -1,5 +1,4 @@
-import Product from "./Product";
-import { ShoppingCart, ShoppingCartItem } from "./ShoppingCart";
+import { ShoppingCartItem } from "./ShoppingCart";
 
 interface OrderHeader {
     id: string;
