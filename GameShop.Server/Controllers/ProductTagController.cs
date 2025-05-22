@@ -10,33 +10,57 @@ namespace GameShop.Server.Controllers
     public class ProductTagController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<ProductTagController> _logger;
 
-        public ProductTagController(IUnitOfWork unitOfWork)
+        public ProductTagController(IUnitOfWork unitOfWork, ILogger<ProductTagController> logger)
         {
             _unitOfWork = unitOfWork;
+            _logger = logger;   
         }
 
         [HttpGet(Name = "GetAllProductTag")]
         public async Task<ActionResult> GetAll()
         {
-            var objCategoryList = await _unitOfWork.ProductTag.GetAll();
-            return Ok(objCategoryList);
+            try
+            {
+                var objCategoryList = await _unitOfWork.ProductTag.GetAll();
+                if(objCategoryList == null)
+                {
+                    _logger.LogError($"Cannot find any product tag");
+                    return NotFound(new { message ="Cannot find any product tag!"});
+                }
+                _logger.LogInformation($"Get all product tag");
+                return Ok(objCategoryList);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }         
         }
 
         [HttpGet("{id}", Name = "GetProductTagById")]
-        public async Task<ActionResult> GetById(string id)
+        public async Task<ActionResult> GetById(string Id)
         {
-            var ProductTag = await _unitOfWork.ProductTag.GetById(id);
-            if (ProductTag != null)
+            try
             {
-                return Ok(ProductTag);
-
+                var ProductTag = await _unitOfWork.ProductTag.GetById(Id);
+                if (ProductTag != null)
+                {
+                    _logger.LogError($"Get product tag by Id {Id}");
+                    return Ok(ProductTag);
+                }
+                else
+                {
+                    _logger.LogInformation($"Cannot find product tag by Id {Id}");
+                    return NotFound(new { message = "Cannot find this product tag"});
+                }
             }
-            else
+            catch (Exception ex) 
             {
-                return BadRequest(new { message = "Get Game Category Failed"}); 
-            }
-            
+                _logger.LogError(ex.Message);
+                return BadRequest(new { message = ex.Message });
+            }    
         }
 
         [HttpPost(Name = "InsertProductTag")]
@@ -51,51 +75,66 @@ namespace GameShop.Server.Controllers
                 };
                 _unitOfWork.ProductTag.Add(newProductTag);
                 await _unitOfWork.Commit();
-
+                _logger.LogInformation($"Insert new product tag to db");
                 return Ok(newProductTag);
         }
             catch(Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(new { message = "Insert Game Category failed", detail = ex.Message});
             }
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(string id, string name)
+        public async Task<ActionResult> Update(string Id, string name)
         {
             try
             {
-                ProductTag oldCategory = await _unitOfWork.ProductTag.GetById(id);
+                ProductTag oldCategory = await _unitOfWork.ProductTag.GetById(Id);
+                if (oldCategory == null) 
+                {
+                    _logger.LogError($"Cannot find product tag by Id {Id}");
+                    return NotFound(new {message = "Cannot find this product Tag"});
+                }
                 ProductTag newCategory = new ProductTag
                 {
-                    Id = id,
+                    Id = Id,
                     Name = name,
                     CreatedDate = oldCategory.CreatedDate
                 };
                 //ProductTag obj = new ProductTag(id, name);
                 _unitOfWork.ProductTag.Update(newCategory);
                 await _unitOfWork.Commit();
-
+                _logger.LogInformation($"Update product tag by Id {Id}");
                 return Ok(new { message = "Update Sucessfully!" });
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(new { message = "Update failed"});
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(string id)
+        public async Task<ActionResult> Delete(string Id)
         {
             try
             {
-                _unitOfWork.ProductTag.Remove(id);
+                ProductTag oldCategory = await _unitOfWork.ProductTag.GetById(Id);
+                if (oldCategory == null)
+                {
+                    _logger.LogError($"Cannot find product tag by Id {Id}");    
+                    return NotFound(new { message = "Cannot find this product Tag" });
+                }
+                _unitOfWork.ProductTag.Remove(Id);
+                _logger.LogInformation($"Delete product tag by Id {Id}");
                 await _unitOfWork.Commit();
 
                 return Ok(new { message = "Delete Sucessfully!" });
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(new { message = "Delete failed" });
             }
         }

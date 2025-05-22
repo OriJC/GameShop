@@ -1,4 +1,4 @@
-import axios from '@/utils/api.request'
+import axios from '@/services/api.request'
 import Product from '@/models/Product'
 
 export const getAllProduct = () => {
@@ -8,14 +8,28 @@ export const getAllProduct = () => {
     })
 }
 
-export const getProductById = (id: string) => {
+export const getAllProductIncludingImage = () => {
     return axios.request({
-        url: 'api/Product/GetById/'+ id,
+        url: 'api/Product/GetAllIncludingImage',
         method: 'get'
     })
 }
 
-export const createProduct = (product) => {
+export const getProductById = (id: string) => {
+    return axios.request({
+        url: 'api/Product/GetById?Id='+ id,
+        method: 'get'
+    })
+}
+
+export const getProductNameAndInventoryById = (id: string) => {
+    return axios.request({
+        url: 'api/Product/GetProductNameAndInventoryById?=' + id,
+        method: 'get'
+    })
+}
+
+export const createProduct = (product: Product) => {
     return axios.request({
         url: 'api/Product/Insert',
         data: product,
@@ -26,7 +40,7 @@ export const createProduct = (product) => {
     })
 }
 
-export const updateProduct = (product) => {
+export const updateProduct = (product: Product) => {
     return axios.request({
         url: 'api/Product/Update',
         data: product,
@@ -41,5 +55,12 @@ export const deleteProduct = (id: string) => {
     return axios.request({
         url: 'api/Product/Delete/' + id ,
         method: 'delete'
+    })
+}
+
+export const getProductImageByImageId = (id: string) => {
+    return axios.request({
+        url: 'api/Product/GetProductImageById?imageId=' + id ,
+        method: 'get'
     })
 }

@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNetCore.Identity.MongoDbCore" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="MongoDB.Bson" Version="2.27.0" />
@@ -16,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Gameshop.model\Gameshop.model.csproj" />
+    <ProjectReference Include="..\Gameshop.model\Gameshop.Model.csproj" />
   </ItemGroup>
 
 </Project>

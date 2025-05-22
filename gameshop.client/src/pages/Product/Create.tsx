@@ -16,7 +16,6 @@ import {
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import Product from '@/models/Product';
-import Company from '@/models/Company';
 import * as Yup from 'yup';
 import { Formik, Form, Field } from 'formik';
 import { TextField as FormikTextField, TextField } from 'formik-material-ui';
@@ -42,7 +41,8 @@ const Create: React.FC = () => {
         price100: 1,
         companyId: '',
         categoryId: '',
-        productTagsIds: []
+        productTagsIds: [],
+        inventory: 1
     });
 
     const [error, setError] = useState(false);
@@ -72,7 +72,7 @@ const Create: React.FC = () => {
         listPrice: Yup.number().min(1, 'Price must be at least 1').max(100000, 'Price must be at most 100000').required("Required"),
         price50: Yup.number().min(1, 'Price must be at least 1').max(100000, 'Price must be at most 100000').required("Required"),
         price100: Yup.number().min(1, 'Price must be at least 1').max(100000, 'Price must be at most 100000').required("Required"),
-
+        inventory: Yup.number().min(1, 'Price must be at least 1').max(1000000, 'Price must be at most 1000000').required("Required"),
     })
 
 
@@ -95,7 +95,7 @@ const Create: React.FC = () => {
     }
 
     const handleFileChange = (e) => {
-        const file = event.target.files[0];
+        const file = e.target.files[0];
         if (file) {
             setCoverImage(file);
             const reader = new FileReader();
@@ -119,6 +119,7 @@ const Create: React.FC = () => {
         //productData.append('id', '')
         //productData.append('createdDate', null)
         productData.append('ImageFileId', 'string')
+        console.log(productData)
         if (!values.id) {
             productData.delete('id')
         }
@@ -136,6 +137,7 @@ const Create: React.FC = () => {
         //for (const pair of productData.entries()) {
         //    console.log(pair[0], pair[1]);
         //}
+        console.log(productData)
         createProduct(productData).then((res) => {
             console.log(res.data);
             setTimeout(() => {
@@ -194,7 +196,7 @@ const Create: React.FC = () => {
                                                 />
                                             </Grid>
                                         </Grid>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item md={6}>
                                                 <Field
                                                     label="List Price"
@@ -216,7 +218,7 @@ const Create: React.FC = () => {
                                                 />
                                             </Grid>
                                         </Grid>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item md={6}>
                                                 <Field
                                                     label="Price(51~100)"
@@ -238,7 +240,7 @@ const Create: React.FC = () => {
                                                 />
                                             </Grid>
                                         </Grid> 
-                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item md={12}>
                                                 <FormControl fullWidth variant="outlined">
                                                     <InputLabel>Category</InputLabel>
@@ -266,7 +268,7 @@ const Create: React.FC = () => {
 
                                             </Grid>
                                         </Grid>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item md={12}>
                                                 <FormControl fullWidth variant="outlined">
                                                     <InputLabel id="company-label">Company</InputLabel>
@@ -283,8 +285,8 @@ const Create: React.FC = () => {
                                                         }}
                                                     >
                                                         {companyData.map((item) => (
-                                                            <MenuItem key={item._id} value={item._id} style={{ textAlign: 'left' }} >
-                                                                {item.Name}
+                                                            <MenuItem key={item.id} value={item.id} style={{ textAlign: 'left' }} >
+                                                                {item.name}
                                                             </MenuItem>
                                                         ))}
 
@@ -293,7 +295,7 @@ const Create: React.FC = () => {
 
                                             </Grid>
                                         </Grid> 
-                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item md={12}>
                                                 <FormControl fullWidth variant="outlined">
                                                     <InputLabel id="productTagLabelId">Tag</InputLabel>
@@ -333,7 +335,19 @@ const Create: React.FC = () => {
                                                     </Select>
                                                 </FormControl>
                                             </Grid>
-                                        </Grid> 
+                                        </Grid>
+                                        <Grid container spacing={1} justifyContent="center" mb={1}>
+                                            <Grid item xs={12}>
+                                                <Field
+                                                    label="Inventory"
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    name="inventory"
+                                                    value={values.inventory}
+                                                    component={FormikTextField}
+                                                />
+                                            </Grid>
+                                        </Grid>
                                         <Grid container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item xs={12}>
                                                 <label htmlFor="container-file-input">

@@ -2,6 +2,11 @@
 using Gameshop.model;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Reflection.Metadata;
+using Gameshop.model.ViewModel;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace GameShop.Server.Controllers
 {
@@ -10,40 +15,163 @@ namespace GameShop.Server.Controllers
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<ProductController> _logger;
 
-        public ProductController(IUnitOfWork unitOfWork)
+        public ProductController(IUnitOfWork unitOfWork, ILogger<ProductController> logger)
         {
             _unitOfWork = unitOfWork;
+            _logger = logger;
         }
 
         [HttpGet(Name = "GetAllProduct")]
         public async Task<ActionResult> GetAll()
         {
-            var objProductList = await _unitOfWork.Product.GetAll();
-            return Ok(objProductList);
+            try
+            {
+                var objProductList = await _unitOfWork.Product.GetAll();
+                if (objProductList == null)
+                {
+                    _logger.LogError("Cannot find any product!");
+                    return NotFound(new { message = "Cannot find any product!" });
+                }
+                _logger.LogInformation("Returning All Product");
+                return Ok(objProductList);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
 
-        [HttpGet("{id}", Name = "GetProductById")]
-        public async Task<ActionResult> GetById(string id)
+        [HttpGet(Name = "GetAllProductIncludingImage")]
+        public async Task<ActionResult> GetAllIncludingImage()
         {
-            var product = await _unitOfWork.Product.GetById(id);
-            if (product == null)
+            var objProductList = await _unitOfWork.Product.GetAll();
+            if (objProductList == null)
             {
-                return NotFound();
-
+                _logger.LogError("Cannot find any product!");
+                return NotFound(new { message = "Cannot find any product!" });
             }
-            var (imageContent, contentType) = await _unitOfWork.Product.GetImageAsync(product.ImageFileId);
-            if(imageContent == null) 
+            var productList = new List<ProductViewModel>();
+            foreach (var document in objProductList)
             {
-
-                return NotFound("Image not found");
+                try
+                {
+                    var (imageContent, contentType) = await _unitOfWork.Product.GetImageAsync(document.ImageFileId);
+                    ProductViewModel productItem = new ProductViewModel
+                    {
+                        product = document,
+                        imageContentType = contentType,
+                        imageData = imageContent
+                    };
+                    productList.Add(productItem);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
-            return Ok(new {product = product, image = Convert.ToBase64String(imageContent), contentType});
+            return Ok(productList);
+        }
+
+        [HttpGet(Name = "GetOneProductIncludingImage")]
+        public async Task<ActionResult> GetOneProductIncludingImage(string productId)
+        {
+            try
+            {
+                var objProduct = await _unitOfWork.Product.GetById(productId);
+                if (objProduct == null)
+                {
+                    _logger.LogError("Cannot find this product!");
+                    return NotFound(new { message = "Cannot find this product!" });
+                }
+
+                var (imageContent, contentType) = await _unitOfWork.Product.GetImageAsync(objProduct.ImageFileId);
+                ProductViewModel productItem = new ProductViewModel
+                {
+                    product = objProduct,
+                    imageContentType = contentType,
+                    imageData = imageContent
+                };
+
+                return Ok(productItem);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            
+        }
+
+        [HttpGet(Name = "GetProductImageById")]
+        public async Task<ActionResult> GetProductImageById(string imageId)
+        {
+            try
+            {
+                var (imageContent, contentType) = await _unitOfWork.Product.GetImageAsync(imageId);
+
+
+                return Ok(new { imageContent, contentType });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
+        }
+
+        [HttpGet(Name = "GetProductById")]
+        public async Task<ActionResult> GetById(string Id)
+        {
+            try
+            {
+                var product = await _unitOfWork.Product.GetById(Id);
+                if (product == null)
+                {
+                    _logger.LogError("Cannot find product with id {Id}", Id);
+                    return NotFound(new { message = "Cannot find this product!" });
+                }
+                var (imageContent, contentType) = await _unitOfWork.Product.GetImageAsync(product.ImageFileId);
+                if (imageContent == null)
+                {
+                    _logger.LogError("Cannot find any image");
+                    return NotFound("Image not found");
+                }
+                _logger.LogInformation("Get Product by Id {Id}", Id);
+                return Ok(new { product = product, image = Convert.ToBase64String(imageContent), contentType });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet(Name = "GetProductNameAndInventoryById")]
+        public async Task<ActionResult> GetProductNameAndInventoryById(string Id)
+        {
+            try
+            {
+                var filter = Builders<Product>.Filter.Eq("_id", new ObjectId(Id)); ;
+                var projection = Builders<Product>.Projection.Include("Name").Include("Inventory");
+
+                var objProductList = await _unitOfWork.Product.GetAllByProjectionAndFilter<ProductProjection>(filter, projection);
+
+
+                return Ok(objProductList);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
         }
 
         [HttpPost(Name = "InsertProduct")]
-        public async Task<ActionResult> Insert([FromForm]Product product, IFormFile file)
+        public async Task<ActionResult> Insert([FromForm] Product product, IFormFile file)
         {
             try
             {
@@ -52,8 +180,9 @@ namespace GameShop.Server.Controllers
                 {
                     product.CreatedDate = DateTime.Now;
                 }
-                if(file == null || file.Length == 0)
+                if (file == null || file.Length == 0)
                 {
+                    _logger.LogError("No Image file while inserting product");
                     return BadRequest("No file uploaded");
                 }
 
@@ -66,13 +195,14 @@ namespace GameShop.Server.Controllers
                     product.ImageFileId = imageId;
                     _unitOfWork.Product.Add(product);
                     await _unitOfWork.Commit();
-
+                    _logger.LogInformation("Inserting product to db");
                     return Ok(product);
                 }
-                
+
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(new { message = "Insert Product failed", detail = ex.Message });
             }
         }
@@ -85,9 +215,15 @@ namespace GameShop.Server.Controllers
                 var objProduct = product;
                 if (file == null || file.Length == 0)
                 {
+                    _logger.LogError("No Image file while inserting product");
                     return BadRequest("No file uploaded");
                 }
-
+                var oldProduct = await _unitOfWork.Product.GetById(product.Id);
+                if (oldProduct == null)
+                {
+                    _logger.LogError("Cannot find product with {Id}", product.Id);
+                    return NotFound(new { message = "Cannot find this product!" });
+                }
                 //GameCategory obj = new GameCategory(id, name);
                 using (var stream = new MemoryStream())
                 {
@@ -98,31 +234,85 @@ namespace GameShop.Server.Controllers
                     product.ImageFileId = imageId;
                     _unitOfWork.Product.Update(product);
                     await _unitOfWork.Commit();
-
+                    _logger.LogInformation("Updating product with {Id}", product.Id);
                     return Ok(new { message = "Update Sucessfully!" });
                 }
-                
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = "Update failed" });
+                _logger.LogError(ex.Message);
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> UpdateProductInventory(string ProductId, int inventory)
+        {
+            try
+            {
+
+                var product = await _unitOfWork.Product.GetById(ProductId);
+                if (product == null)
+                {
+                    _logger.LogError("Cannot find product with {Id}", ProductId);
+                    return NotFound(new { message = "Cannot find this product!" });
+                }
+
+                product.Inventory = inventory;
+                _unitOfWork.Product.Update(product);
+                await _unitOfWork.Commit();
+                _logger.LogInformation("Updating Product Inventory");
+                return Ok(new { message = "Update Sucessfully!" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(string id)
+        public async Task<ActionResult> Delete(string Id)
         {
             try
             {
-                _unitOfWork.Product.Remove(id);
+                var product = _unitOfWork.Product.GetById(Id);
+                if (product == null)
+                {
+                    _logger.LogError("Cannot find this product with {Id}", Id);
+                    return NotFound(new { message = "Cannot find this product!" });
+                }
+                _unitOfWork.Product.Remove(Id);
                 await _unitOfWork.Commit();
-
+                _logger.LogInformation("Delete Product With {Id}", Id);
                 return Ok(new { message = "Delete Sucessfully!" });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = "Delete failed" });
+                _logger.LogError(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
+    }
+
+    class ProductProjection
+    {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        [BsonElement("_id")]
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public int Inventory { get; set; }
+    }
+
+    class ProductProjectionWithImageId
+    {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        [BsonElement("_id")]
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public int Inventory { get; set; }
+        public string ImageFileId { get; set; }
     }
 }

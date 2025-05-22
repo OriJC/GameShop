@@ -12,6 +12,10 @@ namespace GameShop.Data.Repository.IRepository
         ICompanyRepository Company { get; }
         IProductTagRepository ProductTag { get; }
         IProductRepository Product { get; }
+        IApplicationUserRepository User { get; }
+        IShoppingCartRepository ShoppingCart { get; }
+        IShoppingCartItemRepository ShoppingCartItem { get; }
+        IOrderDetailRepository OrderDetail { get; }
 
         Task<bool> Commit();
     }

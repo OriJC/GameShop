@@ -1,4 +1,4 @@
-import axios from '@/utils/api.request'
+import axios from '@/services/api.request'
 
 export const getAllCategory = () => {
     return axios.request({

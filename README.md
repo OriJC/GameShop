@@ -1,20 +1,28 @@
-# Game Shop Web App Project (進行中)
-這是一個使用 .Net Core 連接Mongodbk 的web app， 作為一個Side Project而創建
-作為一個商店網站，可以
-## 使用的語言,套件,工具等
+# Game Shop Web App Project (Processing)
+
+This is an e-shop web application using .NET Core as the back-end, React(with TypeScript) as the front-end, and MongoDB as the database
+
+## Feature
+* Shopkeepers can manage their shops' product information, such as price, production company, and product tags on the website.
+* Customers can add the product to their shopping cart and check out as an order
+* Including the identity server for user authorization
+* 
+## Tech Stack
 ### Frontend
-語言: Typescript, HTML, less.css等
+Programming language: TypeScript
 * ReactJS, including React-router-dom
 * Axios
 * Less.css
 * Material-ui
-* Formik 用於表單的影證
+* Formik for form validation
 
 ### Backend
-語言: C#
-* .Net 8.0 with MVC
-* Mongodb with C# drive 
-* Mongodb file storage(GridFs)
-* MongoContext
-* Repository
+Programming language: C#
+* .NET 8.0
+* MongoDB with C# driver 
+* MongoDB file storage(GridFs)
+* MongoContext (EF Core of MongoDB)
+* Repository Pattern
 * Unit of work
+* Using JWT as authorization
+* Using MongoDB identity Server(including application user and role)

@@ -5,31 +5,21 @@ import {
     CardHeader,
     CardContent,
     CardActions,
-    Select,
-    MenuItem,
-    InputLabel,
-    FormControl,
-    OutlinedInput,
     Box,
-    Chip,
     CircularProgress
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import Product from '@/models/Product';
-import Company from '@/models/Company';
-import * as Yup from 'yup';
 import { Formik, Form, Field } from 'formik';
 import { TextField as FormikTextField, TextField } from 'formik-material-ui';
-import { updateProduct, getProductById } from '@/api/Product/Product';
+import { getProductById } from '@/api/Product/Product';
 import { getAllCompanyName } from '@/api/Company/Company'
 import { getAllCategory } from '@/api/Category/Category'
 import { getAllProductTag } from '@/api/ProductTag/ProductTag'
 import { useNavigate, useParams } from 'react-router-dom';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { base64ToFile } from '@/services/base64Service'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
-const Delete: React.FC = () => {
+const Detail: React.FC = () => {
     const navigate = useNavigate();
 
     // Initial form data
@@ -44,7 +34,8 @@ const Delete: React.FC = () => {
         price100: 1,
         companyId: '',
         categoryId: '',
-        productTagsIds: []
+        productTagsIds: [],
+        inventory: 1
     });
 
     const [error, setError] = useState(false);
@@ -52,22 +43,13 @@ const Delete: React.FC = () => {
     const [categoryData, setCategoryData] = useState([])
     const [productTagsIdsData, setproductTagsIdsData] = useState([])
     const routeParams = useParams<{ productId: string }>();
-    const [coverImage, setCoverImage] = useState(null)
+
     const [preview, setPreview] = useState(null)
     const [loading, setLoading] = useState(true)
 
     // Style
     const ITEM_HEIGHT = 48;
     const ITEM_PADDING_TOP = 8;
-    const MenuProps = {
-        PaperProps: {
-            style: {
-                maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-                width: 250,
-            },
-        },
-    };
-
 
 
     useEffect(() => {
@@ -109,12 +91,12 @@ const Delete: React.FC = () => {
         <Grid container justifyContent="center" spacing={1}>
             <Grid item md={12}>
                 <Card>
-                    <CardHeader title="Update Product Form" />
+                    <CardHeader title="Product Detail" />
                     <Formik
                         enableReinitialize
                         initialValues={formData}
                     >
-                        {({ dirty, isValid, values, handleChange, handleBlur, setFieldValue }) => {
+                        {({ values }) => {
                             return (
                                 <Form>
                                     <CardContent>
@@ -160,7 +142,7 @@ const Delete: React.FC = () => {
                                                         component="img"
                                                         src={preview}
                                                         alt="Preview"
-                                                        sx={{ mt: 2, ml: 'auto', mr: 15, mb: 2, width: '100%', maxWidth: 100, maxWidth: 150, height: 'auto', display: 'block'}}
+                                                        sx={{ mt: 2, ml: 'auto', mr: 15, mb: 2, width: '100%', maxWidth: 150, height: 'auto', display: 'block'}}
                                                     />
                                                 )}
                                             </Grid>
@@ -180,7 +162,7 @@ const Delete: React.FC = () => {
                                                 />
                                             </Grid>
                                         </Grid>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item md={6}>
                                                 <Field
                                                     label="List Price"
@@ -204,7 +186,7 @@ const Delete: React.FC = () => {
                                                 />
                                             </Grid>
                                         </Grid>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item md={6}>
                                                 <Field
                                                     label="Price(51~100)"
@@ -228,65 +210,21 @@ const Delete: React.FC = () => {
                                                 />
                                             </Grid>
                                         </Grid>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item md={12}>
-                                                
-
+                                                <Field
+                                                    label="Inventory"
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    name="inventory"
+                                                    value={values.inventory}
+                                                    component={FormikTextField}
+                                                    disabled
+                                                />
                                             </Grid>
                                         </Grid>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
-                                            <Grid item md={12}>
-                                                <FormControl fullWidth variant="outlined">
-                                                    <InputLabel id="company-label">Company</InputLabel>
-                                                    <Field
-                                                        label="Company"
-                                                        name="companyId"
-                                                        value={values.companyId}
-                                                        component={Select}
-                                                        disabled
-                                                    >
-                                                        {companyData.map((item) => (
-                                                            <MenuItem key={item._id} value={item._id} style={{ textAlign: 'left' }} >
-                                                                {item.Name}
-                                                            </MenuItem>
-                                                        ))}
-
-                                                    </Field>
-                                                </FormControl>
-
-                                            </Grid>
-                                        </Grid>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
-                                            <Grid item md={12}>
-                                                <FormControl fullWidth variant="outlined">
-                                                    <InputLabel id="productTagLabelId">Tag</InputLabel>
-                                                    <Select
-                                                        labelId="productTagLabelId"
-                                                        id="productTag"
-                                                        multiple
-                                                        name="productTagsIds"
-                                                        value={values.productTagsIds}
-                                                        disabled
-                                                        input={<OutlinedInput label="Tag" />}
-
-                                                        renderValue={(selected) => (
-                                                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                                                {selected.map((id) => {
-                                                                    const item = productTagsIdsData.find(tag => tag.id === id);
-                                                                    return <Chip key={id} label={item ? item.name : id} />;
-                                                                })}
-                                                            </Box>
-                                                        )}
-                                                    >
-                                                        {productTagsIdsData.map((item) => (
-                                                            <MenuItem key={item.id} value={item.id}>
-                                                                {item.name}
-                                                            </MenuItem>
-                                                        ))}
-                                                    </Select>
-                                                </FormControl>
-                                            </Grid>
-                                        </Grid>
+                                        
+                                        
                                     </CardContent>
                                     <CardActions>
                                         <Button
@@ -309,4 +247,4 @@ const Delete: React.FC = () => {
     );
 };
 
-export default Delete;
+export default Detail;

@@ -1,4 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios'
+import { clearAuth } from '@/store/authSlice'
+import store from '@/store/store'
 
 interface UrlQueue {
     [key: string]: any
@@ -19,8 +21,14 @@ class HttpRequest
     interceptors(instance: AxiosInstance, url: string ) {
         instance.interceptors.request.use(async(config)  => {
             this.queue[url] = true
-            //console.log(config)
-           return config
+            // Add request header here if needed
+
+            const token = localStorage.getItem('token')
+            if (token && config.headers)
+            {
+                config.headers['Authorization'] = 'Bearer ' + token
+            }
+            return config
         }, error => {
             return Promise.reject(error)
         })
@@ -31,8 +39,14 @@ class HttpRequest
             return { data: res.data, status: res.status} as AxiosResponse<any> 
         }, error => {
             if (error && error.response) {
-                let response = error.response.data
-                switch (error.response.status) {
+                let response = error.response
+                switch (response.status)
+                {   
+                    case 401:
+                        store.dispatch(clearAuth())
+                        // Redirect to Login Page
+                        window.location.href = "/login"
+                        break
                     case 403:
                         return Promise.reject(response)
                 }

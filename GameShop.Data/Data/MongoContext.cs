@@ -55,11 +55,8 @@ namespace GameShop.Data.Data
                 {
                     Session.AbortTransaction();
                     Console.WriteLine(ex);
-
                 }
-                
             }
-
             return _commands.Count;
         }
 

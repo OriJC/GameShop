@@ -13,8 +13,10 @@ namespace Gameshop.model
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
+
         [BsonElement("Name")]
         public string Name { get; set; }
+
         [BsonElement("CreatedDate")]
         public DateTime CreatedDate { get; set; }
     }

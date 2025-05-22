@@ -3,7 +3,18 @@ import { getAllProductTag, getProductTagById, updateProductTag, createProductTag
 import Create from '@/pages/ProductTag/Create'
 import Edit from '@/pages/ProductTag/Edit'
 import Delete from '@/pages/ProductTag/Delete'
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography, Grid } from '@mui/material';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Button,
+    Typography,
+    Grid
+} from '@mui/material';
 import moment from 'moment';
 
 

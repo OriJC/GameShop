@@ -2,8 +2,10 @@
 using GameShop.Data.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using System.Text.Json;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace GameShop.Server.Controllers
 {
@@ -12,57 +14,88 @@ namespace GameShop.Server.Controllers
     public class CompanyController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-
-        public CompanyController(IUnitOfWork unitOfWork)
+        private readonly ILogger<CompanyController> _logger;
+        public CompanyController(IUnitOfWork unitOfWork, ILogger<CompanyController> logger)
         {
             _unitOfWork = unitOfWork;
+            _logger = logger;
         }
 
         [HttpGet(Name = "GetAllCompany")]
         public async Task<ActionResult> GetAll()
         {
-            var objCompanyList = await _unitOfWork.Company.GetAll();
-            return Ok(objCompanyList);
+            try
+            {
+                var objCompanyList = await _unitOfWork.Company.GetAll();
+                _logger.LogInformation("Get All Comapny");
+                return Ok(objCompanyList);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet(Name = "GetOneCompanyName")]
         public async Task<ActionResult> GetOneCompanyNameById(string objectId)
         {
-            var filter = Builders<Company>.Filter.Eq("_id", new ObjectId(objectId));
-            var projection = Builders<BsonDocument>.Projection.Include("Name").Include("_id");
-
-            var objCompanyList = await _unitOfWork.Company.GetOneByProjectAndFilter(filter, projection);
-
-
-            return Ok(objCompanyList);
+            try
+            {
+                var filter = Builders<Company>.Filter.Eq("_id", new ObjectId(objectId));
+                var projection = Builders<Company>.Projection.Include("Name").Include("_id");
+                var objCompanyList = await _unitOfWork.Company.GetOneByProjectionAndFilter<CompanyProjection>(filter, projection);
+                _logger.LogInformation($"Get Company Name By {objectId}");
+                return Ok(objCompanyList);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet(Name = "GetAllCompanyName")]
         public async Task<ActionResult> GetAllCompanyName()
         {
-            var filter = Builders<Company>.Filter.Empty;
-            var projection = Builders<BsonDocument>.Projection.Include("Name").Include("_id");
-            
-            var objCompanyList = await _unitOfWork.Company.GetAllByProjectAndFilter(filter, projection);
-           
+            try
+            {
+                var filter = Builders<Company>.Filter.Empty;
+                var projection = Builders<Company>.Projection.Include("Name").Include("_id");
+                var objCompanyList = await _unitOfWork.Company.GetAllByProjectionAndFilter<CompanyProjection>(filter, projection);
+                _logger.LogInformation($"Get All Company Name");
 
-            return Ok(objCompanyList);
+                return Ok(objCompanyList);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
 
-        [HttpGet("{id}", Name = "GetCompanyById")]
-        public async Task<ActionResult> GetById(string id)
+        [HttpGet(Name = "GetCompanyById")]
+        public async Task<ActionResult> GetById(string Id)
         {
-            var Company = await _unitOfWork.Company.GetById(id);
-            if (Company != null)
+            try
             {
-                return Ok(Company);
-
+                var Company = await _unitOfWork.Company.GetById(Id);
+                if (Company != null)
+                {
+                    _logger.LogInformation($"Get Company  By {Id}");
+                    return Ok(Company);
+                }
+                else
+                {
+                    _logger.LogError($"Cannot find company with Id {Id}");
+                    return NotFound(new { message = "Cannot find this company!" });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest(new { message = "Get Game Category Failed"}); 
+                _logger.LogError(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
-            
         }
 
 
@@ -78,12 +111,12 @@ namespace GameShop.Server.Controllers
                 }
                 _unitOfWork.Company.Add(company);
                 await _unitOfWork.Commit();
-
+                _logger.LogInformation("Insert new company to db");
                 return Ok(company);
-        }
-            catch(Exception ex)
+            }
+            catch (Exception ex)
             {
-                return BadRequest(new { message = "Insert Company failed", detail = ex.Message});
+                return BadRequest(new { message = "Insert Company failed", detail = ex.Message });
             }
         }
 
@@ -92,32 +125,55 @@ namespace GameShop.Server.Controllers
         {
             try
             {
+                var Company = await _unitOfWork.Company.GetById(company.Id);
+                if (Company == null)
+                {
+                    _logger.LogError($"Cannot find Company Name By {company.Id}");
+                    return NotFound(new { message = "Cannot find this company!" });
+                }
                 //GameCategory obj = new GameCategory(id, name);
                 _unitOfWork.Company.Update(company);
                 await _unitOfWork.Commit();
-
+                _logger.LogInformation($"Updating Company By Id{company.Id}");
                 return Ok(new { message = "Update Sucessfully!" });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = "Update failed"});
+                _logger.LogError(ex.Message);
+                return BadRequest(new { message = "Update company failed" });
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(string id)
+        public async Task<ActionResult> Delete(string Id)
         {
             try
             {
-                _unitOfWork.Company.Remove(id);
+                var Company = await _unitOfWork.Company.GetById(Id);
+                if (Company == null)
+                {
+                    _logger.LogError($"Cannot find Company By Id {Id}");
+                    return NotFound(new { message = "Cannot find this Company!" });
+                }
+                _unitOfWork.Company.Remove(Id);
                 await _unitOfWork.Commit();
-
+                _logger.LogInformation($"Delete Company By {Id}");
                 return Ok(new { message = "Delete Sucessfully!" });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = "Delete failed" });
+                _logger.LogError(ex.Message);
+                return BadRequest(new { message = "Delete company failed" });
             }
         }
+    }
+
+    class CompanyProjection
+    {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        [BsonElement("_id")] 
+        public string Id { get; set; }
+        public string Name { get; set; }
     }
 }

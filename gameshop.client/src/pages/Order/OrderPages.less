@@ -1,0 +1,30 @@
+.status-label {
+    display: inline-block;
+    padding: 0.18em 1em;
+    border-radius: 1em;
+    font-weight: bold;
+    color: #fff;
+    font-size: 0.98em;
+    letter-spacing: 0.02em;
+    margin: 0 0.1em;
+    vertical-align: middle;
+    min-width: 90px;
+    text-align: center;
+    transition: opacity 0.2s;
+    user-select: none;
+}
+
+.status-order {
+  &.PENDING { background: #f0ad4e; }
+  &.PROCESSING { background: #5bc0de; }
+  &.SHIPPED { background: #0275d8; }
+  &.COMPLETED { background: #5cb85c; }
+  &.CANCELLED { background: #d9534f; }
+}
+
+.status-payment {
+  &.PENDING_PAYMENT { background: #f0ad4e; }
+  &.PAID { background: #5cb85c; }
+  &.REFUNDED { background: #5bc0de; }
+  &.FAILED { background: #d9534f; }
+}

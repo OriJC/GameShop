@@ -1,13 +1,8 @@
 import {
     Card,
-    Button,
     Grid,
-    Container,
     CardHeader,
     CardContent,
-    CardActions,
-    InputLabel,
-    TextField,
     Typography
 } from '@mui/material';
 import { useState, useEffect } from 'react'
@@ -68,27 +63,27 @@ const Detail: React.FC = () => {
                         
                     <CardContent>
 
-                        <Grid item container spacing={1} justify="center" mb={1}>
+                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                             <Grid item md={6}>
                                 <Typography variant="h3" color="text.secondary">
-                                    {data.name}
+                                    {data?.name}
                                 </Typography>
                                 <Typography variant="h5" color="text.secondary">
-                                    {data.address.city}, {data.address.state}
+                                    {data?.address.city}, {data?.address.state}
                                 </Typography>
                             </Grid>
                             <Grid item md={6} style={{ textAlign: 'left', paddingLeft: '50px' }}>
                                 <Typography variant="body2" color="text.secondary">
-                                    Email: {data.email}
+                                    Email: {data?.email}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    Phone Number: {data.phoneNumber}
+                                    Phone Number: {data?.phoneNumber}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    Street: {data.address.street}
+                                    Street: {data?.address.street}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    Zip Code: {data.address.zipCode}
+                                    Zip Code: {data?.address.zipCode}
                                 </Typography>
                             </Grid>
                         </Grid> 

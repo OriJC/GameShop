@@ -1,14 +1,10 @@
 import {
     Card,
     Button,
-    Typography,
     Grid,
-    Container,
     CardHeader,
     CardContent,
     CardActions,
-    Select,
-    InputLabel
 } from '@mui/material';
 import { useState, useEffect } from 'react'
 import Company from '@/models/Company'
@@ -64,7 +60,7 @@ const Delete: React.FC = () => {
     }
 
     return (
-        <Grid container justify="center" spacing={1}>
+        <Grid container justifyContent="center" spacing={1}>
             <Grid item md={12}>
                 <Card>
                     <CardHeader title="Create Company Form" />
@@ -77,7 +73,7 @@ const Delete: React.FC = () => {
                             return (
                                 <Form>
                                     <CardContent>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item xs={12}>
                                                 <Field
                                                     label="Name"
@@ -90,7 +86,7 @@ const Delete: React.FC = () => {
                                                 />
                                             </Grid>
                                         </Grid>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item md={6}>
                                                 <Field
                                                     label="State"
@@ -114,7 +110,7 @@ const Delete: React.FC = () => {
                                                 />
                                             </Grid>
                                         </Grid>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item md={6}>
                                                 <Field
                                                     label="Street"
@@ -138,7 +134,7 @@ const Delete: React.FC = () => {
                                                 />
                                             </Grid>
                                         </Grid>
-                                        <Grid item container spacing={1} justify="center" mb={1}>
+                                        <Grid item container spacing={1} justifyContent="center" mb={1}>
                                             <Grid item md={6}>
                                                 <Field
                                                     label="PhoneNumber"

@@ -1,19 +1,50 @@
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { AppBar, Toolbar, Button, Box, Menu, MenuItem } from '@mui/material';
 import './Header.less'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import store from '@/store/store'
+import { useSelector, useDispatch } from 'react-redux'
+import { setAuth } from '@/store/authSlice';
 
 const AppHeader = () => {
-    const [anchorEl, setAnchorEl] = useState(null);
-
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
+    const navigate = useNavigate();
+    
+    const [anchorEls, setAnchorEls] = useState({});
+    const isLogin = useSelector((state: any) => state.auth.isLogin)
+    const handleClick = (event, id) => {
+        setAnchorEls((prev) => ({
+            ...prev,
+            [id]: event.currentTarget,
+        }));
     };
 
-    const handleClose = () => {
-        setAnchorEl(null);
+    const handleClose = (id) => {
+        setAnchorEls((prev) => ({
+            ...prev,
+            [id]: null,
+        }));
     };
+
+    useEffect(() => {
+    }, []);
+
+    const handleLogout = () => {
+        store.dispatch(setAuth(
+            {
+                token: '',
+                userName: '',
+                isLogin: false
+            } 
+        ))
+    }
+
+    const handleLogIn = () => {
+        navigate('/Login')
+        console.log('Login')
+    }
+
 
     return (
         <AppBar position="static">
@@ -26,16 +57,17 @@ const AppHeader = () => {
                         color="inherit"
                         aria-controls="simple-menu"
                         aria-haspopup="true"
-                        onClick={handleClick}
+                        onClick={(e) => handleClick(e, 'Admin')}
                     >
-                        Admin Controller
+                        Admin
                     </Button>
+                    
                     <Menu
                         id="simple-menu"
-                        anchorEl={anchorEl}
+                        anchorEl={anchorEls['Admin']}
                         keepMounted
-                        open={Boolean(anchorEl)}
-                        onClose={handleClose}
+                        open={Boolean(anchorEls['Admin'])}
+                        onClose={() => handleClose('Admin')}
                     >
                         <MenuItem color="inherit" component={Link} to="/">
                             Home
@@ -53,7 +85,45 @@ const AppHeader = () => {
                             Product
                         </MenuItem>
                     </Menu>  
-                </Box>        
+
+                    <Button
+                        color="inherit"
+                        aria-controls="simple-menu"
+                        aria-haspopup="true"
+                        onClick={(e) => handleClick(e, 'User')}
+                    >
+                        User
+                    </Button>
+                    <Menu
+                        id="simple-menu"
+                        anchorEl={anchorEls['User']}
+                        keepMounted
+                        open={Boolean(anchorEls['User'])}
+                        onClose={() => handleClose('User')}
+                    >
+                        {/* this two features are almost done in back-end*/}   
+                        {/* <MenuItem color="inherit" component={Link} to="/User">
+                            User
+                        </MenuItem>
+                        <MenuItem color="inherit" component={Link} to="/Role">
+                            Role
+                        </MenuItem> */}
+                        <MenuItem color="inherit" component={Link} to="/Order">
+                            Order
+                        </MenuItem>
+                    </Menu>
+                    
+
+                </Box> 
+                {
+                    isLogin &&
+                    <Button color="inherit" component={Link} to="/ShoppingCart"><ShoppingCartIcon /></Button>
+                }
+                {   !isLogin
+                    ?<Button color="inherit" onClick={handleLogIn}>Login</Button>    
+                    :<Button color="inherit" onClick={handleLogout}>Logout</Button>       
+                }                
+                     
             </Toolbar>
         </AppBar>
     )

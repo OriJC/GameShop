@@ -1,0 +1,18 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  imageNameBackend: 'gameshop-backend'
+  imageNameFrontend: 'gameshop-frontend'
+
+steps:
+- task: DockerCompose@0
+  displayName: Build and push images
+  inputs:
+    containerregistrytype: 'Container Registry'
+    dockerComposeFile: 'docker-compose.yml'
+    action: 'Build services'
+    additionalImageTags: '$(Build.BuildId)'
