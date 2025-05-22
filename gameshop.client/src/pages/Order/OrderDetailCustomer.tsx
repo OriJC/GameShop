@@ -21,6 +21,7 @@ import { getProductImageByImageId } from '@/api/Product/Product';
 import PlaceIcon from '@mui/icons-material/Place';
 import MailIcon from '@mui/icons-material/Mail';
 import PhoneEnabledIcon from '@mui/icons-material/PhoneEnabled';
+import './OrderPages.less';
 import { removeUnderscoreBetweenWords } from '@/utils/removeUnderscoreBetweenWords';
 
 const OrderDetail: React.FC = () => {
@@ -29,7 +30,21 @@ const OrderDetail: React.FC = () => {
     const [loading, setLoading] = useState(false)
     const [itemData, setItemData] = useState<ShoppingCartItem[]>([])
     const navigate = useNavigate();
-    // initData
+
+    const orderStatusMap: {[key: string]: string} = {
+        PENDING: 'Pending',
+        PROCESSING: 'Processing',
+        SHIPPED: 'Shipped',
+        COMPLETED: 'Completed',
+        CANCELLED: 'Cancelled'
+    };
+
+    const paymentStatusMap: {[key: string]: string} = {
+        PENDING_PAYMENT: 'Pending Payment',
+        PAID: 'Paid',
+        REFUNDED: 'Refunded',
+        FAILED: 'Failed'
+    };
     
 
     useEffect(() => {
@@ -65,7 +80,7 @@ const OrderDetail: React.FC = () => {
     
 
     const handleBack = () => {
-        navigate('/')
+        navigate(-1)
     }
 
     if (loading) {
@@ -81,7 +96,7 @@ const OrderDetail: React.FC = () => {
             <Grid item md={12}>
                 <Card>
                     <CardHeader
-                        title={removeUnderscoreBetweenWords(data?.orderHeader.paymentStatus)}
+                        title={'Order ID: ' + data?.orderId}
                         titleTypographyProps={{ align: 'center', variant: 'h4' }}
                     />
                         
@@ -144,13 +159,29 @@ const OrderDetail: React.FC = () => {
                                                 Back 
                                             </Button>
                                         </TableCell>
-                                        <TableCell >
-                                            <Typography variant="body1" sx={{textAlign: 'left', pl: 2}}>
-                                                Order Id: {data?.orderId}
+                                        <TableCell>
+                                            <span style={{ fontWeight: 500, marginRight: 4, marginLeft: 15 }}>
+                                                Order Status: 
+                                            </span>                                           
+                                            <Typography 
+                                                component="span"
+                                                className={`status-label status-order ${data?.orderHeader.orderStatus}`}
+                                                variant='body2'
+                                            >
+                                                {orderStatusMap[removeUnderscoreBetweenWords(data?.orderHeader.orderStatus)]|| removeUnderscoreBetweenWords(data?.orderHeader.orderStatus)}
                                             </Typography>
                                         </TableCell>
                                         <TableCell align='right' sx={{pr:2}}>
-  
+                                            <span style={{ fontWeight: 500, marginRight: 4}}>
+                                                Payment Status: 
+                                            </span>
+                                            <Typography
+                                                component="span"
+                                                className={`status-label status-payment ${data?.orderHeader.paymentStatus}`}
+                                                variant='body2'
+                                            >
+                                                {paymentStatusMap[removeUnderscoreBetweenWords(data?.orderHeader.paymentStatus)]|| removeUnderscoreBetweenWords(data?.orderHeader.paymentStatus)}
+                                            </Typography>  
                                         </TableCell>
                                         <TableCell>
                                             <Typography sx={{textAlign: 'right'}}>

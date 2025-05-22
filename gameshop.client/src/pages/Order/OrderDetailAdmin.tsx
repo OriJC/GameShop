@@ -115,7 +115,7 @@ const OrderDetail: React.FC = () => {
     
 
     const handleBack = () => {
-        navigate('/')
+        navigate(-1)
     }
 
     const handleUpdateStatus = async() => {
@@ -145,7 +145,7 @@ const OrderDetail: React.FC = () => {
             <Grid item md={12}>
                 <Card>
                     <CardHeader
-                        title={'Order: ' + data?.orderId}
+                        title={'Order ID: ' + data?.orderId}
                         titleTypographyProps={{ align: 'center', variant: 'h4' }}
                     />
                         

@@ -16,7 +16,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'
 import { OrderDetail } from '@/models/Order';
 import { removeUnderscoreBetweenWords } from '@/utils/removeUnderscoreBetweenWords';
-import './OrderList.less';
+import './OrderPages.less';
 
 
 const List: React.FC = () => {
@@ -87,11 +87,11 @@ const List: React.FC = () => {
                         Order List
                     </Typography>
                 </Grid>
-                <Grid item className="me-2 mt-2">
+                {/*<Grid item className="me-2 mt-2">
                     <Button component={Link} to="/Company/Create" variant="contained">
                         Create
                     </Button>
-                </Grid>
+                </Grid>*/}
             </Grid>
             <TableContainer>
                 <Table>
@@ -101,7 +101,7 @@ const List: React.FC = () => {
                             <TableCell>Order Status</TableCell>
                             <TableCell>Payment Status</TableCell>
                             <TableCell>City, State</TableCell>
-                            <TableCell align={'right'} sx={{ paddingRight: '150px' }} >Actions</TableCell>
+                            <TableCell align={'right'} sx={{ paddingRight: '50px' }} >Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
