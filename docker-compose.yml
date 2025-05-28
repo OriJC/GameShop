@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   mongo:
     image: mongo:7
@@ -11,7 +10,7 @@ services:
 
   backend:
     build:
-      context: ./GameShop.Server
+      context: ./gameshop.server
     container_name: gameshop-backend
     ports:
       - "7118:80"
