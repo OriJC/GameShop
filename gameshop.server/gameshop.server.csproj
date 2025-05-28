@@ -23,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="\gameshop.data\gameshop.data.csproj" />
-    <ProjectReference Include="\gameshop.model\gameshop.model.csproj" />
+    <ProjectReference Include="..\gameshop.data\gameshop.data.csproj" />
+    <ProjectReference Include="..\gameshop.model\gameshop.model.csproj" />
   </ItemGroup>
 
 </Project>
