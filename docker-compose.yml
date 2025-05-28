@@ -25,8 +25,8 @@ services:
 
   frontend:
     build:
-      context: .
-      dockerfile: gameshop.client/Dockerfile
+      context: ./gameshop.client
+      dockerfile: Dockerfile
     container_name: gameshop-frontend
     ports:
       - "5173:80"
