@@ -16,3 +16,4 @@ steps:
     dockerComposeFile: 'docker-compose.yml'
     action: 'Build services'
     additionalImageTags: '$(Build.BuildId)'
+    projectName: 'gameshop'
