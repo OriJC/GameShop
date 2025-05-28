@@ -10,7 +10,8 @@ services:
 
   backend:
     build:
-      context: ./gameshop.server
+      context: .
+      dockerfile: gameshop.server/Dockerfile
     container_name: gameshop-backend
     ports:
       - "7118:80"
@@ -24,7 +25,8 @@ services:
 
   frontend:
     build:
-      context: ./gameshop.client
+      context: .
+      dockerfile: gameshop.client/Dockerfile
     container_name: gameshop-frontend
     ports:
       - "5173:80"
