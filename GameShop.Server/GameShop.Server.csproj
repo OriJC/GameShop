@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
@@ -23,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GameShop.Data\GameShop.Data.csproj" />
-    <ProjectReference Include="..\Gameshop.model\Gameshop.Model.csproj" />
+    <ProjectReference Include="..\GameShop.Data\gameshop.data.csproj" />
+    <ProjectReference Include="..\Gameshop.model\gameshop.model.csproj" />
   </ItemGroup>
 
 </Project>
