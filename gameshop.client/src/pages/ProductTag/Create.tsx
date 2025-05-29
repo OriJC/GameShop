@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import {
     Dialog,
     DialogActions,
@@ -12,28 +12,32 @@ import {
 interface ModalFormProps {
     open: boolean,
     onClose: () => void;
-    onCreate: (values: any) => void;
+    onCreate: (values: {name: string}) => void;
 }
 
 
 const Create: React.FC<ModalFormProps> = ({ open, onClose, onCreate }) => {
-    const [data, setData] = useState({})
+    const [data, setData] = useState<string>('')
 
-    const handleInputChange = (event) => {
+    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         setData(event.target.value);
     };
 
     const handleCancel = () => {
         setData('');
+        onClose();
     }
 
     const handleClose = () => {
-        onCreate(data);
+        if (data.trim() === '') return;
+        onCreate({name: data});
         setData('');
+        onClose();
     };
 
+
     return (
-        <Dialog open={open} onClose={onClose}>
+        <Dialog open={open} onClose={handleCancel}>
             <DialogTitle>Create New Product Tag</DialogTitle>
             <DialogContent>
                 <DialogContentText>

@@ -5,22 +5,29 @@ import './Header.less'
 import { useState, useEffect } from 'react'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import store from '@/store/store'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { setAuth } from '@/store/authSlice';
 
+type AnchorEls = Record<string, HTMLElement | null>
+
+interface RootState {
+    auth: {
+        isLogin: boolean
+    }
+}
 const AppHeader = () => {
     const navigate = useNavigate();
     
-    const [anchorEls, setAnchorEls] = useState({});
-    const isLogin = useSelector((state: any) => state.auth.isLogin)
-    const handleClick = (event, id) => {
+    const [anchorEls, setAnchorEls] = useState<AnchorEls>({});
+    const isLogin = useSelector((state: RootState) => state.auth.isLogin)
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>, id: string) => {
         setAnchorEls((prev) => ({
             ...prev,
             [id]: event.currentTarget,
         }));
     };
 
-    const handleClose = (id) => {
+    const handleClose = (id: string) => {
         setAnchorEls((prev) => ({
             ...prev,
             [id]: null,

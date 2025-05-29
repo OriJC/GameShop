@@ -26,9 +26,9 @@ const Create: React.FC = () => {
             zipCode: ''
         },
         phoneNumber: '',
-        email: ''
+        email: '',
+        id: ''
     }
-    const [error, setError] = useState(false)
 
     let validationSchema = Yup.object().shape({
         name: Yup.string().required("Required"),
@@ -56,7 +56,7 @@ const Create: React.FC = () => {
                         validationSchema={validationSchema}
                         onSubmit={onSubmit}
                     >
-                        {({ dirty, isValid, values, handleChange, handleBlur }) => {
+                        {({ dirty, isValid, values }) => {
                             return (
                                 <Form>
                                     <CardContent>

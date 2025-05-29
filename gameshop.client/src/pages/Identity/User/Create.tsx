@@ -22,17 +22,21 @@ import { createUser } from '@/api/Identity/User'
 import { useNavigate } from 'react-router-dom';
 import { getAllRoleIdAndName } from '@/api/Identity/Role'
 
+interface RoleOption {
+    id: string;
+    name: string
+}
+
 const Create: React.FC = () => {
     const navigate = useNavigate();
     // initData
-    const [formData, setFormData] = useState<User>({
+    const [formData, ] = useState<User>({
         userName: '',
         email: '',
         password: '',
         roles: []
     })
-    const [roleData, setRoleData] = useState([]);
-    const [error, setError] = useState(false)
+    const [roleData, setRoleData] = useState<RoleOption[]>([]);
     const [loading, setLoading] = useState(true) 
 
     // Style
@@ -85,6 +89,7 @@ const Create: React.FC = () => {
         })
     }
 
+    if(!loading)
     return (
         <Grid container justifyContent="center" spacing={1}>
             <Grid item md={12}>
@@ -154,7 +159,7 @@ const Create: React.FC = () => {
 
                                                         }}
                                                         input={<OutlinedInput label="Chip" />}
-                                                        renderValue={(selected) => (
+                                                        renderValue={(selected: string[]) => (
                                                             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                                                                 {selected.map((id) => {
                                                                     const item = roleData.find(tag => tag.id === id);

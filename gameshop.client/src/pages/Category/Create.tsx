@@ -18,13 +18,11 @@ interface ModalFormProps {
 const Create: React.FC<ModalFormProps> = ({ open, onClose, onCreate }) => {
     const [data, setData] = useState({})
 
-    const handleInputChange = (event) => {
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setData(event.target.value);
     };
 
-    const handleCancel = () => {
-        setData('');
-    }
+
 
     const handleClose = () => {
         onCreate(data);

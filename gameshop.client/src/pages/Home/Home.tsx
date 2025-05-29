@@ -7,13 +7,13 @@ import {
     Typography,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
-import Product from '@/models/Product';
-import Company from '@/models/Company';
+import { Product } from '@/models/Product';
 import { getAllProductIncludingImage } from '@/api/Product/Product';
 import { useNavigate} from 'react-router-dom';
 
 
-const Home = () => {
+
+const Home: React.FC = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true)
     const [productData, setProductData] = useState<Product[]>([])
@@ -23,10 +23,12 @@ const Home = () => {
     }, []);
 
     const fetchData = async () => {
+
+        
         setLoading(true)
 
         await getAllProductIncludingImage().then(res => {
-            const formattedData: Product[] = res.data.map(item =>
+            const formattedData: Product[] = res.data.map((item: Product) =>
             ({
                 ...item,
                 key: item.product.id,
@@ -39,9 +41,11 @@ const Home = () => {
         setLoading(false)
     }
 
-    const handleGoToProduct = (id) => {
+    const handleGoToProduct = (id: string) => {
         navigate(`/Product/shopitem/${id}`);
     }
+
+    if(!loading)
     return (
         <Grid container spacing={1}>
             {

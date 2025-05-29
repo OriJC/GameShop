@@ -15,9 +15,9 @@ import {
     CircularProgress
 } from '@mui/material';
 import { useState, useEffect } from 'react';
-import Product from '@/models/Product';
+import { Product, ProductInfo } from '@/models/Product';
 import * as Yup from 'yup';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form, Field, setNestedObjectValues } from 'formik';
 import { TextField as FormikTextField, TextField } from 'formik-material-ui';
 import { updateProduct, getProductById } from '@/api/Product/Product';
 import { getAllCompanyName } from '@/api/Company/Company'
@@ -27,12 +27,20 @@ import { useNavigate, useParams } from 'react-router-dom';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { base64ToFile } from '@/utils/base64Translate'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import Company from '@/models/Company';
+import { Category } from '@/models/Category';
+
+
+interface ProductTag {
+    id: string;
+    name: string;
+}
 
 const Edit: React.FC = () => {
     const navigate = useNavigate();
 
     // Initial form data
-    const [formData, setFormData] = useState<Product>({
+    const [formData, setFormData] = useState<Product['product']>({     
         id: '',
         name: '',
         description: '',
@@ -44,17 +52,18 @@ const Edit: React.FC = () => {
         companyId: '',
         categoryId: '',
         productTagsIds: [],
-        inventory: 1
+        inventory: 1,
+        imageFileId: ''
+        
     });
 
-    const [error, setError] = useState(false);
-    const [companyData, setCompanyData] = useState([]);
-    const [categoryData, setCategoryData] = useState([])
-    const [productTagsIdsData, setproductTagsIdsData] = useState([])
+    const [companyData, setCompanyData] = useState<Company[]>([]);
+    const [categoryData, setCategoryData] = useState<Category[]>([])
+    const [productTagsIdsData, setproductTagsIdsData] = useState<ProductTag[]>([])
     const routeParams = useParams<{ productId: string }>();
-    const [coverImage, setCoverImage] = useState(null)
-    const [preview, setPreview] = useState(null)
-    const [loading, setLoading] = useState(true) 
+    const [coverImage, setCoverImage] = useState<File | null>(null)
+    const [preview, setPreview] = useState<string| ArrayBuffer | null>(null)
+    const [loading, setLoading] = useState<boolean>(true) 
 
     // Style
     const ITEM_HEIGHT = 48;
@@ -78,19 +87,20 @@ const Edit: React.FC = () => {
     })
 
     // Submit handler
-    const onSubmit = (values: Product) => {
+    const onSubmit = (values: ProductInfo) => {
 
         if (!coverImage || !values) return
 
         let productData = new FormData()
         for (const key in values) {
-            if (values[key] !== '')
-                productData.append(key, values[key])
+            const value = (values as any)[key]
+            if (value !== '' && value != null)
+                productData.append(key, value)
         }
         productData.append('file', coverImage)
         //productData.append('id', '')
         //productData.append('createdDate', null)
-        if (!values.ProductTagIds) {
+        if (values.productTagsIds && Array.isArray(values.productTagsIds)) {
             productData.delete('productTagsIds')
             values.productTagsIds.forEach((tagId, index) => {
                 productData.append(`productTagsIds[${index}]`, tagId);
@@ -122,10 +132,11 @@ const Edit: React.FC = () => {
             setproductTagsIdsData(res.data)
         })
 
-        let id = routeParams.productId
+        let id = routeParams.productId ?? ''
         await getProductById(id).then(res => {
             const imageSrc = 'data:' + res.data.contentType + ';base64,' + res.data.image
             setFormData(res.data.product)
+            console.log(res.data)
             setPreview(imageSrc)
             const coverFile = base64ToFile(imageSrc, 'CoverFile')
             //const dataTransfer = new DataTransfer()
@@ -139,8 +150,8 @@ const Edit: React.FC = () => {
 
 
 
-    const handleFileChange = (e) => {
-        const file = event.target.files[0];
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
         if (file) {
             setCoverImage(file);
             const reader = new FileReader();
@@ -172,7 +183,7 @@ const Edit: React.FC = () => {
                         validateOnChange={true}
                         validateOnBlur={true}
                     >
-                        {({ dirty, isValid, values, handleChange, handleBlur, setFieldValue }) => {
+                        {({  values, handleBlur, setFieldValue }) => {
                             return (
                                 <Form>
                                     <CardContent>
@@ -259,11 +270,14 @@ const Edit: React.FC = () => {
                                                         inputProps={{
                                                             displayEmpty: true
                                                         }}
-                                                        onChange={(e) => {
+                                                        onChange={(e : any) => {
                                                             let selectedValue = e.target.value
                                                             setFieldValue('categoryId', selectedValue);
                                                             // Update Formik state
-                                                            setFormData({ ...formData, categoryId: selectedValue });
+                                                            setFormData({ 
+                                                                ...formData,
+                                                                categoryId: selectedValue     
+                                                            });
                                                         }}
                                                         onBlur={handleBlur('categoryId')}
                                                     >
@@ -288,10 +302,13 @@ const Edit: React.FC = () => {
                                                         value={values.companyId}
                                                         component={Select}
 
-                                                        onChange={(e) => {
+                                                        onChange={(e: any) => {
                                                             let selectedValue = e.target.value
                                                             setFieldValue('companyId', selectedValue); // Update Formik state
-                                                            setFormData({ ...formData, companyId: selectedValue });
+                                                            setFormData({ 
+                                                                ...formData, 
+                                                                companyId: selectedValue        
+                                                            });
                                                         }}
                                                         onBlur={handleBlur('companyId')}
                                                     >
@@ -375,7 +392,7 @@ const Edit: React.FC = () => {
                                                         Choose Image
                                                     </Button>
                                                 </label>
-                                                {preview && (
+                                                {typeof preview === 'string'&& (
                                                     <Box
                                                         component="img"
                                                         src={preview}

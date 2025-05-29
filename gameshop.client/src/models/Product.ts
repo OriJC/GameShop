@@ -1,4 +1,4 @@
-interface Product {
+interface ProductInfo {
     id: string;
     name: string;
     description: string;
@@ -9,9 +9,16 @@ interface Product {
     price100: number;
     companyId: string;
     categoryId: string;
-    productTag: string[];
+    productTagsIds: string[];
     inventory: number;
     imageFileId: string;
 }
 
-export default Product;
+interface Product {
+    product: ProductInfo;
+    imageContentType: string;
+    imageData: string;
+    key? : string;
+}
+
+export type { Product, ProductInfo };

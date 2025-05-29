@@ -16,14 +16,15 @@ import {Table,
         TablePagination } 
 from '@mui/material';
 import moment from 'moment';
+import { Category } from '@/models/Category'
 
 
 const List: React.FC = () => {
-    const [data, setData] = useState([])
+    const [data, setData] = useState<Category[]>([])
     const [openCreate, setOpenCreate] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
-    const [currentItem, setCurrentItem] = useState({});
+    const [currentItem, setCurrentItem] = useState<Category|null>(null);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -33,7 +34,7 @@ const List: React.FC = () => {
         const fetchData = () => {
             setLoading(true)
             getAllCategory().then(res => {
-                const formattedData = res.data.map(item =>
+                const formattedData : Category[]= res.data.map((item :Category) =>
                 ({
                     ...item,
                     key: item.id,
@@ -48,7 +49,7 @@ const List: React.FC = () => {
         fetchData()
     }, []);
 
-    const handleChangePage = (event: unknown, newPage: number) => {
+    const handleChangePage = (_event: unknown, newPage: number) => {
         setPage(newPage)
     }
 
@@ -59,12 +60,12 @@ const List: React.FC = () => {
 
     // Create Method
     const handleOpenCreate = () => {
-        setCurrentItem({})
+        setCurrentItem(null)
         setOpenCreate(true)
     }
     const handleCloseCreate = () => setOpenCreate(false)
-    const handleSaveCreate = (newData: Object) => {
-        createCategory(newData).then(() => {
+    const handleSaveCreate = (newData: Category) => {
+        createCategory(newData.name).then(() => {
             console.log("Create Category Successfully")
 
         }).catch(err => {
@@ -85,8 +86,8 @@ const List: React.FC = () => {
         })
     }
     const handleCloseEdit = () => setOpenEdit(false)
-    const handleSaveEdit = (newData: Object) => {
-        updateCategory(newData.id, newData.name).then(() => {
+    const handleSaveEdit = (newData: Category) => {
+        updateCategory(newData.id.toString(), newData.name).then(() => {
             console.log("Update Successfully")
         }).catch(err => {
             console.log(err)
@@ -156,8 +157,8 @@ const List: React.FC = () => {
                                 <TableCell>{item.name}</TableCell>
                                 <TableCell>{moment(item.createdDate).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
                                 <TableCell>
-                                    <Button color="primary" onClick={() => handleOpenEdit(item.key)}>Edit</Button>
-                                    <Button color="primary" onClick={() => handleOpenDelete(item.key)}>Delete</Button>
+                                    <Button color="primary" onClick={() => handleOpenEdit(item.key?.toString()??''.toString())}>Edit</Button>
+                                    <Button color="primary" onClick={() => handleOpenDelete(item.key?.toString()??''.toString())}>Delete</Button>
                                 </TableCell>
                             </TableRow>
                         ))}

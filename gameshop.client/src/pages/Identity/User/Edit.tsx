@@ -1,15 +1,11 @@
 import {
     Card,
     Button,
-    Typography,
     Grid,
-    Container,
     CardHeader,
     CardContent,
     CardActions,
-    InputLabel
 } from '@mui/material';
-import { useState } from 'react'
 import { User } from '@/models/User'
 import * as Yup from 'yup'
 import { Formik, Form, Field } from 'formik'
@@ -21,19 +17,18 @@ const Edit: React.FC = () => {
     const navigate = useNavigate();
     // initData
     const formData: User = {
-        name: '',
+        userName: '',
         email: '',
-        password: ''
+        password: '',
+        roles: []
     }
-    const [error, setError] = useState(false)
 
     let validationSchema = Yup.object().shape({
         name: Yup.string().required("Required"),
         email: Yup.string().email("Invalid email"),
-        password: ''
     })
 
-    const onSubmit = (values: Company) => {
+    const onSubmit = (values: User) => {
         createUser(values).then((res) => {
             console.log(res.data)
             setTimeout(() => {
@@ -65,7 +60,7 @@ const Edit: React.FC = () => {
                                                 variant="outlined"
                                                 fullWidth
                                                 name="name"
-                                                value={values.name}
+                                                value={values.userName}
                                                 component={TextField}
                                             />                      
                                         </Grid>

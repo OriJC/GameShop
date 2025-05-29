@@ -1,4 +1,3 @@
-//import { useState } from 'react'
 import {
     Dialog,
     DialogActions,
@@ -8,11 +7,17 @@ import {
     Button,
     TextField
 } from '@mui/material';
+
 interface ModalFormProps {
     open: boolean
-    record: Object,
+    record: ProductTag,
     onClose: () => void;
-    onDelete: (values: any) => void;
+    onDelete: (id: string) => void;
+}
+
+interface ProductTag {
+    id: string;
+    name: string;
 }
 
 

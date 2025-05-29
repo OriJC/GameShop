@@ -17,46 +17,47 @@ import { useState, useEffect } from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom'
 import Company from '../../models/Company';
-import Product from '@/models/Product'
-import { cp } from 'fs';
+import { Product, ProductInfo } from '@/models/Product'
 
 
 
 const List: React.FC = () => {
-    const [data, setData] = useState<Product[]>([])
-    const [loading, setLoading] = useState(true);
-    const [page, setPage] = useState(0)
-    const [rowsPerPage, setRowsPerPage] = useState(10)
-    const [companyData, setCompanyData] = useState<Company>({})
+    const [data, setData] = useState<ProductInfo[]>([])
+    const [loading, setLoading] = useState<boolean>(true);
+    const [page, setPage] = useState<number>(0)
+    const [rowsPerPage, setRowsPerPage] = useState<number>(10)
+    const [companyData, setCompanyData] = useState<Company[]>([])
     // Get Data 
     useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true)
-            await getAllProduct().then(res => {
-                const formattedData: Product[] = res.data.map(item =>
-                ({
-                    ...item,
-                    key: item.id,
-                }))
-                setData(formattedData)
-            }).catch(err => {
-                setLoading(false)
-                console.log(err)
-            })
-            await getAllCompanyName().then(res => {
-                const formattedData: Company = res.data.map(item =>
-                ({
-                    ...item,
-                    key: item._id,
-                }))
-                setCompanyData(formattedData)
-            })
-            setLoading(false)
-        }
         fetchData()
     }, []);
 
-    const handleChangePage = (event: unknown, newPage: number) => {
+    const fetchData = async () => {
+        setLoading(true)
+        try{
+            const [productRes, companyRes] = await Promise.all([
+                getAllProduct(),
+                getAllCompanyName()
+            ])
+            const formattedProduct: ProductInfo[] = productRes.data.map((item: ProductInfo) => ({
+                ...item,
+                key: item.id,
+            }))
+
+            const formattedCompany: Company[] = companyRes.data.map((item: Company) => ({
+                ...item,
+                key: item.id,
+            }))
+            setData(formattedProduct)
+            setCompanyData(formattedCompany)
+        } catch (error){
+            console.log(error)
+        }
+        
+        setLoading(false)
+    }
+
+    const handleChangePage = (_event: unknown, newPage: number) => {
         setPage(newPage)
     }
 
@@ -65,9 +66,8 @@ const List: React.FC = () => {
         setPage(0)
     }
 
-    const handleCompanyTableCell = (item) => {
+    const handleCompanyTableCell = (item: ProductInfo) => {
         const company = companyData.find(company => company.id === item.companyId)
-        console.log(company)
         if (!company) {
             return <TableCell></TableCell>
         }
@@ -112,7 +112,7 @@ const List: React.FC = () => {
                     </TableHead>
                     <TableBody>
                         {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => (
-                            <TableRow key={item.key}>
+                            <TableRow key={item.id}>
                                 <TableCell>
                                     <Link to={`/Product/detail/${item.id}`}>
                                         {item.name}

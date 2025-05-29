@@ -20,12 +20,11 @@ import { setAuth } from '@/store/authSlice'
 const Login: React.FC = () => {
     const navigate = useNavigate();
     // initData
-    const [formData, setFormData] = useState<LoginModel>({
+    const [formData, ] = useState<LoginModel>({
         userName: '',
         password: ''
     })
-    const [error, setError] = useState(false)
-    const [loading, setLoading] = useState(true)
+
 
 
     let validationSchema = Yup.object().shape({
@@ -68,7 +67,7 @@ const Login: React.FC = () => {
                         validationSchema={validationSchema}
                         onSubmit={onSubmit}
                     >
-                        {({ dirty, isValid, values, setFieldValue }) => {
+                        {({ dirty, isValid, values }) => {
                             return (
                                 <Form>
                                     <CardContent>

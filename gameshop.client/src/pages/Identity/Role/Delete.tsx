@@ -10,11 +10,15 @@ import {
 } from '@mui/material';
 interface ModalFormProps {
     open: boolean
-    record: Object,
+    record: RoleRecord,
     onClose: () => void;
-    onDelete: (values: any) => void;
+    onDelete: (id: string) => void;
 }
 
+interface RoleRecord {
+    id: string;
+    name: string;
+}
 
 const Delete: React.FC<ModalFormProps> = ({ open, record, onClose, onDelete }) => {
 

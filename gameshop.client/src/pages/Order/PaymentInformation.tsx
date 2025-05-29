@@ -6,7 +6,7 @@ import {
     CardContent,
     CardActions,
 } from '@mui/material';
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { PaymentInfo } from '@/models/PaymentInfo'
 import * as Yup from 'yup'
 import { Formik, Form, Field } from 'formik'
@@ -32,7 +32,7 @@ const PaymentInformation: React.FC = () => {
         streetAddress: '',
         postalCode: ''
     }
-    const [error, setError] = useState(false)
+
 
     
     useEffect(()=>
@@ -81,7 +81,7 @@ const PaymentInformation: React.FC = () => {
                         validationSchema={validationSchema}
                         onSubmit={onSubmit}
                     >
-                        {({ dirty, isValid, values, handleChange, handleBlur }) => {
+                        {({ dirty, isValid, values }) => {
                             return (
                                 <Form>
                                     <CardContent>

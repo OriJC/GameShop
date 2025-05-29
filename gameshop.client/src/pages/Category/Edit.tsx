@@ -7,19 +7,20 @@ import {Dialog,
         Button, 
         TextField } 
 from '@mui/material';
+import { Category } from '@/models/Category';
 interface ModalFormProps {
     open: boolean
-    record: Object,
+    record: Category | null,
     onClose: () => void;
-    onUpdate: (values: any) => void;
+    onUpdate: (values: Category) => void;
 }
 
 
 const Edit: React.FC<ModalFormProps> = ({ open, record, onClose, onUpdate }) => {
-    const [data, setData] = useState<{ id: string; name: string }>({ id: '', name: '' });
+    const [data, setData] = useState<Category>({ id: '', name: '' });
 
     useEffect(() => {
-        setData(record || { id: '', name: '' });
+        setData(record ?? { id: '', name: '' });
     }, [record]);
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,13 +32,13 @@ const Edit: React.FC<ModalFormProps> = ({ open, record, onClose, onUpdate }) => 
     };
 
     const handleCancel = () => {
-        setData({});
+        setData({ id: '', name: '' });
         onClose(); 
     }
 
     const handleUpdate = () => {
         onUpdate(data);
-        setData({});
+        setData({ id: '', name: '' });
     };
     return (
         <Dialog open={open} onClose={handleCancel}>

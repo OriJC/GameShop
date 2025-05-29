@@ -9,7 +9,7 @@ interface Company {
     id: string;
     name: string;
     createdDate?: Date;
-    address?: Address;
+    address: Address;
     phoneNumber?: string;
     email: string;
 }

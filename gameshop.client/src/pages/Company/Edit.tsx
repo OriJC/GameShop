@@ -27,11 +27,11 @@ const Edit: React.FC = () => {
             zipCode: ''
         },
         phoneNumber: '',
-        email: ''
+        email: '',
+        id: ''
     }
-    const [error, setError] = useState(false)
     const routeParams = useParams<{ companyId: string }>();
-    const [data, setData] = useState<Company | null>(formData);
+    const [data, setData] = useState<Company>(formData);
     const [loading, setLoading] = useState(false)
     let validationSchema = Yup.object().shape({
         name: Yup.string().required("Required"),
@@ -40,17 +40,20 @@ const Edit: React.FC = () => {
 
     useEffect(() => {
         let id = routeParams.companyId
-        setLoading(true)
-        const fetchCompany = async () => {
-            getCompanyById(id).then(res => {
-                setData(res.data)
-                console.log(res.data)
-            }).catch(error => {
-                console.log(error)
-            })
-        };
-        setLoading(false)
-        fetchCompany();
+        if(id != null)
+        {
+            setLoading(true)
+            const fetchCompany = async () => {
+                getCompanyById(id).then(res => {
+                    setData(res.data)
+                    console.log(res.data)
+                }).catch(error => {
+                    console.log(error)
+                })
+            };
+            setLoading(false)
+            fetchCompany();
+        }       
     }, []);
     
     const onSubmit = (values: Company) => {
@@ -63,7 +66,7 @@ const Edit: React.FC = () => {
             console.log(error)
         })
     }
-
+    if(!loading)
     return (
         <Grid container justifyContent="center" spacing={1}>
             <Grid item md={12}>
@@ -75,7 +78,7 @@ const Edit: React.FC = () => {
                         validationSchema={validationSchema}
                         onSubmit={onSubmit}
                     >
-                        {({ dirty, isValid, values, handleChange, handleBlur }) => {
+                        {({ dirty, isValid, values }) => {
                             return (
                                 <Form>
                                     <CardContent>
