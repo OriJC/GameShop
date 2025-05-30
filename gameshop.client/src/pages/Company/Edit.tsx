@@ -39,7 +39,7 @@ const Edit: React.FC = () => {
     })
 
     useEffect(() => {
-        let id = routeParams.companyId
+        let id = routeParams.companyId ?? ''
         if(id != null)
         {
             setLoading(true)

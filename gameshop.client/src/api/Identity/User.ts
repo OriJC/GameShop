@@ -1,5 +1,5 @@
 import axios from '@/services/api.request'
-import User from '@/models/User'
+import { User } from '@/models/User'
 
 export const getAllUser = () => {
     return axios.request({

@@ -21,10 +21,6 @@ const Create: React.FC<ModalFormProps> = ({ open, onClose, onCreate }) => {
         });
     };
 
-    const handleCancel = () => {
-        setData({name: ''});
-        onClose();
-    }
 
     const handleClose = () => {
         onCreate(data);

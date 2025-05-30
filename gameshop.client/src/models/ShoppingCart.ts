@@ -1,4 +1,4 @@
-import Product from "./Product";
+import { ProductInfo } from "./Product";
 interface ShoppingCart{
     id: string;
     userId: number;
@@ -12,7 +12,7 @@ interface ShoppingCartItem {
     index: number;
     shoppingCartId: string;
     createdAt: Date;
-    product: Product;
+    product: ProductInfo;
     quantity: number;
     totalPrice: number;
     imageString: ImageString;

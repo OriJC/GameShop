@@ -1,5 +1,4 @@
 import { OrderDetail } from '@/models/Order'
-import { ShoppingCart } from '@/models/ShoppingCart'
 import axios from '@/services/api.request'
 
 

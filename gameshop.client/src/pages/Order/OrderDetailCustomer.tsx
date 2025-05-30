@@ -57,8 +57,10 @@ const OrderDetail: React.FC = () => {
 
     const fetchData = async () => {
         let orderId = routeParams.orderId ?? ''
+        console.log(orderId)
         await getOrderById(orderId).then(async (res) => {
             setData(res.data)
+            console.log(res.data)
             let items : ShoppingCartItem[] = res.data.items || []
             items = await Promise.all(
                 items.map(async (item) => {

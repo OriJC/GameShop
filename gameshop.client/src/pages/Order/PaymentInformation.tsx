@@ -64,7 +64,7 @@ const PaymentInformation: React.FC = () => {
             console.log(res.data)
             const userName: string = store.getState().auth.userName ?? ''
             await retryUntilSuccess(() =>clearUserCart(userName), 10, 500).then(()=>{
-                navigate('/order/orderdetail/' + res.data.id)
+                navigate('/order/orderdetail/customer/' + res.data.id)
             })
             
         })

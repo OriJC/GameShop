@@ -17,7 +17,7 @@ import {
 import { useState, useEffect } from 'react';
 import { Product, ProductInfo } from '@/models/Product';
 import * as Yup from 'yup';
-import { Formik, Form, Field, setNestedObjectValues } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import { TextField as FormikTextField, TextField } from 'formik-material-ui';
 import { updateProduct, getProductById } from '@/api/Product/Product';
 import { getAllCompanyName } from '@/api/Company/Company'
@@ -66,16 +66,10 @@ const Edit: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true) 
 
     // Style
-    const ITEM_HEIGHT = 48;
-    const ITEM_PADDING_TOP = 8;
-    const MenuProps = {
-        PaperProps: {
-            style: {
-                maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-                width: 250,
-            },
-        },
-    };
+    //const ITEM_HEIGHT = 48;
+    //const ITEM_PADDING_TOP = 8;
+
+    
     // Validation schema
     let validationSchema = Yup.object().shape({
         name: Yup.string().required("Required"),

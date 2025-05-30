@@ -11,7 +11,7 @@ import {
     TextField as Textarea,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { Product, ProductInfo } from '@/models/Product';
+import { ProductInfo } from '@/models/Product';
 import store from '@/store/store'
 import { Formik, Form, Field } from 'formik';
 import { TextField as FormikTextField, TextField } from 'formik-material-ui';
@@ -22,7 +22,6 @@ import { getAllProductTag } from '@/api/ProductTag/ProductTag'
 import { useNavigate, useParams } from 'react-router-dom';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import { styled } from "@mui/material/styles";
 import { addShoppingCartItemToCart } from '@/api/ShoppingCart/ShoppingCart';
 import Company from '@/models/Company';
 import { Category } from '@/models/Category';
@@ -36,15 +35,6 @@ interface ProductTag {
 const ShopItem: React.FC = () => {
     const navigate = useNavigate();
 
-    const NoSpinnerTextField = styled(TextField)({
-    "& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button": {
-        WebkitAppearance: "none",
-        margin: 0,
-    },
-    "& input[type=number]": {
-        MozAppearance: "textfield",
-    },
-    });
     // Initial form data
     const [formData, setFormData] = useState<ProductInfo>({
         id: '',
@@ -66,7 +56,7 @@ const ShopItem: React.FC = () => {
     const [showPrice, setShowPrice] = useState(0)
     const [companyData, setCompanyData] = useState<Company[]>([]);
     const [categoryData, setCategoryData] = useState<Category[]>([]);
-    const [productTagsIdsData, setproductTagsIdsData] = useState<ProductTag[]>([]);
+    const [, setproductTagsIdsData] = useState<ProductTag[]>([]);
     const routeParams = useParams<{ productId: string }>();
 
     const [preview, setPreview] = useState('')

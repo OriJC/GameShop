@@ -6,7 +6,6 @@ import {
     CardContent,
     CardActions,
 } from '@mui/material';
-import { useState } from 'react'
 import Company from '@/models/Company'
 import * as Yup from 'yup'
 import { Formik, Form, Field } from 'formik'

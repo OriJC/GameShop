@@ -8,7 +8,7 @@ import {
 import { useState, useEffect } from 'react'
 import Company from '@/models/Company'
 import { getCompanyById } from '@/api/Company/Company'
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 const Detail: React.FC = () => {
     const formData: Company = {
@@ -30,7 +30,7 @@ const Detail: React.FC = () => {
     
 
     useEffect(() => {
-        let id = routeParams.companyId
+        let id = routeParams.companyId ?? ''
         if(id != null)
         {
             setLoading(true)

@@ -17,9 +17,7 @@ import {
     Stack
 } from '@mui/material';
 import { useState, useEffect } from 'react';
-import Product from '@/models/Product';
 import { ShoppingCart, ShoppingCartItem } from '@/models/ShoppingCart';
-import { TextField as FormikTextField, TextField } from 'formik-material-ui';
 import { useNavigate } from 'react-router-dom';
 import store from '@/store/store'
 import { getShoppingCart, updateItemQuantity, RemoveItemFromCart, getShoppingCartInfo } from '@/api/ShoppingCart/ShoppingCart';
@@ -57,6 +55,7 @@ const ShoppingCartPage: React.FC = () => {
         const res = await getShoppingCart(userName || '')
         let items : ShoppingCartItem[] = res.data.items || []
         setCart(res.data)
+        console.log(res.data)
         items = await Promise.all(
             items.map(async (item) => {
                 if(item.product?.imageFileId){
@@ -111,7 +110,7 @@ const ShoppingCartPage: React.FC = () => {
                                 return prevItem
                             })
                         })
-                        const cart = getShoppingCartInfo(userName || '').then(res =>{
+                        getShoppingCartInfo(userName || '').then(res =>{
                                 setCart(prev => {
                                 if (!prev) return prev; 
                                     return {

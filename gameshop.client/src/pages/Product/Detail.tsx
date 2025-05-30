@@ -54,15 +54,11 @@ const Detail: React.FC = () => {
 
     const [companyData, setCompanyData] = useState<Company[]>([]);
     const [categoryData, setCategoryData] = useState<Category[]>([])
-    const [productTagsIdsData, setproductTagsIdsData] = useState<ProductTag[]>([])
+    const [, setproductTagsIdsData] = useState<ProductTag[]>([])
     const routeParams = useParams<{ productId: string }>();
 
     const [preview, setPreview] = useState<string | null>(null)
     const [loading, setLoading] = useState(true)
-
-    // Style
-    const ITEM_HEIGHT = 48;
-    const ITEM_PADDING_TOP = 8;
 
 
     useEffect(() => {

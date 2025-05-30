@@ -1,6 +1,12 @@
-export const base64ToFile = (base64String: string, fileName: string) => {
-    const arr: Array<string> = base64String.split(',');
-    const mime = arr[0].match(/:(.*?);/)[1];
+export const base64ToFile = (base64String: string, fileName: string) : File | null=> {
+    if(!base64String) return null
+      
+    const arr= base64String.split(',');
+    if(arr.length !== 2) return null;
+
+    const mimeMatch = arr[0].match(/:(.*?);/);
+    if(!mimeMatch || !mimeMatch[1]) return null;
+    const mime = mimeMatch[1]
     const bstr = atob(arr[1]);
     let n = bstr.length;
     const u8arr = new Uint8Array(n);

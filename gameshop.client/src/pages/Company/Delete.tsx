@@ -34,7 +34,7 @@ const Delete: React.FC = () => {
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-        let id = routeParams.companyId
+        let id = routeParams.companyId ?? ''
         if(id != null)
         {
             setLoading(true)

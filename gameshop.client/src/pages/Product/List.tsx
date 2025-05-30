@@ -17,7 +17,7 @@ import { useState, useEffect } from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom'
 import Company from '../../models/Company';
-import { Product, ProductInfo } from '@/models/Product'
+import { ProductInfo } from '@/models/Product'
 
 
 
