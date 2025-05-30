@@ -81,6 +81,7 @@ const List: React.FC = () => {
     }
     const handleCloseEdit = () => setOpenEdit(false)
     const handleSaveEdit = (newData: ProductTag) => {
+        console.log(newData)
         updateProductTag(newData.id, newData.name).then(() => {
             console.log("Update Successfully")
         }).catch(err => {

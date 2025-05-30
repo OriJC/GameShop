@@ -80,7 +80,7 @@ const Detail: React.FC = () => {
         let id = routeParams.productId ?? ''
         await getProductById(id).then(res => {
             const imageSrc = 'data:' + res.data.contentType + ';base64,' + res.data.image
-            setFormData(res.data.product)
+            setFormData(res.data)
             setPreview(imageSrc)
 
         })
@@ -116,8 +116,8 @@ const Detail: React.FC = () => {
                                                     label="Name"
                                                     variant="outlined"
                                                     fullWidth
-                                                    name="name"
-                                                    value={values.product.name}
+                                                    name="product.name"
+                                                    value={values.product.name?? ''}
                                                     component={FormikTextField}
                                                     disabled
                                                 />
@@ -127,7 +127,7 @@ const Detail: React.FC = () => {
                                                     variant="outlined"
                                                     fullWidth
                                                     id="categoryData"
-                                                    name="categoryData"
+                                                    name="product.categoryData"
                                                     component={FormikTextField}
                                                     disabled
                                                     sx={{ mt: 2}}

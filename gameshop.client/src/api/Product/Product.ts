@@ -1,5 +1,6 @@
 import axios from '@/services/api.request'
 
+
 export const getAllProduct = () => {
     return axios.request({
         url: 'api/Product/GetAll',

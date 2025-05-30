@@ -78,6 +78,7 @@ const Create: React.FC = () => {
     };
     // Validation schema
     let validationSchema = Yup.object().shape({
+        product: Yup.object().shape({
         name: Yup.string().required("Required"),
         description: Yup.string().required("Required"),// Assuming description is required
         price: Yup.number().min(1, 'Price must be at least 1').max(100000, 'Price must be at most 100000').required("Required"),
@@ -85,6 +86,7 @@ const Create: React.FC = () => {
         price50: Yup.number().min(1, 'Price must be at least 1').max(100000, 'Price must be at most 100000').required("Required"),
         price100: Yup.number().min(1, 'Price must be at least 1').max(100000, 'Price must be at most 100000').required("Required"),
         inventory: Yup.number().min(1, 'Price must be at least 1').max(1000000, 'Price must be at most 1000000').required("Required"),
+        })
     })
 
 
@@ -120,38 +122,35 @@ const Create: React.FC = () => {
 
     // Submit handler
     const onSubmit = (values: Product) => {
-        if (!coverImage || !values) return
+        if(!coverImage || !values) return
+        const formData = new FormData()   
+        Object.entries(values.product).forEach(([key, value]) => {
+                if(Array.isArray(value)){
+                    value.forEach((v) => formData.append(key, v));
+                } else if (value != undefined && value != null && value !== ''){
+                    if(value instanceof Date){
+                        formData.append(key, value.toISOString());
+                    }else {
+                        formData.append(key, value as any);
+                    }
+                    
+                }
+        })
 
-        let productData = new FormData()
-        for (const key in values) {
-            const value = (values as any)[key]
-            if(value !== '' && value != null && key!= 'productTagsIds')
-                productData.append(key, value)
-        }
-        productData.append('file', coverImage)
-        //productData.append('id', '')
-        //productData.append('createdDate', null)
-        productData.append('ImageFileId', 'string')
-        console.log(productData)
-        if (!values.product.id) {
-            productData.delete('id')
-        }
-        if (!values.product.createdDate) {
-            productData.delete('createdDate')
-        }
-        if (values.product.productTagsIds && Array.isArray(values.product.productTagsIds)) {
-            productData.delete('productTagsIds')
-            values.product.productTagsIds.forEach((tagId, index) => {
-                productData.append(`productTagsIds[${index}]`, tagId);
-            });
-        }
-        
+        if (values.imageContentType)
+        formData.append('imageContentType', values.imageContentType);
+
+        if (values.imageData)
+            formData.append('imageData', values.imageData);
+
+        if (values.key)
+            formData.append('key', values.key);
 
         //for (const pair of productData.entries()) {
         //    console.log(pair[0], pair[1]);
         //}
-        console.log(productData)
-        createProduct(productData).then((res) => {
+        formData.append('file', coverImage)
+        createProduct(formData).then((res) => {
             console.log(res.data);
             setTimeout(() => {
                 navigate('/Product');
@@ -189,7 +188,7 @@ const Create: React.FC = () => {
                                                     label="Name"
                                                     variant="outlined"
                                                     fullWidth
-                                                    name="name"
+                                                    name="product.name"
                                                     value={values.product.name}
                                                     component={FormikTextField}
                                                 />
@@ -199,7 +198,7 @@ const Create: React.FC = () => {
                                             <Grid item xs={12}>
                                                 <Field
                                                     label="Description"
-                                                    name="description"
+                                                    name="product.description"
                                                     value={values.product.description}
                                                     component={FormikTextField}
                                                     multiline
@@ -215,7 +214,7 @@ const Create: React.FC = () => {
                                                     label="List Price"
                                                     variant="outlined"
                                                     fullWidth
-                                                    name="listPrice"
+                                                    name="product.listPrice"
                                                     value={values.product.listPrice}
                                                     component={TextField}
                                                 />
@@ -225,7 +224,7 @@ const Create: React.FC = () => {
                                                     label="Price(1~50)"
                                                     variant="outlined"
                                                     fullWidth
-                                                    name="price"
+                                                    name="product.price"
                                                     value={values.product.price}
                                                     component={TextField}
                                                 />
@@ -237,7 +236,7 @@ const Create: React.FC = () => {
                                                     label="Price(51~100)"
                                                     variant="outlined"
                                                     fullWidth
-                                                    name="price50"
+                                                    name="product.price50"
                                                     value={values.product.price50}
                                                     component={TextField}
                                                 />
@@ -247,7 +246,7 @@ const Create: React.FC = () => {
                                                     label="Price(>100)"
                                                     variant="outlined"
                                                     fullWidth
-                                                    name="price100"
+                                                    name="product.price100"
                                                     value={values.product.price100}
                                                     component={TextField}
                                                 />
@@ -259,13 +258,13 @@ const Create: React.FC = () => {
                                                     <InputLabel>Category</InputLabel>
                                                     <Field
                                                         label="Category"
-                                                        name="categoryId"
+                                                        name="product.categoryId"
                                                         value={values.product.categoryId}
                                                         component={Select}
                                                         
                                                         onChange={(e: any) => {  
                                                             let selectedValue = e.target.value
-                                                            setFieldValue('categoryId', selectedValue); // Update Formik state
+                                                            setFieldValue('product.categoryId', selectedValue); // Update Formik state
                                                             setFormData({ 
                                                                 ...formData, 
                                                                 product:{
@@ -273,7 +272,6 @@ const Create: React.FC = () => {
                                                                     categoryId: selectedValue 
                                                                 }
                                                             });
-                                                            console.log(formData.product.categoryId)
                                                         }}
                                                     >
                                                         {categoryData.map((item) => (
@@ -293,13 +291,13 @@ const Create: React.FC = () => {
                                                     <InputLabel id="company-label">Company</InputLabel>
                                                     <Field
                                                         label="Company"
-                                                        name="companyId"
+                                                        name="product.companyId"
                                                         value={values.product.companyId}
                                                         component={Select}
 
                                                         onChange={(e: any) => {
                                                             let selectedValue = e.target.value
-                                                            setFieldValue('companyId', selectedValue); // Update Formik state
+                                                            setFieldValue('product.companyId', selectedValue); // Update Formik state
                                                             setFormData({ 
                                                                 ...formData, 
                                                                 product:{
@@ -327,7 +325,7 @@ const Create: React.FC = () => {
                                                         labelId="productTagLabelId"
                                                         id="productTag"
                                                         multiple
-                                                        name="productTagsIds"
+                                                        name="product.productTagsIds"
                                                         value={values.product.productTagsIds}
                                                         onChange={(e) => {
                                                             const value = e.target.value;
@@ -366,7 +364,7 @@ const Create: React.FC = () => {
                                                     label="Inventory"
                                                     variant="outlined"
                                                     fullWidth
-                                                    name="inventory"
+                                                    name="product.inventory"
                                                     value={values.product.inventory}
                                                     component={FormikTextField}
                                                 />

@@ -15,7 +15,7 @@ import {
     CircularProgress
 } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { Product } from '@/models/Product';
+import { ProductInfo } from '@/models/Product';
 import { Formik, Form, Field } from 'formik';
 import { TextField as FormikTextField, TextField } from 'formik-material-ui';
 import { deleteProduct, getProductById } from '@/api/Product/Product';
@@ -37,25 +37,20 @@ const Create: React.FC = () => {
     const navigate = useNavigate();
 
     // Initial form data
-    const [formData, setFormData] = useState<Product>({
-        product: {
-            id: '',
-            name: '',
-            description: '',
-            createdDate: null,
-            listPrice: 1,
-            price: 1,
-            price50: 1,
-            price100: 1,
-            companyId: '',
-            categoryId: '',
-            productTagsIds: [],
-            inventory: 1,
-            imageFileId: ''
-        },
-        imageContentType: '',
-        imageData: '',
-        key : ''
+    const [formData, setFormData] = useState<ProductInfo>({
+        id: '',
+        name: '',
+        description: '',
+        createdDate: null,
+        listPrice: 1,
+        price: 1,
+        price50: 1,
+        price100: 1,
+        companyId: '',
+        categoryId: '',
+        productTagsIds: [],
+        inventory: 1,
+        imageFileId: ''
     });
 
     const [companyData, setCompanyData] = useState<Company[]>([]);
@@ -99,7 +94,7 @@ const Create: React.FC = () => {
 
     const handleDelete = () => {
 
-        deleteProduct(formData.product.id).then((res) => {
+        deleteProduct(formData.id).then((res) => {
             console.log(res.data);
             setTimeout(() => {
                 navigate('/Product');
@@ -122,7 +117,7 @@ const Create: React.FC = () => {
         <Grid container justifyContent="center" spacing={1}>
             <Grid item md={12}>
                 <Card>
-                    <CardHeader title="Update Product Form" />
+                    <CardHeader title="Delete Product Form" />
                     <Formik
                         enableReinitialize
                         initialValues={formData}
@@ -139,13 +134,13 @@ const Create: React.FC = () => {
                                                     variant="outlined"
                                                     fullWidth
                                                     name="name"
-                                                    value={values.product.name}
+                                                    value={values.name}
                                                     component={FormikTextField}
                                                     disabled
                                                 />
                                                 <Field
                                                     label="Category"
-                                                    value={categoryData.filter(item => item.id == values.product.categoryId).map(item => item.name)}
+                                                    value={categoryData.filter(item => item.id == values.categoryId).map(item => item.name)}
                                                     variant="outlined"
                                                     fullWidth
                                                     id="categoryData"
@@ -156,7 +151,7 @@ const Create: React.FC = () => {
                                                 />
                                                 <Field
                                                     label="Company"
-                                                    value={companyData.filter(item => item.id == values.product.companyId).map(item => item.name)}
+                                                    value={companyData.filter(item => item.id == values.companyId).map(item => item.name)}
                                                     variant="outlined"
                                                     fullWidth
                                                     id="companyData"
@@ -184,7 +179,7 @@ const Create: React.FC = () => {
                                                 <Field
                                                     label="Description"
                                                     name="description"
-                                                    value={values.product.description}
+                                                    value={values.description}
                                                     component={FormikTextField}
                                                     multiline
                                                     minRows={3}
@@ -201,7 +196,7 @@ const Create: React.FC = () => {
                                                     variant="outlined"
                                                     fullWidth
                                                     name="listPrice"
-                                                    value={values.product.listPrice}
+                                                    value={values.listPrice}
                                                     component={TextField}
                                                     disabled
                                                 />
@@ -212,7 +207,7 @@ const Create: React.FC = () => {
                                                     variant="outlined"
                                                     fullWidth
                                                     name="price"
-                                                    value={values.product.price}
+                                                    value={values.price}
                                                     component={TextField}
                                                     disabled
                                                 />
@@ -225,7 +220,7 @@ const Create: React.FC = () => {
                                                     variant="outlined"
                                                     fullWidth
                                                     name="price50"
-                                                    value={values.product.price50}
+                                                    value={values.price50}
                                                     component={TextField}
                                                     disabled
                                                 />
@@ -236,7 +231,7 @@ const Create: React.FC = () => {
                                                     variant="outlined"
                                                     fullWidth
                                                     name="price100"
-                                                    value={values.product.price100}
+                                                    value={values.price100}
                                                     component={TextField}
                                                     disabled
                                                 />
@@ -247,7 +242,7 @@ const Create: React.FC = () => {
                                             variant="outlined"
                                             fullWidth
                                             name="inventory"
-                                            value={values.product.inventory}
+                                            value={values.inventory}
                                             component={FormikTextField}
                                             disabled
                                         />
@@ -258,7 +253,7 @@ const Create: React.FC = () => {
                                                     <Field
                                                         label="Company"
                                                         name="companyId"
-                                                        value={values.product.companyId}
+                                                        value={values.companyId}
                                                         component={Select}
                                                         disabled
                                                     >
@@ -282,7 +277,7 @@ const Create: React.FC = () => {
                                                         id="productTag"
                                                         multiple
                                                         name="productTagsIds"
-                                                        value={values.product.productTagsIds}
+                                                        value={values.productTagsIds}
                                                         disabled
                                                         input={<OutlinedInput label="Tag" />}
 

@@ -39,7 +39,7 @@ namespace GameShop.Server.Controllers
             }         
         }
 
-        [HttpGet("{id}", Name = "GetProductTagById")]
+        [HttpGet("{Id}", Name = "GetProductTagById")]
         public async Task<ActionResult> GetById(string Id)
         {
             try
@@ -85,7 +85,7 @@ namespace GameShop.Server.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{Id}")]
         public async Task<ActionResult> Update(string Id, string name)
         {
             try
@@ -115,7 +115,7 @@ namespace GameShop.Server.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{Id}")]
         public async Task<ActionResult> Delete(string Id)
         {
             try
