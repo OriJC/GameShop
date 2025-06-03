@@ -37,7 +37,7 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
 }
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({mode}) =>({
     plugins: [plugin(), mkcert()],
     resolve: {
         alias: {
@@ -47,7 +47,6 @@ export default defineConfig({
     server: {
         proxy: {
         },
-        port: 5173,
-        https: {}
+        port: 5173
     }
-})
+}))
