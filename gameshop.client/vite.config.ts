@@ -38,7 +38,7 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
 
 // https://vitejs.dev/config/
 export default defineConfig(({mode}) =>({
-    plugins: [plugin(), mkcert()],
+    plugins: [plugin()],
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url))
@@ -47,6 +47,10 @@ export default defineConfig(({mode}) =>({
     server: {
         proxy: {
         },
-        port: 5173
+        port: 5173,
+        https: {
+            key: fs.readFileSync('/etc/ssl/private/gameshop.key'),
+            cert: fs.readFileSync('/etc/ssl/certs/gameshop.pem'),
+        },
     }
 }))
