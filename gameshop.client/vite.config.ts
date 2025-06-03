@@ -49,8 +49,8 @@ export default defineConfig(({mode}) =>({
         },
         port: 5173,
         https: {
-            key: fs.readFileSync('./ssl/gameshop.key'),
-            cert: fs.readFileSync('./ssl/gameshop.pem'),
+            key: fs.readFileSync('/etc/ssl/private/gameshop.key'),
+            cert: fs.readFileSync('/etc/ssl/certs/gameshop.pem'),
         },
     }
 }))

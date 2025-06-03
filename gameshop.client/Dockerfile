@@ -1,6 +1,8 @@
 FROM node:20 AS build
 WORKDIR /app
 COPY . .
+COPY ./ssl/gameshop.key /etc/ssl/private/
+COPY ./ssl/gameshop.pem /etc/ssl/certs/
 RUN npm install
 RUN npm run build
 
