@@ -28,6 +28,8 @@ services:
       context: ./gameshop.client
       dockerfile: Dockerfile
     container_name: gameshop-frontend
+    volumes:
+      - ./ssl:/etc/ssl
     ports:
       - "5173:80"
     depends_on:
