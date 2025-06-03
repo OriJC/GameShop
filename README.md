@@ -1,4 +1,4 @@
-# Game Shop Web App Project (Processing)
+# Game Shop Web App Project (Finished)
 
 This is an e-shop web application using .NET Core as the back-end, React(with TypeScript) as the front-end, and MongoDB as the database
 
@@ -6,15 +6,17 @@ This is an e-shop web application using .NET Core as the back-end, React(with Ty
 * Shopkeepers can manage their shops' product information, such as price, production company, and product tags on the website.
 * Customers can add the product to their shopping cart and check out as an order
 * Including the identity server for user authorization
+* Deployment to cloud server
 * 
 ## Tech Stack
 ### Frontend
 Programming language: TypeScript
 * ReactJS, including React-router-dom
-* Axios
+* Use Axios to connect server web api (Rest Api)
 * Less.css
 * Material-ui
 * Formik for form validation
+  
 
 ### Backend
 Programming language: C#
@@ -26,3 +28,8 @@ Programming language: C#
 * Unit of work
 * Using JWT as authorization
 * Using MongoDB identity Server(including application user and role)
+
+### Deployment
+* Build Pipeline on Azure DevOps
+* Build both client and server image
+* (Todo) Deploy to Azure Web Container
