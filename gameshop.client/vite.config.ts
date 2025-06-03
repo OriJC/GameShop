@@ -51,9 +51,6 @@ export default defineConfig({
         proxy: {
         },
         port: 5173,
-        https: {
-            key: './key.pem',
-            cert: './cert.pem',
-        }
+        https: {}
     }
 })
