@@ -36,9 +36,6 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
     }
 }
 
-const cert = fs.readFileSync(certFilePath);
-const key = fs.readFileSync(keyFilePath);
-
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [plugin(), mkcert()],
