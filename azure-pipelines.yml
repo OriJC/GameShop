@@ -11,15 +11,7 @@ variables:
 steps:
 - script: curl -I https://api.nuget.org/v3/index.json
   displayName: "Test NuGet connectivity"
-- task: CmdLine@2
-  displayName: Generate SSL Certificates
-  inputs:
-    script: |
-      mkdir -p $(Build.SourcesDirectory)/gameshop/gameshop.client/ssl
-      openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-        -keyout $(Build.SourcesDirectory)/gameshop/gameshop.client/ssl/gameshop.key \
-        -out $(Build.SourcesDirectory)/gameshop/gameshop.client/ssl/gameshop.pem \
-        -subj "/CN=localhost"
+
 - task: DockerCompose@0
   displayName: Build and push images
   inputs:
