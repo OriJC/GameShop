@@ -47,10 +47,6 @@ export default defineConfig(({mode}) =>({
     server: {
         proxy: {
         },
-        port: 5173,
-        https: {
-            key: fs.readFileSync('/etc/ssl/private/gameshop.key'),
-            cert: fs.readFileSync('/etc/ssl/certs/gameshop.pem'),
-        },
+        port: 5173
     }
 }))
