@@ -33,19 +33,14 @@ const List: React.FC = () => {
     const fetchData = () => {
         setLoading(true)
         getAllCompany().then(res => {
-            const formattedData: Company[] = res.data.map(item =>
-            ({
-                ...item,
-                key: item.id,
-            }))
-            setData(formattedData)
+            setData(res.data as Company[])
             setLoading(false)
         }).catch(err => {
             setLoading(false)
             console.log(err)
         })
     }
-    const handleChangePage = (event: unknown, newPage: number) => {
+    const handleChangePage = (_event: unknown, newPage: number) => {
         setPage(newPage)
     }
 
@@ -88,7 +83,7 @@ const List: React.FC = () => {
                     </TableHead>
                     <TableBody>
                         {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => (
-                            <TableRow key={item.key}>
+                            <TableRow key={item.id}>
                                 <TableCell>
                                     <Link to={`/company/detail/${item.id}`}>
                                         {item.name}

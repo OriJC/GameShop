@@ -1,14 +1,15 @@
-From mcr.microsoft.com/dotnet/aspnet:8.0 As base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 As build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY . .
+WORKDIR /src/gameshop.server  
 RUN dotnet restore
 RUN dotnet publish -c Release -o /app/publish
 
 FROM base AS final 
 WORKDIR /app
 COPY --from=build /app/publish .
-ENTRYPOINT [ "dotnet", "GameShop.Server.dll" ]
+ENTRYPOINT [ "dotnet", "gameShop.server.dll" ]

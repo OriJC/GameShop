@@ -13,9 +13,8 @@ import {
 } from '@mui/material';
 import { getAllUserNameAndId } from '@/api/Identity/User'
 import { useState, useEffect } from 'react';
-import Company from '@/models/Company'
-import moment from 'moment';
 import { Link } from 'react-router-dom'
+import { User } from '@/models/User';
 
 
 
@@ -29,10 +28,10 @@ const List: React.FC = () => {
         const fetchData = () => {
             setLoading(true)
             getAllUserNameAndId().then(res => {
-                const formattedData: User[] = res.data.map(item =>
+                const formattedData: User[] = res.data.map((item: User) =>
                 ({
                     ...item,
-                    key: item.id,
+                    key: item.userName,
                 }))
                 setData(formattedData)
                 setLoading(false)
@@ -44,7 +43,7 @@ const List: React.FC = () => {
         fetchData()
     }, []);
 
-    const handleChangePage = (event: unknown, newPage: number) => {
+    const handleChangePage = (_event: unknown, newPage: number) => {
         setPage(newPage)
     }
 
@@ -86,20 +85,20 @@ const List: React.FC = () => {
                     </TableHead>
                     <TableBody>
                         {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => (
-                            <TableRow key={item.key}>
+                            <TableRow key={item.userName}>
                                 <TableCell>
-                                    <Link to={`/User/detail/${item.id}`}>
+                                    <Link to={`/User/detail/${item.userName}`}>
                                         {item.userName}
                                     </Link>
                                 </TableCell>
                                 <TableCell>
-                                    <Link to={`/User/detail/${item.id}`}>
+                                    <Link to={`/User/detail/${item.userName}`}>
                                         {item.email}
                                     </Link>
                                 </TableCell>
                                 <TableCell align={'right'} sx={{ paddingRight: '50px' }}>
-                                    <Button color="primary" variant="contained" component={Link} sx={{ marginRight: '5px' }} to={`/User/edit/${item.id}`}>Edit</Button>
-                                    <Button color="warning" variant="contained" component={Link} to={`/User/delete/${item.id}`}>Delete</Button>
+                                    <Button color="primary" variant="contained" component={Link} sx={{ marginRight: '5px' }} to={`/User/edit/${item.userName}`}>Edit</Button>
+                                    <Button color="warning" variant="contained" component={Link} to={`/User/delete/${item.userName}`}>Delete</Button>
                                 </TableCell>
                             </TableRow>
                         ))}

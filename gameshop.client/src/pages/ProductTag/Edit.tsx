@@ -8,11 +8,17 @@ import {
     Button,
     TextField
 } from '@mui/material';
+
 interface ModalFormProps {
     open: boolean
-    record: Object,
+    record: ProductTag,
     onClose: () => void;
-    onUpdate: (values: any) => void;
+    onUpdate: (values: ProductTag) => void;
+}
+
+interface ProductTag {
+    id: string;
+    name: string;
 }
 
 
@@ -32,16 +38,16 @@ const Edit: React.FC<ModalFormProps> = ({ open, record, onClose, onUpdate }) => 
     };
 
     const handleCancel = () => {
-        setData({});
+        setData({ id: '', name: '' });
         onClose(); 
     }
 
     const handleUpdate = () => {
         onUpdate(data);
-        setData({});
+        setData({ id: '', name: '' });
     };
     return (
-        <Dialog open={open} onClose={handleCancel}>
+        <Dialog key={data.id} open={open} onClose={handleCancel}>
             <DialogTitle>Update Product Tag</DialogTitle>
             <DialogContent>
                 <DialogContentText>

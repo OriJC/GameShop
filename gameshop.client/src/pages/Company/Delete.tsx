@@ -26,26 +26,29 @@ const Delete: React.FC = () => {
             zipCode: ''
         },
         phoneNumber: '',
-        email: ''
+        email: '',
+        id: ''
     }
-    const [error, setError] = useState(false)
     const routeParams = useParams<{ companyId: string }>();
-    const [data, setData] = useState<Company | null>(formData);
+    const [data, setData] = useState<Company>(formData);
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-        let id = routeParams.companyId
-        setLoading(true)
-        const fetchCompany = async () => {
-            getCompanyById(id).then(res => {
-                setData(res.data)
-                console.log(res.data)
-            }).catch(error => {
-                console.log(error)
-            })
-        };
-        setLoading(false)
-        fetchCompany();
+        let id = routeParams.companyId ?? ''
+        if(id != null)
+        {
+            setLoading(true)
+            const fetchCompany = async () => {
+                getCompanyById(id).then(res => {
+                    setData(res.data)
+                    console.log(res.data)
+                }).catch(error => {
+                    console.log(error)
+                })
+            };
+            setLoading(false)
+            fetchCompany();
+        }      
     }, []);
 
     const onSubmit = (values: Company) => {
@@ -58,7 +61,7 @@ const Delete: React.FC = () => {
             console.log(error)
         })
     }
-
+    if (!loading)
     return (
         <Grid container justifyContent="center" spacing={1}>
             <Grid item md={12}>
@@ -69,7 +72,7 @@ const Delete: React.FC = () => {
                         initialValues={data}
                         onSubmit={onSubmit}
                     >
-                        {({ dirty, isValid, values, handleChange, handleBlur }) => {
+                        {({ values }) => {
                             return (
                                 <Form>
                                     <CardContent>

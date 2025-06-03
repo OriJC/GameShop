@@ -16,19 +16,17 @@ interface ModalFormProps {
 
 
 const Create: React.FC<ModalFormProps> = ({ open, onClose, onCreate }) => {
-    const [data, setData] = useState({})
+    const [data, setData] = useState({ name: ''})
 
-    const handleInputChange = (event) => {
-        setData(event.target.value);
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setData({ ...data, name: event.target.value});
     };
 
-    const handleCancel = () => {
-        setData('');
-    }
+
 
     const handleClose = () => {
-        onCreate(data);
-        setData('');
+        onCreate(data.name);
+        setData({name: ''});
     };
 
     return (
@@ -46,6 +44,7 @@ const Create: React.FC<ModalFormProps> = ({ open, onClose, onCreate }) => {
                     type="text"
                     fullWidth
                     variant="standard"
+                    value={data.name}
                     onChange={handleInputChange}
                 />
             </DialogContent>

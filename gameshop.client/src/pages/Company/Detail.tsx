@@ -8,7 +8,7 @@ import {
 import { useState, useEffect } from 'react'
 import Company from '@/models/Company'
 import { getCompanyById } from '@/api/Company/Company'
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 const Detail: React.FC = () => {
     const formData: Company = {
@@ -20,28 +20,31 @@ const Detail: React.FC = () => {
             zipCode: ''
         },
         phoneNumber: '',
-        email: ''
+        email: '',
+        id: ''
     }
     const routeParams = useParams<{ companyId: string }>();
     const [data, setData] = useState<Company | null>(formData);
     const [loading, setLoading] = useState(false)
-    const navigate = useNavigate();
     // initData
     
 
     useEffect(() => {
-        let id = routeParams.companyId
-        setLoading(true)
-        const fetchCompany = async () => {
-            getCompanyById(id).then(res => {
-                setData(res.data)
-                console.log(res.data)
-            }).catch(error => {
-                console.log(error)
-            })
-        };
-        setLoading(false)
-        fetchCompany();
+        let id = routeParams.companyId ?? ''
+        if(id != null)
+        {
+            setLoading(true)
+            const fetchCompany = async () => {
+                getCompanyById(id).then(res => {
+                    setData(res.data)
+                    console.log(res.data)
+                }).catch(error => {
+                    console.log(error)
+                })
+            };
+            setLoading(false)
+            fetchCompany();
+        }       
     }, []);
 
     if (loading) {

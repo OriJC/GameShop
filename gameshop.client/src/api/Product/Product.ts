@@ -1,5 +1,5 @@
 import axios from '@/services/api.request'
-import Product from '@/models/Product'
+
 
 export const getAllProduct = () => {
     return axios.request({
@@ -29,7 +29,7 @@ export const getProductNameAndInventoryById = (id: string) => {
     })
 }
 
-export const createProduct = (product: Product) => {
+export const createProduct = (product: FormData) => {
     return axios.request({
         url: 'api/Product/Insert',
         data: product,
@@ -40,7 +40,7 @@ export const createProduct = (product: Product) => {
     })
 }
 
-export const updateProduct = (product: Product) => {
+export const updateProduct = (product: FormData) => {
     return axios.request({
         url: 'api/Product/Update',
         data: product,

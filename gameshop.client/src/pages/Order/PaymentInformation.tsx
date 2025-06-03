@@ -6,7 +6,7 @@ import {
     CardContent,
     CardActions,
 } from '@mui/material';
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { PaymentInfo } from '@/models/PaymentInfo'
 import * as Yup from 'yup'
 import { Formik, Form, Field } from 'formik'
@@ -32,7 +32,7 @@ const PaymentInformation: React.FC = () => {
         streetAddress: '',
         postalCode: ''
     }
-    const [error, setError] = useState(false)
+
 
     
     useEffect(()=>
@@ -64,7 +64,7 @@ const PaymentInformation: React.FC = () => {
             console.log(res.data)
             const userName: string = store.getState().auth.userName ?? ''
             await retryUntilSuccess(() =>clearUserCart(userName), 10, 500).then(()=>{
-                navigate('/order/orderdetail/' + res.data.id)
+                navigate('/order/orderdetail/customer/' + res.data.id)
             })
             
         })
@@ -81,7 +81,7 @@ const PaymentInformation: React.FC = () => {
                         validationSchema={validationSchema}
                         onSubmit={onSubmit}
                     >
-                        {({ dirty, isValid, values, handleChange, handleBlur }) => {
+                        {({ dirty, isValid, values }) => {
                             return (
                                 <Form>
                                     <CardContent>

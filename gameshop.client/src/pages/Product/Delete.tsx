@@ -15,7 +15,7 @@ import {
     CircularProgress
 } from '@mui/material';
 import { useState, useEffect } from 'react';
-import Product from '@/models/Product';
+import { ProductInfo } from '@/models/Product';
 import { Formik, Form, Field } from 'formik';
 import { TextField as FormikTextField, TextField } from 'formik-material-ui';
 import { deleteProduct, getProductById } from '@/api/Product/Product';
@@ -24,12 +24,20 @@ import { getAllCategory } from '@/api/Category/Category'
 import { getAllProductTag } from '@/api/ProductTag/ProductTag'
 import { useNavigate, useParams } from 'react-router-dom';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import Company from '@/models/Company';
+import { Category } from '@/models/Category';
+
+
+interface ProductTag {
+    id: string;
+    name: string;
+}
 
 const Create: React.FC = () => {
     const navigate = useNavigate();
 
     // Initial form data
-    const [formData, setFormData] = useState<Product>({
+    const [formData, setFormData] = useState<ProductInfo>({
         id: '',
         name: '',
         description: '',
@@ -41,29 +49,20 @@ const Create: React.FC = () => {
         companyId: '',
         categoryId: '',
         productTagsIds: [],
-        inventory: 1
+        inventory: 1,
+        imageFileId: ''
     });
 
-    const [error, setError] = useState(false);
-    const [companyData, setCompanyData] = useState([]);
-    const [categoryData, setCategoryData] = useState([])
-    const [productTagsIdsData, setproductTagsIdsData] = useState([])
+    const [companyData, setCompanyData] = useState<Company[]>([]);
+    const [categoryData, setCategoryData] = useState<Category[]>([])
+    const [productTagsIdsData, setproductTagsIdsData] = useState<ProductTag[]>([])
     const routeParams = useParams<{ productId: string }>();
-    const [coverImage, setCoverImage] = useState(null)
-    const [preview, setPreview] = useState(null)
-    const [loading, setLoading] = useState(true)
+    const [preview, setPreview] = useState<string|null>(null)
+    const [loading, setLoading] = useState<boolean>(true)
 
     // Style
-    const ITEM_HEIGHT = 48;
-    const ITEM_PADDING_TOP = 8;
-    const MenuProps = {
-        PaperProps: {
-            style: {
-                maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-                width: 250,
-            },
-        },
-    };
+    //const ITEM_HEIGHT = 48;
+    //const ITEM_PADDING_TOP = 8;
 
 
 
@@ -83,7 +82,7 @@ const Create: React.FC = () => {
             setproductTagsIdsData(res.data)
         })
 
-        let id = routeParams.productId
+        let id = routeParams.productId ?? ''
         await getProductById(id).then(res => {
             const imageSrc = 'data:' + res.data.contentType + ';base64,' + res.data.image
             setFormData(res.data.product)
@@ -118,12 +117,13 @@ const Create: React.FC = () => {
         <Grid container justifyContent="center" spacing={1}>
             <Grid item md={12}>
                 <Card>
-                    <CardHeader title="Update Product Form" />
+                    <CardHeader title="Delete Product Form" />
                     <Formik
                         enableReinitialize
                         initialValues={formData}
+                        onSubmit={() => {}}
                     >
-                        {({ dirty, isValid, values, handleChange, handleBlur, setFieldValue }) => {
+                        {({ values }) => {
                             return (
                                 <Form>
                                     <CardContent>
@@ -151,7 +151,7 @@ const Create: React.FC = () => {
                                                 />
                                                 <Field
                                                     label="Company"
-                                                    value={companyData.filter(item => item._id == values.companyId).map(item => item.Name)}
+                                                    value={companyData.filter(item => item.id == values.companyId).map(item => item.name)}
                                                     variant="outlined"
                                                     fullWidth
                                                     id="companyData"
@@ -258,8 +258,8 @@ const Create: React.FC = () => {
                                                         disabled
                                                     >
                                                         {companyData.map((item) => (
-                                                            <MenuItem key={item._id} value={item._id} style={{ textAlign: 'left' }} >
-                                                                {item.Name}
+                                                            <MenuItem key={item.id} value={item.id} style={{ textAlign: 'left' }} >
+                                                                {item.name}
                                                             </MenuItem>
                                                         ))}
 

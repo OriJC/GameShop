@@ -8,19 +8,33 @@ import {
     Button,
     TextField
 } from '@mui/material';
+
 interface ModalFormProps {
     open: boolean
-    record: Object,
+    record: RoleRecord,
     onClose: () => void;
-    onUpdate: (values: any) => void;
+    onUpdate: (values: RoleRecord) => void;
+}
+
+interface RoleRecord {
+    id: string;
+    name: string;
+    key: string;
 }
 
 
+
 const Edit: React.FC<ModalFormProps> = ({ open, record, onClose, onUpdate }) => {
-    const [data, setData] = useState<{ id: string; name: string }>({ id: '', name: '' });
+    const [data, setData] = useState<RoleRecord>({ id: '', name: '' , key: '' });
 
     useEffect(() => {
-        setData(record || { id: '', name: '' });
+        if(record)
+        {
+            setData(record);
+        } else {
+            setData({ id: '', name: '' , key: ''});
+        }
+        
     }, [record]);
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,13 +46,13 @@ const Edit: React.FC<ModalFormProps> = ({ open, record, onClose, onUpdate }) => 
     };
 
     const handleCancel = () => {
-        setData({});
+        setData({ id: '', name: '' , key: '' });
         onClose(); 
     }
 
     const handleUpdate = () => {
         onUpdate(data);
-        setData({});
+        setData({ id: '', name: '' , key: '' });
     };
     return (
         <Dialog open={open} onClose={handleCancel}>

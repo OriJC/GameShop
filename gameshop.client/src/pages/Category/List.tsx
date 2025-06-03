@@ -16,39 +16,42 @@ import {Table,
         TablePagination } 
 from '@mui/material';
 import moment from 'moment';
+import { Category } from '@/models/Category'
 
 
 const List: React.FC = () => {
-    const [data, setData] = useState([])
+    const [data, setData] = useState<Category[]>([])
     const [openCreate, setOpenCreate] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
-    const [currentItem, setCurrentItem] = useState({});
+    const [currentItem, setCurrentItem] = useState<Category|null>(null);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
 
     // Get Data 
-    useEffect(() => {
-        const fetchData = () => {
-            setLoading(true)
-            getAllCategory().then(res => {
-                const formattedData = res.data.map(item =>
-                ({
-                    ...item,
-                    key: item.id,
-                }))
-                setData(formattedData)
-                setLoading(false)
-            }).catch(err => {
-                setLoading(false)
-                console.log(err)
-            })
-        }
+    useEffect(() => {     
         fetchData()
     }, []);
 
-    const handleChangePage = (event: unknown, newPage: number) => {
+
+    const fetchData = () => {
+        setLoading(true)
+        getAllCategory().then(res => {
+            const formattedData : Category[]= res.data.map((item :Category) =>
+            ({
+                ...item,
+                key: item.id,
+            }))
+            setData(formattedData)
+            setLoading(false)
+        }).catch(err => {
+            setLoading(false)
+            console.log(err)
+        })
+    }
+
+    const handleChangePage = (_event: unknown, newPage: number) => {
         setPage(newPage)
     }
 
@@ -59,19 +62,18 @@ const List: React.FC = () => {
 
     // Create Method
     const handleOpenCreate = () => {
-        setCurrentItem({})
+        setCurrentItem(null)
         setOpenCreate(true)
     }
     const handleCloseCreate = () => setOpenCreate(false)
-    const handleSaveCreate = (newData: Object) => {
+    const handleSaveCreate = (newData: string) => {
         createCategory(newData).then(() => {
             console.log("Create Category Successfully")
-
+            fetchData()
         }).catch(err => {
             console.log(err)
         })
         handleCloseCreate();
-        window.location.reload(); 
     }
 
     // Edit Method
@@ -85,15 +87,15 @@ const List: React.FC = () => {
         })
     }
     const handleCloseEdit = () => setOpenEdit(false)
-    const handleSaveEdit = (newData: Object) => {
-        updateCategory(newData.id, newData.name).then(() => {
+    const handleSaveEdit = (newData: Category) => {
+        updateCategory(newData.id.toString(), newData.name).then(() => {
             console.log("Update Successfully")
+            fetchData()
         }).catch(err => {
             console.log(err)
         })
         
         handleCloseEdit()
-        window.location.reload(); 
     }
 
     // Delete Method
@@ -112,12 +114,12 @@ const List: React.FC = () => {
         console.log(key)
         deleteCategory(key).then(() => {
             console.log("Delete Successfully")
+            fetchData()
         }).catch (err => {
             console.log(err)
         })
         
         handleCloseDelete()
-        window.location.reload(); 
     }
 
     if (loading) {
@@ -156,8 +158,8 @@ const List: React.FC = () => {
                                 <TableCell>{item.name}</TableCell>
                                 <TableCell>{moment(item.createdDate).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
                                 <TableCell>
-                                    <Button color="primary" onClick={() => handleOpenEdit(item.key)}>Edit</Button>
-                                    <Button color="primary" onClick={() => handleOpenDelete(item.key)}>Delete</Button>
+                                    <Button color="primary" onClick={() => handleOpenEdit(item.key?.toString()??''.toString())}>Edit</Button>
+                                    <Button color="primary" onClick={() => handleOpenDelete(item.key?.toString()??''.toString())}>Delete</Button>
                                 </TableCell>
                             </TableRow>
                         ))}

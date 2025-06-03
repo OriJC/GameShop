@@ -9,7 +9,7 @@ import {
     CircularProgress
 } from '@mui/material';
 import { useState, useEffect } from 'react';
-import Product from '@/models/Product';
+import { Product } from '@/models/Product';
 import { Formik, Form, Field } from 'formik';
 import { TextField as FormikTextField, TextField } from 'formik-material-ui';
 import { getProductById } from '@/api/Product/Product';
@@ -18,38 +18,47 @@ import { getAllCategory } from '@/api/Category/Category'
 import { getAllProductTag } from '@/api/ProductTag/ProductTag'
 import { useNavigate, useParams } from 'react-router-dom';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import Company from '@/models/Company';
+import { Category } from '@/models/Category';
+
+
+interface ProductTag {
+    id: string;
+    name: string;
+}
 
 const Detail: React.FC = () => {
     const navigate = useNavigate();
 
     // Initial form data
     const [formData, setFormData] = useState<Product>({
-        id: '',
-        name: '',
-        description: '',
-        createdDate: null,
-        listPrice: 1,
-        price: 1,
-        price50: 1,
-        price100: 1,
-        companyId: '',
-        categoryId: '',
-        productTagsIds: [],
-        inventory: 1
+        product: {
+            id: '',
+            name: '',
+            description: '',
+            createdDate: null,
+            listPrice: 1,
+            price: 1,
+            price50: 1,
+            price100: 1,
+            companyId: '',
+            categoryId: '',
+            productTagsIds: [],
+            inventory: 1,
+            imageFileId: ''
+        },
+        imageContentType: '',
+        imageData: '',
+        key : ''
     });
 
-    const [error, setError] = useState(false);
-    const [companyData, setCompanyData] = useState([]);
-    const [categoryData, setCategoryData] = useState([])
-    const [productTagsIdsData, setproductTagsIdsData] = useState([])
+    const [companyData, setCompanyData] = useState<Company[]>([]);
+    const [categoryData, setCategoryData] = useState<Category[]>([])
+    const [, setproductTagsIdsData] = useState<ProductTag[]>([])
     const routeParams = useParams<{ productId: string }>();
 
-    const [preview, setPreview] = useState(null)
+    const [preview, setPreview] = useState<string | null>(null)
     const [loading, setLoading] = useState(true)
-
-    // Style
-    const ITEM_HEIGHT = 48;
-    const ITEM_PADDING_TOP = 8;
 
 
     useEffect(() => {
@@ -68,10 +77,10 @@ const Detail: React.FC = () => {
             setproductTagsIdsData(res.data)
         })
 
-        let id = routeParams.productId
+        let id = routeParams.productId ?? ''
         await getProductById(id).then(res => {
             const imageSrc = 'data:' + res.data.contentType + ';base64,' + res.data.image
-            setFormData(res.data.product)
+            setFormData(res.data)
             setPreview(imageSrc)
 
         })
@@ -95,6 +104,7 @@ const Detail: React.FC = () => {
                     <Formik
                         enableReinitialize
                         initialValues={formData}
+                        onSubmit={() => {}}
                     >
                         {({ values }) => {
                             return (
@@ -106,25 +116,25 @@ const Detail: React.FC = () => {
                                                     label="Name"
                                                     variant="outlined"
                                                     fullWidth
-                                                    name="name"
-                                                    value={values.name}
+                                                    name="product.name"
+                                                    value={values.product.name?? ''}
                                                     component={FormikTextField}
                                                     disabled
                                                 />
                                                 <Field
                                                     label="Category"
-                                                    value={categoryData.filter(item => item.id == values.categoryId).map(item=>item.name)}
+                                                    value={categoryData.filter(item => item.id == values.product.categoryId).map(item=>item.name)}
                                                     variant="outlined"
                                                     fullWidth
                                                     id="categoryData"
-                                                    name="categoryData"
+                                                    name="product.categoryData"
                                                     component={FormikTextField}
                                                     disabled
                                                     sx={{ mt: 2}}
                                                 />
                                                 <Field
                                                     label="Company"
-                                                    value={companyData.filter(item => item._id == values.companyId).map(item => item.Name)}
+                                                    value={companyData.filter(item => item.id == values.product.companyId).map(item => item.name)}
                                                     variant="outlined"
                                                     fullWidth
                                                     id="companyData"
@@ -152,7 +162,7 @@ const Detail: React.FC = () => {
                                                 <Field
                                                     label="Description"
                                                     name="description"
-                                                    value={values.description}
+                                                    value={values.product.description}
                                                     component={FormikTextField}
                                                     multiline
                                                     minRows={3}
@@ -169,7 +179,7 @@ const Detail: React.FC = () => {
                                                     variant="outlined"
                                                     fullWidth
                                                     name="listPrice"
-                                                    value={values.listPrice}
+                                                    value={values.product.listPrice}
                                                     component={TextField}
                                                     disabled
                                                 />
@@ -180,7 +190,7 @@ const Detail: React.FC = () => {
                                                     variant="outlined"
                                                     fullWidth
                                                     name="price"
-                                                    value={values.price}
+                                                    value={values.product.price}
                                                     component={TextField}
                                                     disabled
                                                 />
@@ -193,7 +203,7 @@ const Detail: React.FC = () => {
                                                     variant="outlined"
                                                     fullWidth
                                                     name="price50"
-                                                    value={values.price50}
+                                                    value={values.product.price50}
                                                     component={TextField}
                                                     disabled
                                                 />
@@ -204,7 +214,7 @@ const Detail: React.FC = () => {
                                                     variant="outlined"
                                                     fullWidth
                                                     name="price100"
-                                                    value={values.price100}
+                                                    value={values.product.price100}
                                                     component={TextField}
                                                     disabled
                                                 />
@@ -217,7 +227,7 @@ const Detail: React.FC = () => {
                                                     variant="outlined"
                                                     fullWidth
                                                     name="inventory"
-                                                    value={values.inventory}
+                                                    value={values.product.inventory}
                                                     component={FormikTextField}
                                                     disabled
                                                 />

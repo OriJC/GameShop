@@ -11,7 +11,7 @@ import {
     TextField as Textarea,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
-import Product from '@/models/Product';
+import { ProductInfo } from '@/models/Product';
 import store from '@/store/store'
 import { Formik, Form, Field } from 'formik';
 import { TextField as FormikTextField, TextField } from 'formik-material-ui';
@@ -22,23 +22,21 @@ import { getAllProductTag } from '@/api/ProductTag/ProductTag'
 import { useNavigate, useParams } from 'react-router-dom';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import { styled } from "@mui/material/styles";
 import { addShoppingCartItemToCart } from '@/api/ShoppingCart/ShoppingCart';
+import Company from '@/models/Company';
+import { Category } from '@/models/Category';
+
+
+interface ProductTag {
+    id: string;
+    name: string;
+}
 
 const ShopItem: React.FC = () => {
     const navigate = useNavigate();
 
-    const NoSpinnerTextField = styled(TextField)({
-    "& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button": {
-        WebkitAppearance: "none",
-        margin: 0,
-    },
-    "& input[type=number]": {
-        MozAppearance: "textfield",
-    },
-    });
     // Initial form data
-    const [formData, setFormData] = useState<Product>({
+    const [formData, setFormData] = useState<ProductInfo>({
         id: '',
         name: '',
         description: '',
@@ -49,17 +47,16 @@ const ShopItem: React.FC = () => {
         price100: 1,
         companyId: '',
         categoryId: '',
-        productTag: [],
+        productTagsIds: [],
         inventory: 1,
-        imageFileId: ''
+        imageFileId: '',
     });
 
     const [quantity, setQuantity] = useState(1);
     const [showPrice, setShowPrice] = useState(0)
-    const [error, setError] = useState(false);
-    const [companyData, setCompanyData] = useState([]);
-    const [categoryData, setCategoryData] = useState([]);
-    const [productTagsIdsData, setproductTagsIdsData] = useState([]);
+    const [companyData, setCompanyData] = useState<Company[]>([]);
+    const [categoryData, setCategoryData] = useState<Category[]>([]);
+    const [, setproductTagsIdsData] = useState<ProductTag[]>([]);
     const routeParams = useParams<{ productId: string }>();
 
     const [preview, setPreview] = useState('')
@@ -99,7 +96,7 @@ const ShopItem: React.FC = () => {
         navigate(-1)
     }
 
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: any) => {
         let value = parseInt(e.target.value, 10);
         if (isNaN(value) || value < 1) {
             value = 1;
@@ -176,7 +173,7 @@ const ShopItem: React.FC = () => {
                                                 />
                                                 <Field
                                                     label="Company"
-                                                    value={companyData.filter(item => item._id == values.companyId).map(item => item.Name)}
+                                                    value={companyData.filter(item => item.id == values.companyId).map(item => item.name)}
                                                     variant="outlined"
                                                     fullWidth
                                                     id="companyData"

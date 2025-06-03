@@ -51,7 +51,7 @@ const List: React.FC = () => {
     const fetchData = () => {
         setLoading(true)
         getAllOrder().then(res => {
-            const formattedData: OrderDetail[] = res.data.map(item =>
+            const formattedData: OrderDetail[] = res.data.map((item: OrderDetail) =>
             ({
                 ...item,
             }))
@@ -62,7 +62,7 @@ const List: React.FC = () => {
             console.log(err)
         })
     }
-    const handleChangePage = (event: unknown, newPage: number) => {
+    const handleChangePage = (_event: unknown, newPage: number) => {
         setPage(newPage)
     }
 

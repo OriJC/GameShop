@@ -28,7 +28,6 @@ import { getProductImageByImageId } from '@/api/Product/Product';
 import PlaceIcon from '@mui/icons-material/Place';
 import MailIcon from '@mui/icons-material/Mail';
 import PhoneEnabledIcon from '@mui/icons-material/PhoneEnabled';
-import { removeUnderscoreBetweenWords } from '@/utils/removeUnderscoreBetweenWords';
 
 const OrderDetail: React.FC = () => {
     const routeParams = useParams<{ orderId: string }>();
@@ -122,7 +121,7 @@ const OrderDetail: React.FC = () => {
         if(data!=undefined)
         {
             updateOrder(data).then(res=>{
-
+                console.log(res.data)
             }).catch(err=>{
                 console.log(err)
             }).finally(() => {

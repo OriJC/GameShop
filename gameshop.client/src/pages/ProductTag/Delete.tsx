@@ -1,4 +1,3 @@
-//import { useState } from 'react'
 import {
     Dialog,
     DialogActions,
@@ -8,11 +7,17 @@ import {
     Button,
     TextField
 } from '@mui/material';
+
 interface ModalFormProps {
     open: boolean
-    record: Object,
+    record: ProductTag,
     onClose: () => void;
-    onDelete: (values: any) => void;
+    onDelete: (id: string) => void;
+}
+
+interface ProductTag {
+    id: string;
+    name: string;
 }
 
 
@@ -22,7 +27,7 @@ const Delete: React.FC<ModalFormProps> = ({ open, record, onClose, onDelete }) =
         onDelete(record.id)
     }
     return (
-        <Dialog open={open} onClose={onClose}>
+        <Dialog key={record.id} open={open} onClose={onClose}>
             <DialogTitle>Delete Product Tag</DialogTitle>
             <DialogContent>
                 <DialogContentText>
@@ -36,7 +41,7 @@ const Delete: React.FC<ModalFormProps> = ({ open, record, onClose, onDelete }) =
                     type="text"
                     fullWidth
                     variant="standard"
-                    defaultValue={record.id}
+                    value={record.id||''}
                     disabled
                 />
                 <TextField
@@ -47,7 +52,7 @@ const Delete: React.FC<ModalFormProps> = ({ open, record, onClose, onDelete }) =
                     type="text"
                     fullWidth
                     variant="standard"
-                    defaultValue={record.name}
+                    value={record.name}
                     disabled
                 />
             </DialogContent>

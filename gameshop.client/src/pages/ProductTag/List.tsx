@@ -17,13 +17,19 @@ import {
 } from '@mui/material';
 import moment from 'moment';
 
+interface ProductTag {
+    id: string;
+    name: string;
+    createdDate? : string
+}
+
 
 const List: React.FC = () => {
     const [data, setData] = useState([])
     const [openCreate, setOpenCreate] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
-    const [currentItem, setCurrentItem] = useState({});
+    const [currentItem, setCurrentItem] = useState<ProductTag>({id: '', name: ''});
     const [loading, setLoading] = useState(true);
 
     // Get Data 
@@ -31,16 +37,16 @@ const List: React.FC = () => {
         const fetchData = () => {
             setLoading(true)
             getAllProductTag().then(res => {
-                const formattedData = res.data.map(item =>
+                const formattedData = res.data.map((item: ProductTag) =>
                 ({
                     ...item,
                     key: item.id,
                 }))
                 setData(formattedData)
-                setLoading(false)
-            }).catch(err => {
-                setLoading(false)
+            }).catch(err => {     
                 console.log(err)
+            }).finally( () =>{
+                setLoading(false)
             })
         }
         fetchData()
@@ -48,12 +54,12 @@ const List: React.FC = () => {
 
     // Create Method
     const handleOpenCreate = () => {
-        setCurrentItem({})
+        setCurrentItem({id: '', name: ''})
         setOpenCreate(true)
     }
     const handleCloseCreate = () => setOpenCreate(false)
-    const handleSaveCreate = (newData: Object) => {
-        createProductTag(newData).then(() => {
+    const handleSaveCreate = (newData: {name: string}) => {
+        createProductTag(newData.name).then(() => {
             console.log("Create Game Category Successfully")
 
         }).catch(err => {
@@ -67,14 +73,18 @@ const List: React.FC = () => {
     const handleOpenEdit = (key: string) => {
         getProductTagById(key).then(res => {
             console.log(res.data)
-            setCurrentItem(res.data)
+            setCurrentItem({...res.data})
             setOpenEdit(true)
         }).catch(err => {
             console.log(err)
         })
     }
-    const handleCloseEdit = () => setOpenEdit(false)
-    const handleSaveEdit = (newData: Object) => {
+    const handleCloseEdit = () => {
+        setOpenEdit(false)
+        setCurrentItem({ id: '', name: '' });
+    }
+    const handleSaveEdit = (newData: ProductTag) => {
+        console.log(newData)
         updateProductTag(newData.id, newData.name).then(() => {
             console.log("Update Successfully")
         }).catch(err => {
@@ -140,13 +150,15 @@ const List: React.FC = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data.map((item) => (
-                            <TableRow key={item.key}>
+                        {data.map((item: ProductTag) => (
+                            <TableRow key={item.id}>
                                 <TableCell>{item.name}</TableCell>
-                                <TableCell>{moment(item.createdDate).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
+                                <TableCell>{(item.createdDate
+                                        ? moment(item.createdDate).format('YYYY-MM-DD HH:mm:ss')
+                                        : '')}</TableCell>
                                 <TableCell align={'right'} sx={{ paddingRight: '50px' }}>
-                                    <Button color="primary" variant="contained" onClick={() => handleOpenEdit(item.key)}>Edit</Button>
-                                    <Button color="warning" variant="contained" onClick={() => handleOpenDelete(item.key)}>Delete</Button>
+                                    <Button color="primary" variant="contained" onClick={() => handleOpenEdit(item.id)}>Edit</Button>
+                                    <Button color="warning" variant="contained" onClick={() => handleOpenDelete(item.id)}>Delete</Button>
                                 </TableCell>
                             </TableRow>
                         ))}

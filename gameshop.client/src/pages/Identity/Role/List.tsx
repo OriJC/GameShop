@@ -17,13 +17,18 @@ import {
     TablePagination
 } from '@mui/material';
 
+interface Role {
+    id: string;
+    name: string;
+    key: string;
+}
 
 const List: React.FC = () => {
-    const [data, setData] = useState([])
+    const [data, setData] = useState<Role[]>([])
     const [openCreate, setOpenCreate] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
-    const [currentItem, setCurrentItem] = useState({});
+    const [currentItem, setCurrentItem] = useState<Role>({ id: '', name: '', key: ''});
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -33,7 +38,7 @@ const List: React.FC = () => {
         const fetchData = () => {
             setLoading(true)
             getAllRole().then(res => {
-                const formattedData = res.data.map(item =>
+                const formattedData = res.data.map((item: {id: string; name: string}) =>
                 ({
                     ...item,
                     key: item.id,
@@ -48,7 +53,7 @@ const List: React.FC = () => {
         fetchData()
     }, []);
 
-    const handleChangePage = (event: unknown, newPage: number) => {
+    const handleChangePage = (_event: unknown, newPage: number) => {
         setPage(newPage)
     }
 
@@ -59,11 +64,11 @@ const List: React.FC = () => {
 
     // Create Method
     const handleOpenCreate = () => {
-        setCurrentItem({})
+        setCurrentItem({ id: '', name: '', key: ''})
         setOpenCreate(true)
     }
     const handleCloseCreate = () => setOpenCreate(false)
-    const handleSaveCreate = (newData: Object) => {
+    const handleSaveCreate = (newData:  string) => {
         createRole(newData).then(() => {
             console.log("Create Role Successfully")
 
@@ -84,8 +89,10 @@ const List: React.FC = () => {
             console.log(err)
         })
     }
+    
     const handleCloseEdit = () => setOpenEdit(false)
-    const handleSaveEdit = (newData: Object) => {
+
+    const handleSaveEdit = (newData: Role) => {
         updateRole(newData.id, newData.name).then(() => {
             console.log("Update Successfully")
         }).catch(err => {
