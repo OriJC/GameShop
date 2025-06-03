@@ -10,7 +10,10 @@ variables:
 
 steps:
 - script: curl -I https://api.nuget.org/v3/index.json
-  displayName: "Test NuGet connectivity"   
+  displayName: "Test NuGet connectivity"
+- script: |
+    openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/CN=localhost"
+  displayName: 'Generate SSL Certificates'   
 - task: DockerCompose@0
   displayName: Build and push images
   inputs:
