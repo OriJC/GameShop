@@ -30,24 +30,26 @@ const List: React.FC = () => {
     const [rowsPerPage, setRowsPerPage] = useState(10)
 
     // Get Data 
-    useEffect(() => {
-        const fetchData = () => {
-            setLoading(true)
-            getAllCategory().then(res => {
-                const formattedData : Category[]= res.data.map((item :Category) =>
-                ({
-                    ...item,
-                    key: item.id,
-                }))
-                setData(formattedData)
-                setLoading(false)
-            }).catch(err => {
-                setLoading(false)
-                console.log(err)
-            })
-        }
+    useEffect(() => {     
         fetchData()
     }, []);
+
+
+    const fetchData = () => {
+        setLoading(true)
+        getAllCategory().then(res => {
+            const formattedData : Category[]= res.data.map((item :Category) =>
+            ({
+                ...item,
+                key: item.id,
+            }))
+            setData(formattedData)
+            setLoading(false)
+        }).catch(err => {
+            setLoading(false)
+            console.log(err)
+        })
+    }
 
     const handleChangePage = (_event: unknown, newPage: number) => {
         setPage(newPage)
@@ -64,15 +66,14 @@ const List: React.FC = () => {
         setOpenCreate(true)
     }
     const handleCloseCreate = () => setOpenCreate(false)
-    const handleSaveCreate = (newData: Category) => {
-        createCategory(newData.name).then(() => {
+    const handleSaveCreate = (newData: string) => {
+        createCategory(newData).then(() => {
             console.log("Create Category Successfully")
-
+            fetchData()
         }).catch(err => {
             console.log(err)
         })
         handleCloseCreate();
-        window.location.reload(); 
     }
 
     // Edit Method
@@ -89,12 +90,12 @@ const List: React.FC = () => {
     const handleSaveEdit = (newData: Category) => {
         updateCategory(newData.id.toString(), newData.name).then(() => {
             console.log("Update Successfully")
+            fetchData()
         }).catch(err => {
             console.log(err)
         })
         
         handleCloseEdit()
-        window.location.reload(); 
     }
 
     // Delete Method
@@ -113,12 +114,12 @@ const List: React.FC = () => {
         console.log(key)
         deleteCategory(key).then(() => {
             console.log("Delete Successfully")
+            fetchData()
         }).catch (err => {
             console.log(err)
         })
         
         handleCloseDelete()
-        window.location.reload(); 
     }
 
     if (loading) {

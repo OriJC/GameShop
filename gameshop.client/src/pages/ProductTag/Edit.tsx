@@ -47,7 +47,7 @@ const Edit: React.FC<ModalFormProps> = ({ open, record, onClose, onUpdate }) => 
         setData({ id: '', name: '' });
     };
     return (
-        <Dialog open={open} onClose={handleCancel}>
+        <Dialog key={data.id} open={open} onClose={handleCancel}>
             <DialogTitle>Update Product Tag</DialogTitle>
             <DialogContent>
                 <DialogContentText>

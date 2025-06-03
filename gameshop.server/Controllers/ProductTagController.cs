@@ -47,12 +47,12 @@ namespace GameShop.Server.Controllers
                 var ProductTag = await _unitOfWork.ProductTag.GetById(Id);
                 if (ProductTag != null)
                 {
-                    _logger.LogError($"Get product tag by Id {Id}");
+                    _logger.LogInformation($"Get product tag by Id {Id}");
                     return Ok(ProductTag);
                 }
                 else
                 {
-                    _logger.LogInformation($"Cannot find product tag by Id {Id}");
+                    _logger.LogError($"Cannot find product tag by Id {Id}");
                     return NotFound(new { message = "Cannot find this product tag"});
                 }
             }
@@ -85,8 +85,8 @@ namespace GameShop.Server.Controllers
             }
         }
 
-        [HttpPut("{Id}")]
-        public async Task<ActionResult> Update(string Id, string name)
+        [HttpPut]
+        public async Task<ActionResult> Update([FromQuery] string Id, [FromQuery] string name)
         {
             try
             {

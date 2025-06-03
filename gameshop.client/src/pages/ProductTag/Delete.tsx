@@ -27,7 +27,7 @@ const Delete: React.FC<ModalFormProps> = ({ open, record, onClose, onDelete }) =
         onDelete(record.id)
     }
     return (
-        <Dialog open={open} onClose={onClose}>
+        <Dialog key={record.id} open={open} onClose={onClose}>
             <DialogTitle>Delete Product Tag</DialogTitle>
             <DialogContent>
                 <DialogContentText>
@@ -41,7 +41,7 @@ const Delete: React.FC<ModalFormProps> = ({ open, record, onClose, onDelete }) =
                     type="text"
                     fullWidth
                     variant="standard"
-                    defaultValue={record.id}
+                    value={record.id||''}
                     disabled
                 />
                 <TextField
@@ -52,7 +52,7 @@ const Delete: React.FC<ModalFormProps> = ({ open, record, onClose, onDelete }) =
                     type="text"
                     fullWidth
                     variant="standard"
-                    defaultValue={record.name}
+                    value={record.name}
                     disabled
                 />
             </DialogContent>

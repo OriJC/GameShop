@@ -43,10 +43,10 @@ const List: React.FC = () => {
                     key: item.id,
                 }))
                 setData(formattedData)
-                setLoading(false)
-            }).catch(err => {
-                setLoading(false)
+            }).catch(err => {     
                 console.log(err)
+            }).finally( () =>{
+                setLoading(false)
             })
         }
         fetchData()
@@ -73,13 +73,16 @@ const List: React.FC = () => {
     const handleOpenEdit = (key: string) => {
         getProductTagById(key).then(res => {
             console.log(res.data)
-            setCurrentItem(res.data)
+            setCurrentItem({...res.data})
             setOpenEdit(true)
         }).catch(err => {
             console.log(err)
         })
     }
-    const handleCloseEdit = () => setOpenEdit(false)
+    const handleCloseEdit = () => {
+        setOpenEdit(false)
+        setCurrentItem({ id: '', name: '' });
+    }
     const handleSaveEdit = (newData: ProductTag) => {
         console.log(newData)
         updateProductTag(newData.id, newData.name).then(() => {

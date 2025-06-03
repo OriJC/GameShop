@@ -23,7 +23,7 @@ export const createProductTag = (name: string) => {
 
 export const updateProductTag = (id: string, name: string) => {
     return axios.request({
-        url: 'api/ProductTag/Update/' + id + '?name=' + name,
+        url: `api/ProductTag/Update?Id=${id}&name=${encodeURIComponent(name)}`,
         method: 'put'
     })
 }
