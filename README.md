@@ -8,7 +8,12 @@ This is an e-shop web application using .NET Core as the back-end, React(with Ty
 * Customers can add the product to their shopping cart and check out as an order
 * Including the identity server for user authorization
 * Deployment to cloud server
+
+
+Including validation for each form 
 ![FormPage](./doc/FormPage.png)
+
+Including goods management system, shopping cart and order detail page
 ![FormPage](./doc/ProductForm.png)
 ![ShoppingPage](./doc/ShoppingCart.png)
 ![OrderPage](./doc/Order.png)
