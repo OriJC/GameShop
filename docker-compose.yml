@@ -19,7 +19,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - MongoDB__ConnectionString=mongodb://mongo:27017
       - MongoDB__DatabaseName=gameshop
-      - JWT__Secret=your_jwt_secret
+      - JWT__Secret=Can_be_replaced_with_a_strong_secret
     depends_on:
       - mongo
 
