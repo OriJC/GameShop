@@ -33,3 +33,7 @@ Programming language: C#
 * Build Pipeline on Azure DevOps
 * Build both client and server image
 * (Todo) Deploy to Azure Web Container
+
+
+### Todo
+* Role and user manager backend apis are ready, but the frontend pages of these two features haven't been done yet
